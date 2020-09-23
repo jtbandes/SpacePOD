@@ -30,7 +30,7 @@ enum Loading<T> {
 }
 
 class ViewModel: ObservableObject {
-  @Published var currentEntry: Loading<Result<APODEntry, Error>> = .notLoading
+  @Published var currentEntry: Loading<Result<APODCacheEntry, Error>> = .notLoading
 
   private var _cancellable: AnyCancellable?
 
@@ -56,8 +56,11 @@ struct ContentView: View {
     case .loaded(.failure(let err)):
       Text(verbatim: "Error: \(err as Any)")
     case .loaded(.success(let val)):
-      Text(verbatim: "Loaded: \(val.remoteImageURL as Any)")
-//    default: Group {}
+      if let image = UIImage(contentsOfFile: val.localImageURL.path) {
+        Image(uiImage: image).aspectRatio(contentMode: .fit)
+      } else {
+        Image(systemName: "exclamationmark.triangle").foregroundColor(.secondary)
+      }
     }
   }
 }
