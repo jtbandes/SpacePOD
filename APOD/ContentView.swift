@@ -23,16 +23,23 @@ extension Publisher {
   }
 }
 
-class ViewModel: ObservableObject {
-  @Published var result: Result<APODEntry, Error>?
-  var cancellableSet = Set<AnyCancellable>()
+enum Loading<T> {
+  case notLoading
+  case loading
+  case loaded(T)
+}
 
-  init() {
-    objectWillChange.send()
-  }
+class ViewModel: ObservableObject {
+  @Published var currentEntry: Loading<Result<APODEntry, Error>> = .notLoading
+
+  private var _cancellable: AnyCancellable?
 
   func startLoad() {
-    APODClient.shared.loadLatestImage().sinkResult { self.result = $0 }.store(in: &cancellableSet)
+    currentEntry = .loading
+    _cancellable?.cancel()
+    _cancellable = APODClient.shared.loadLatestImage().sinkResult {
+      self.currentEntry = .loaded($0)
+    }
   }
 }
 
@@ -43,12 +50,14 @@ struct ContentView: View {
     Button("Load latest") {
       viewModel.startLoad()
     }
-    switch viewModel.result {
-    case .failure(let err):
+    switch viewModel.currentEntry {
+    case .notLoading: Group {}
+    case .loading: ProgressView("Loading")
+    case .loaded(.failure(let err)):
       Text(verbatim: "Error: \(err as Any)")
-    case .success(let val):
+    case .loaded(.success(let val)):
       Text(verbatim: "Loaded: \(val.remoteImageURL as Any)")
-    default: Group {}
+//    default: Group {}
     }
   }
 }
