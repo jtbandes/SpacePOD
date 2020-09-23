@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import APODShared
 
 private let API_URL = URLComponents(string: "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY")!
 

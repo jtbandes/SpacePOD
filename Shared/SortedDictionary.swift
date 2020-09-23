@@ -7,12 +7,13 @@
 
 import Foundation
 
-
-struct SortedDictionary<Key: Hashable & Comparable, Value>: BidirectionalCollection {
+public struct SortedDictionary<Key: Hashable & Comparable, Value>: BidirectionalCollection {
   var _dict: [Key: Value] = [:]
   var _keys: [Key] = []
 
-  subscript(key: Key) -> Value? {
+  public init() {}
+
+  public subscript(key: Key) -> Value? {
     get {
       return _dict[key]
     }
@@ -38,16 +39,16 @@ struct SortedDictionary<Key: Hashable & Comparable, Value>: BidirectionalCollect
 }
 
 extension SortedDictionary: Collection {
-  var startIndex: Int { _keys.startIndex }
-  var endIndex: Int { _keys.endIndex }
+  public var startIndex: Int { _keys.startIndex }
+  public var endIndex: Int { _keys.endIndex }
 
-  func index(before i: Int) -> Int {
+  public func index(before i: Int) -> Int {
     return i - 1
   }
-  func index(after i: Int) -> Int {
+  public   func index(after i: Int) -> Int {
     return i + 1
   }
-  subscript(position: Int) -> (key: Key, value: Value) {
+  public subscript(position: Int) -> (key: Key, value: Value) {
     let key = _keys[position]
     return (key, _dict[key]!)
   }

@@ -9,12 +9,12 @@ import Foundation
 import Combine
 
 
-enum APODErrors: Error {
+public enum APODErrors: Error {
   case invalidDate(String)
   case invalidURL(String)
 }
 
-extension Optional {
+public extension Optional {
   func orThrow(_ error: Error) throws -> Wrapped {
     if let self = self {
       return self
@@ -30,7 +30,7 @@ extension Optional {
   }
 }
 
-extension DateComponents {
+public extension DateComponents {
   init(YMDString string: String) throws {
     let components = string.split(separator: "-")
     guard components.count == 3,
@@ -43,12 +43,12 @@ extension DateComponents {
   }
 }
 
-enum BinarySearchResult<T> {
+public enum BinarySearchResult<T> {
   case present(index: T)
   case absent(insertionIndex: T)
 }
 
-extension RangeReplaceableCollection where Element: Comparable {
+public extension RangeReplaceableCollection where Element: Comparable {
   func binarySearch(_ element: Element) -> BinarySearchResult<Index> {
     var low = startIndex
     var high = endIndex
@@ -66,7 +66,7 @@ extension RangeReplaceableCollection where Element: Comparable {
   }
 }
 
-extension URLSession {
+public extension URLSession {
   func downloadTaskPublisher(for url: URL) -> AnyPublisher<URL, Error> {
     let subject = PassthroughSubject<URL, Error>()
     let task = downloadTask(with: url) { (location, response, error) in

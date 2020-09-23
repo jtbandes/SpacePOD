@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import APODShared
 
 struct YearMonthDay: LosslessStringConvertible {
   let year: Int
