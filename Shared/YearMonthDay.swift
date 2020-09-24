@@ -9,13 +9,17 @@ import Foundation
 
 let TIME_ZONE_LA = TimeZone(identifier: "America/Los_Angeles")!
 
-public struct YearMonthDay: LosslessStringConvertible {
+public struct YearMonthDay {
   let year: Int
   let month: Int
   let day: Int
 
-  public var description: String {
-    String(format: "%04d-%02d-%02d", year, month, day)
+  public static var current: YearMonthDay {
+    // Use current time zone in LA because in evenings the API starts returning "No data available for [tomorrow's date]"
+    var calendar = Calendar.current
+    calendar.timeZone = TIME_ZONE_LA
+    let components = calendar.dateComponents([.year, .month, .day], from: Date())
+    return YearMonthDay(year: components.year!, month: components.month!, day: components.day!)
   }
 
   public func asDate() -> Date? {
@@ -35,9 +39,15 @@ public struct YearMonthDay: LosslessStringConvertible {
     calendar.timeZone = TIME_ZONE_LA
     return calendar.isDateInToday(date)
   }
+}
 
-  public init?(_ stringValue: String) {
-    let components = stringValue.split(separator: "-")
+extension YearMonthDay: LosslessStringConvertible {
+  public var description: String {
+    String(format: "%04d-%02d-%02d", year, month, day)
+  }
+
+  public init?(_ description: String) {
+    let components = description.split(separator: "-")
     guard components.count == 3,
        let year = Int(components[0]),
        let month = Int(components[1]),

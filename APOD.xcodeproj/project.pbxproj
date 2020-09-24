@@ -11,7 +11,6 @@
 		1602DF44251BC0F7004D96B2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF43251BC0F7004D96B2 /* SceneDelegate.swift */; };
 		1602DF46251BC0F7004D96B2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF45251BC0F7004D96B2 /* ContentView.swift */; };
 		1602DF48251BC0F8004D96B2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF47251BC0F8004D96B2 /* Assets.xcassets */; };
-		1602DF4B251BC0F8004D96B2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF4A251BC0F8004D96B2 /* Preview Assets.xcassets */; };
 		1602DF4E251BC0F8004D96B2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF4C251BC0F8004D96B2 /* LaunchScreen.storyboard */; };
 		1602DF5D251BC263004D96B2 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF5C251BC263004D96B2 /* WidgetKit.framework */; };
 		1602DF5F251BC263004D96B2 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF5E251BC263004D96B2 /* SwiftUI.framework */; };
@@ -30,6 +29,9 @@
 		1602DFEA251C1526004D96B2 /* APODEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DFE9251C1526004D96B2 /* APODEntryView.swift */; };
 		1602DFEE251C153C004D96B2 /* APODClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF76251BC4A4004D96B2 /* APODClient.swift */; };
 		1602DFF2251C1579004D96B2 /* YearMonthDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF91251C1160004D96B2 /* YearMonthDay.swift */; };
+		1602E00A251C448A004D96B2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF4A251BC0F8004D96B2 /* Preview Assets.xcassets */; };
+		1625BF6E251C46A20004BB61 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF4A251BC0F8004D96B2 /* Preview Assets.xcassets */; };
+		1625BF72251C46A20004BB61 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF4A251BC0F8004D96B2 /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -196,7 +198,6 @@
 				1602DF45251BC0F7004D96B2 /* ContentView.swift */,
 				1602DF4F251BC0F8004D96B2 /* Info.plist */,
 				1602DF4C251BC0F8004D96B2 /* LaunchScreen.storyboard */,
-				1602DF49251BC0F8004D96B2 /* Preview Content */,
 				1602DF43251BC0F7004D96B2 /* SceneDelegate.swift */,
 			);
 			path = APOD;
@@ -234,6 +235,7 @@
 		1602DF9C251C12A8004D96B2 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				1602DF49251BC0F8004D96B2 /* Preview Content */,
 				1602DF76251BC4A4004D96B2 /* APODClient.swift */,
 				1602DFE9251C1526004D96B2 /* APODEntryView.swift */,
 				1602DF83251BEA99004D96B2 /* Utilities.swift */,
@@ -393,7 +395,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1602DF4E251BC0F8004D96B2 /* LaunchScreen.storyboard in Resources */,
-				1602DF4B251BC0F8004D96B2 /* Preview Assets.xcassets in Resources */,
+				1625BF72251C46A20004BB61 /* Preview Assets.xcassets in Resources */,
 				1602DF48251BC0F8004D96B2 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -402,6 +404,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1625BF6E251C46A20004BB61 /* Preview Assets.xcassets in Resources */,
 				1602DF65251BC266004D96B2 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -410,6 +413,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1602E00A251C448A004D96B2 /* Preview Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -629,7 +633,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = APOD/APOD.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"APOD/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
 				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = APOD/Info.plist;
@@ -652,7 +656,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = APOD/APOD.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"APOD/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
 				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = APOD/Info.plist;
@@ -674,6 +678,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = Widget/WidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
 				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				INFOPLIST_FILE = Widget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -696,6 +701,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = Widget/WidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
 				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				INFOPLIST_FILE = Widget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -718,6 +724,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
 				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -746,6 +753,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
 				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;

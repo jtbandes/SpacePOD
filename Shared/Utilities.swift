@@ -8,6 +8,16 @@
 import Foundation
 import Combine
 
+infix operator ??=
+public func ??=<T>(lhs: inout T?, rhs: @autoclosure () -> T?) {
+  lhs = lhs ?? rhs()
+}
+
+public func with<T>(_ arg: T, _ body: (inout T) -> Void) -> T {
+  var result = arg
+  body(&result)
+  return result
+}
 
 public enum APODErrors: Error {
   case invalidDate(String)
@@ -91,3 +101,4 @@ public extension URLSession {
       .eraseToAnyPublisher()
   }
 }
+

@@ -31,7 +31,7 @@ enum Loading<T> {
 }
 
 class ViewModel: ObservableObject {
-  @Published var currentEntry: Loading<Result<APODCacheEntry, Error>> = .notLoading
+  @Published var currentEntry: Loading<Result<APODEntry, Error>> = .notLoading
 
   private var _cancellable: AnyCancellable?
 

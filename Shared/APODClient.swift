@@ -7,20 +7,31 @@
 
 import Foundation
 import Combine
+import UIKit
 
 private let API_URL = URLComponents(string: "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY")!
+private let DATA_PATH_EXTENSION = "json"
 
 private let CACHE_URL = URL(
   fileURLWithPath: "cache", relativeTo:
     FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.APOD")!)
 
 public struct APODEntry: Decodable {
-  var date: YearMonthDay
+  public var date: YearMonthDay
   var remoteImageURL: URL
-  var copyright: String?
+  public var copyright: String?
+  public var title: String?
 
+  var localDataURL: URL {
+    CACHE_URL.appendingPathComponent(date.description).appendingPathExtension(DATA_PATH_EXTENSION)
+  }
   var localImageURL: URL {
     CACHE_URL.appendingPathComponent(date.description)
+  }
+
+  var PREVIEW_overrideImage: UIImage?
+  func loadImage() -> UIImage? {
+    return PREVIEW_overrideImage ?? UIImage(contentsOfFile: localImageURL.path)
   }
 
   enum CodingKeys: String, CodingKey {
@@ -40,45 +51,44 @@ public struct APODEntry: Decodable {
     let urlString = try container.decodeIfPresent(String.self, forKey: .hdurl) ?? container.decode(String.self, forKey: .url)
     remoteImageURL = try URL(string: urlString).orThrow(APODErrors.invalidURL(urlString))
     copyright = try container.decodeIfPresent(String.self, forKey: .copyright)
+    title = try container.decodeIfPresent(String.self, forKey: .title)
   }
-}
-
-public struct APODCacheEntry {
-  public let date: YearMonthDay
-  public let localImageURL: URL
 }
 
 public class APODClient {
 
   public static let shared = APODClient()
 
-  private var _cachedImages = SortedDictionary<YearMonthDay, APODCacheEntry>()
+  private var _cache = SortedDictionary<YearMonthDay, APODEntry>()
 
   private init() {
     do {
       try FileManager.default.createDirectory(at: CACHE_URL, withIntermediateDirectories: true)
 
-      for url in try FileManager.default.contentsOfDirectory(at: CACHE_URL, includingPropertiesForKeys: nil) {
-        let filename = url.deletingPathExtension().lastPathComponent
-        if let date = YearMonthDay(filename) {
-          _cachedImages[date] = APODCacheEntry(date: date, localImageURL: url)
-        } else {
-          print("Invalid filename: \(url)")
+      for url in try FileManager.default.contentsOfDirectory(at: CACHE_URL, includingPropertiesForKeys: nil) where url.pathExtension == DATA_PATH_EXTENSION {
+        do {
+          let data = try Data(contentsOf: url)
+          let entry = try JSONDecoder().decode(APODEntry.self, from: data)
+          if (try? entry.localImageURL.checkResourceIsReachable()) ?? false {
+            _cache[entry.date] = entry
+          }
+        } catch {
+          print("Invalid cache entry: \(error) \(url)")
         }
       }
-      print("There are \(_cachedImages.count) cached images: \(_cachedImages)")
+      print("There are \(_cache.count) cached images: \(_cache)")
     }
     catch let error {
       print("Error loading cache: \(error)")
     }
   }
 
-  private func _loadRemoteImageIntoCache(_ entry: APODEntry) -> AnyPublisher<APODEntry, Error> {
+  private func _downloadImageIfNeeded(_ entry: APODEntry) -> AnyPublisher<APODEntry, Error> {
     if (try? entry.localImageURL.checkResourceIsReachable()) ?? false {
-      print("Remote image already loaded, skipping")
       return CurrentValueSubject<APODEntry, Error>(entry).eraseToAnyPublisher()
     }
 
+    print("Downloading image for \(entry.date)")
     return URLSession.shared.downloadTaskPublisher(for: entry.remoteImageURL)
       .tryMap { url in
         try FileManager.default.moveItem(at: url, to: entry.localImageURL)
@@ -88,10 +98,12 @@ public class APODClient {
       .eraseToAnyPublisher()
   }
 
-  public func loadLatestImage() -> AnyPublisher<APODCacheEntry, Error> {
-    let components = API_URL
+  public func loadLatestImage() -> AnyPublisher<APODEntry, Error> {
+    var components = API_URL
+    components.queryItems ??= []
+    components.queryItems!.append(URLQueryItem(name: "date", value: YearMonthDay.current.description))
 
-    if let lastCached = _cachedImages.last?.value, lastCached.date.isCurrent {
+    if let lastCached = _cache.last?.value, lastCached.date.isCurrent {
       print("Loaded \(lastCached.date) from cache")
       return CurrentValueSubject(lastCached).eraseToAnyPublisher()
     }
@@ -102,15 +114,16 @@ public class APODClient {
         guard (response as? HTTPURLResponse)?.statusCode == 200 else {
           throw URLError(.badServerResponse)
         }
-        return data
+
+        let entry = try JSONDecoder().decode(APODEntry.self, from: data)
+        try data.write(to: entry.localDataURL)
+        return entry
       }
-      .decode(type: APODEntry.self, decoder: JSONDecoder())
-      .flatMap(_loadRemoteImageIntoCache)
+      .flatMap(_downloadImageIfNeeded)
       .receive(on: DispatchQueue.main)
-      .map { [weak self] in
-        let cacheEntry = APODCacheEntry(date: $0.date, localImageURL: $0.localImageURL)
-        self?._cachedImages[$0.date] = cacheEntry
-        return cacheEntry
+      .map { [weak self] entry in
+        self?._cache[entry.date] = entry
+        return entry
       }
       .eraseToAnyPublisher()
   }

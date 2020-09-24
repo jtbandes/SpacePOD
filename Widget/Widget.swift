@@ -12,7 +12,7 @@ import APODShared
 import Combine
 
 struct APODTimelineEntry: TimelineEntry {
-  let cacheEntry: APODCacheEntry?
+  let cacheEntry: APODEntry?
   let configuration: ConfigurationIntent
   var date: Date {
     cacheEntry?.date.asDate() ?? Date()
@@ -29,7 +29,7 @@ class Provider: IntentTimelineProvider {
   func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (APODTimelineEntry) -> ()) {
 
     cancellable = APODClient.shared.loadLatestImage().sink { completion in
-      print("Fail :(")
+      print("Fail :( \(completion)")
     } receiveValue: { cacheEntry in
       completion(APODTimelineEntry(cacheEntry: cacheEntry, configuration: configuration))
     }
@@ -63,12 +63,5 @@ struct APODWidget: Widget {
     }
     .configurationDisplayName("My Widget")
     .description("This is an example widget.")
-  }
-}
-
-struct Widget_Previews: PreviewProvider {
-  static var previews: some View {
-    WidgetEntryView(entry: APODTimelineEntry(cacheEntry: nil, configuration: ConfigurationIntent()))
-      .previewContext(WidgetPreviewContext(family: .systemSmall))
   }
 }
