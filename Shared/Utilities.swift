@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 infix operator ??=
 public func ??=<T>(lhs: inout T?, rhs: @autoclosure () -> T?) {
@@ -17,6 +18,12 @@ public func with<T>(_ arg: T, _ body: (inout T) -> Void) -> T {
   var result = arg
   body(&result)
   return result
+}
+
+public enum Loading<T> {
+  case notLoading
+  case loading
+  case loaded(T)
 }
 
 public enum APODErrors: Error {
@@ -102,3 +109,25 @@ public extension URLSession {
   }
 }
 
+// Prior art:
+// https://forums.swift.org/t/conditionally-apply-modifier-in-swiftui/32815
+// https://fivestars.blog/swiftui/conditional-modifiers.html
+extension View {
+  @ViewBuilder
+  func `if`<T: View>(_ condition: Bool, _ modifier: (Self) -> T) -> some View {
+    if condition {
+      modifier(self)
+    } else {
+      self
+    }
+  }
+
+  @ViewBuilder
+  func `ifLet`<T: View, U>(_ value: U?, _ modifier: (Self, U) -> T) -> some View {
+    if let value = value {
+      modifier(self, value)
+    } else {
+      self
+    }
+  }
+}

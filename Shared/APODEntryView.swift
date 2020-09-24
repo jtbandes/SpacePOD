@@ -8,46 +8,76 @@
 import SwiftUI
 import struct WidgetKit.WidgetPreviewContext
 
-public struct APODEntryView: View {
-  let entry: APODEntry
+struct PhotoView: View {
+  let image: AnyView?
+  let caption: String?
+  let copyright: String?
 
-  public init(entry: APODEntry) {
-    self.entry = entry
-  }
+  var body: some View {
+    ZStack() {
+      Color.red.edgesIgnoringSafeArea(.all)
+        .ifLet(image) {
+          $0.overlay($1)
+        }
 
-  public var body: some View {
-    if let image = entry.loadImage() {
-      ZStack(alignment: .leading) {
-        Color.black.edgesIgnoringSafeArea(.all)
-
-        Image(uiImage: image)
-          .resizable()
-          .aspectRatio(contentMode: .fill)
-
+      HStack {
         VStack(alignment: .leading) {
-//          Text(entry.date.asDate()!, style: .date).font(.caption2)
+          //          Text(entry.date.asDate()!, style: .date).font(.caption2)
           Spacer()
-          if let title = entry.title {
-            Text(title).font(.system(.footnote)).bold()
+          if let caption = caption {
+            Text(caption).font(.system(.footnote)).bold()
           }
-          if let copyright = entry.copyright {
+          if let copyright = copyright {
             Text(copyright).font(.system(.caption2))
           }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .foregroundColor(Color(.sRGB, white: 0.9))
-        .shadow(color: .black, radius: 2, x: 0.0, y: 0.0)
+        Spacer()
       }
-    } else {
-      ZStack {
-        Color.black.edgesIgnoringSafeArea(.all)
-        VStack(spacing: 8) {
-          Image(systemName: "exclamationmark.triangle")
-            .font(.system(size: 64, weight: .ultraLight))
-          Text("Couldn‘t load image")
-            .font(.footnote)
-        }.foregroundColor(.gray)
+      .padding(.horizontal, 16)
+      .padding(.vertical, 12)
+      .foregroundColor(Color(.sRGB, white: 0.9))
+      .shadow(color: .black, radius: 2, x: 0.0, y: 0.0)
+    }
+  }
+}
+
+public struct APODEntryView: View {
+  let entry: Loading<Result<APODEntry, Error>>
+
+  public init(entry: Loading<Result<APODEntry, Error>>) {
+    self.entry = entry
+  }
+
+  public init(entry: APODEntry) {
+    self.entry = .loaded(.success(entry))
+  }
+
+  public var body: some View {
+    switch entry {
+    case .notLoading:
+      Group {}
+
+    case .loading:
+      ProgressView()
+
+    case .loaded(.failure(let error)):
+      Group {}
+
+    case .loaded(.success(let entry)):
+      if let image = entry.loadImage() {
+        PhotoView(image: AnyView(Image(uiImage: image).resizable().aspectRatio(contentMode: .fill)),
+                  caption: entry.title,
+                  copyright: entry.copyright)
+      } else {
+        ZStack {
+          Color.black.edgesIgnoringSafeArea(.all)
+          VStack(spacing: 8) {
+            Image(systemName: "exclamationmark.triangle")
+              .font(.system(size: 64, weight: .ultraLight))
+            Text("Couldn‘t load image")
+              .font(.footnote)
+          }.foregroundColor(.gray)
+        }
       }
     }
   }
@@ -72,15 +102,36 @@ struct APODEntryView_Previews: PreviewProvider {
       entry: with(try! JSONDecoder().decode(APODEntry.self, from: previewJSON)) {
         $0.PREVIEW_overrideImage = #imageLiteral(resourceName: "sampleImage")
       })
-      .previewContext(WidgetPreviewContext(family: .systemSmall))
+      .previewContext(WidgetPreviewContext(family: .systemMedium))
+
+    PhotoView(image: AnyView(Image(uiImage: #imageLiteral(resourceName: "sampleImage")).resizable().aspectRatio(3, contentMode: .fill)), caption: "Hello", copyright: "There")
+      .previewContext(WidgetPreviewContext(family: .systemMedium))
+
+    PhotoView(image: AnyView(Image(uiImage: #imageLiteral(resourceName: "sampleImage")).resizable().aspectRatio(0.3, contentMode: .fill)), caption: "Hello", copyright: "There")
+      .previewContext(WidgetPreviewContext(family: .systemMedium))
 
     APODEntryView(
       entry: try! JSONDecoder().decode(APODEntry.self, from: previewJSON))
-      .previewContext(WidgetPreviewContext(family: .systemSmall))
+      .previewContext(WidgetPreviewContext(family: .systemMedium))
 
     APODEntryView(
-      entry: try! JSONDecoder().decode(APODEntry.self, from: previewJSON))
+      entry: (try! JSONDecoder().decode(APODEntry.self, from: previewJSON)))
       .redacted(reason: .placeholder)
-      .previewContext(WidgetPreviewContext(family: .systemSmall))
+      .previewContext(WidgetPreviewContext(family: .systemMedium))
+
+    APODEntryView(
+      entry: .notLoading)
+      .redacted(reason: .placeholder)
+      .previewLayout(.fixed(width: 200, height: 200))
+
+    APODEntryView(
+      entry: .loading)
+      .redacted(reason: .placeholder)
+      .previewLayout(.fixed(width: 200, height: 200))
+
+    APODEntryView(
+      entry: .loaded(.failure(URLError(.badServerResponse))))
+      .redacted(reason: .placeholder)
+      .previewLayout(.fixed(width: 200, height: 200))
   }
 }

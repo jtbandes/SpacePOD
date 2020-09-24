@@ -24,12 +24,6 @@ extension Publisher {
   }
 }
 
-enum Loading<T> {
-  case notLoading
-  case loading
-  case loaded(T)
-}
-
 class ViewModel: ObservableObject {
   @Published var currentEntry: Loading<Result<APODEntry, Error>> = .notLoading
 
@@ -51,19 +45,12 @@ struct ContentView: View {
     Button("Load latest") {
       viewModel.startLoad()
     }
-    switch viewModel.currentEntry {
-    case .notLoading: Group {}
-    case .loading: ProgressView("Loading")
-    case .loaded(.failure(let err)):
-      Text(verbatim: "Error: \(err as Any)")
-    case .loaded(.success(let entry)):
-      APODEntryView(entry: entry)
-    }
+    APODEntryView(entry: viewModel.currentEntry)
   }
 }
 
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
-    ContentView().previewLayout(.fixed(width: 200, height: 200))
+    ContentView().previewLayout(.fixed(width: 300, height: 400))
   }
 }
