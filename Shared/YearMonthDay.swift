@@ -6,30 +6,37 @@
 //
 
 import Foundation
-import APODShared
 
-struct YearMonthDay: LosslessStringConvertible {
+let TIME_ZONE_LA = TimeZone(identifier: "America/Los_Angeles")!
+
+public struct YearMonthDay: LosslessStringConvertible {
   let year: Int
   let month: Int
   let day: Int
 
-  var description: String {
+  public var description: String {
     String(format: "%04d-%02d-%02d", year, month, day)
   }
 
-  var isCurrent: Bool {
-    guard let timeZone = TimeZone(identifier: "America/Los_Angeles"),
-          let date = Calendar.current.date(from: DateComponents(timeZone: timeZone, year: year, month: month, day: day))
+  public func asDate() -> Date? {
+    guard let date = Calendar.current.date(from: DateComponents(timeZone: TIME_ZONE_LA, year: year, month: month, day: day))
     else {
+      return nil
+    }
+    return date
+  }
+
+  var isCurrent: Bool {
+    guard let date = asDate() else {
       return false
     }
     var calendar = Calendar.current
     calendar.locale = Locale(identifier: "en_US")
-    calendar.timeZone = timeZone
+    calendar.timeZone = TIME_ZONE_LA
     return calendar.isDateInToday(date)
   }
 
-  init?(_ stringValue: String) {
+  public init?(_ stringValue: String) {
     let components = stringValue.split(separator: "-")
     guard components.count == 3,
        let year = Int(components[0]),
@@ -44,7 +51,7 @@ struct YearMonthDay: LosslessStringConvertible {
 }
 
 extension YearMonthDay: Codable {
-  init(from decoder: Decoder) throws {
+  public init(from decoder: Decoder) throws {
     let string = try decoder.singleValueContainer().decode(String.self)
     if let date = YearMonthDay(string) {
       self = date
@@ -53,14 +60,14 @@ extension YearMonthDay: Codable {
     }
   }
 
-  func encode(to encoder: Encoder) throws {
+  public func encode(to encoder: Encoder) throws {
     var encoder = encoder.singleValueContainer()
     try encoder.encode(description)
   }
 }
 
 extension YearMonthDay: Hashable {
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     hasher.combine(year)
     hasher.combine(month)
     hasher.combine(day)
@@ -68,10 +75,10 @@ extension YearMonthDay: Hashable {
 }
 
 extension YearMonthDay: Comparable {
-  static func ==(lhs: YearMonthDay, rhs: YearMonthDay) -> Bool {
+  public static func ==(lhs: YearMonthDay, rhs: YearMonthDay) -> Bool {
     return (lhs.year, lhs.month, lhs.day) == (rhs.year, rhs.month, rhs.day)
   }
-  static func <(lhs: YearMonthDay, rhs: YearMonthDay) -> Bool {
+  public static func <(lhs: YearMonthDay, rhs: YearMonthDay) -> Bool {
     return (lhs.year, lhs.month, lhs.day) < (rhs.year, rhs.month, rhs.day)
   }
 }

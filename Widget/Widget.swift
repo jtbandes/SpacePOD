@@ -8,62 +8,67 @@
 import WidgetKit
 import SwiftUI
 import Intents
+import APODShared
+import Combine
 
-struct Provider: IntentTimelineProvider {
-    func placeholder(in context: Context) -> PhotoOfTheDay {
-        PhotoOfTheDay(date: Date(), configuration: ConfigurationIntent())
-    }
-
-    func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (PhotoOfTheDay) -> ()) {
-        let entry = PhotoOfTheDay(date: Date(), configuration: configuration)
-        completion(entry)
-    }
-
-    func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        var entries: [PhotoOfTheDay] = []
-
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = PhotoOfTheDay(date: entryDate, configuration: configuration)
-            entries.append(entry)
-        }
-
-        let timeline = Timeline(entries: entries, policy: .atEnd)
-        completion(timeline)
-    }
+struct APODTimelineEntry: TimelineEntry {
+  let cacheEntry: APODCacheEntry?
+  let configuration: ConfigurationIntent
+  var date: Date {
+    cacheEntry?.date.asDate() ?? Date()
+  }
 }
 
-struct PhotoOfTheDay: TimelineEntry {
-    let date: Date
-    let configuration: ConfigurationIntent
+class Provider: IntentTimelineProvider {
+  func placeholder(in context: Context) -> APODTimelineEntry {
+    APODTimelineEntry(cacheEntry: nil, configuration: ConfigurationIntent())
+  }
+
+  var cancellable: AnyCancellable?
+
+  func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (APODTimelineEntry) -> ()) {
+
+    cancellable = APODClient.shared.loadLatestImage().sink { completion in
+      print("Fail :(")
+    } receiveValue: { cacheEntry in
+      completion(APODTimelineEntry(cacheEntry: cacheEntry, configuration: configuration))
+    }
+  }
+
+  func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
+
+    getSnapshot(for: configuration, in: context) {
+      completion(Timeline(entries: [$0], policy: .atEnd))
+    }
+  }
 }
 
 struct WidgetEntryView : View {
-    var entry: Provider.Entry
+  var entry: APODTimelineEntry
 
-    var body: some View {
-        Text(entry.date, style: .time)
+  var body: some View {
+    entry.cacheEntry.map {
+      APODEntryView(entry: $0)
     }
+  }
 }
 
 @main
 struct APODWidget: Widget {
-    let kind: String = "Widget"
+  let kind: String = "Widget"
 
-    var body: some WidgetConfiguration {
-        IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
-            WidgetEntryView(entry: entry)
-        }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
+  var body: some WidgetConfiguration {
+    IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
+      WidgetEntryView(entry: entry)
     }
+    .configurationDisplayName("My Widget")
+    .description("This is an example widget.")
+  }
 }
 
 struct Widget_Previews: PreviewProvider {
-    static var previews: some View {
-        WidgetEntryView(entry: PhotoOfTheDay(date: Date(), configuration: ConfigurationIntent()))
-            .previewContext(WidgetPreviewContext(family: .systemSmall))
-    }
+  static var previews: some View {
+    WidgetEntryView(entry: APODTimelineEntry(cacheEntry: nil, configuration: ConfigurationIntent()))
+      .previewContext(WidgetPreviewContext(family: .systemSmall))
+  }
 }

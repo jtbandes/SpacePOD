@@ -7,7 +7,6 @@
 
 import Foundation
 import Combine
-import APODShared
 
 private let API_URL = URLComponents(string: "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY")!
 
@@ -15,7 +14,7 @@ private let CACHE_URL = URL(
   fileURLWithPath: "cache", relativeTo:
     FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.APOD")!)
 
-struct APODEntry: Decodable {
+public struct APODEntry: Decodable {
   var date: YearMonthDay
   var remoteImageURL: URL
   var copyright: String?
@@ -35,7 +34,7 @@ struct APODEntry: Decodable {
     case title
   }
 
-  init(from decoder: Decoder) throws {
+  public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     date = try container.decode(YearMonthDay.self, forKey: .date)
     let urlString = try container.decodeIfPresent(String.self, forKey: .hdurl) ?? container.decode(String.self, forKey: .url)
@@ -44,14 +43,14 @@ struct APODEntry: Decodable {
   }
 }
 
-struct APODCacheEntry {
-  let date: YearMonthDay
-  let localImageURL: URL
+public struct APODCacheEntry {
+  public let date: YearMonthDay
+  public let localImageURL: URL
 }
 
-class APODClient {
+public class APODClient {
 
-  static let shared = APODClient()
+  public static let shared = APODClient()
 
   private var _cachedImages = SortedDictionary<YearMonthDay, APODCacheEntry>()
 
@@ -76,6 +75,7 @@ class APODClient {
 
   private func _loadRemoteImageIntoCache(_ entry: APODEntry) -> AnyPublisher<APODEntry, Error> {
     if (try? entry.localImageURL.checkResourceIsReachable()) ?? false {
+      print("Remote image already loaded, skipping")
       return CurrentValueSubject<APODEntry, Error>(entry).eraseToAnyPublisher()
     }
 
@@ -88,7 +88,7 @@ class APODClient {
       .eraseToAnyPublisher()
   }
 
-  func loadLatestImage() -> AnyPublisher<APODCacheEntry, Error> {
+  public func loadLatestImage() -> AnyPublisher<APODCacheEntry, Error> {
     let components = API_URL
 
     if let lastCached = _cachedImages.last?.value, lastCached.date.isCurrent {

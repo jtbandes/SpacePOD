@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import APODShared
 
 extension Publisher {
   func sinkResult(_ receiveResult: @escaping (Result<Output, Failure>) -> Void) -> AnyCancellable {
@@ -55,12 +56,8 @@ struct ContentView: View {
     case .loading: ProgressView("Loading")
     case .loaded(.failure(let err)):
       Text(verbatim: "Error: \(err as Any)")
-    case .loaded(.success(let val)):
-      if let image = UIImage(contentsOfFile: val.localImageURL.path) {
-        Image(uiImage: image).aspectRatio(contentMode: .fit)
-      } else {
-        Image(systemName: "exclamationmark.triangle").foregroundColor(.secondary)
-      }
+    case .loaded(.success(let entry)):
+      APODEntryView(entry: entry)
     }
   }
 }

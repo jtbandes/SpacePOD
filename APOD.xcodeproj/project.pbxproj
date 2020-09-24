@@ -20,18 +20,16 @@
 		1602DF67251BC266004D96B2 /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; };
 		1602DF68251BC266004D96B2 /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; };
 		1602DF6B251BC266004D96B2 /* WidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1602DF5A251BC263004D96B2 /* WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		1602DF77251BC4A4004D96B2 /* APODClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF76251BC4A4004D96B2 /* APODClient.swift */; };
-		1602DF7C251BD1E0004D96B2 /* APODClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF76251BC4A4004D96B2 /* APODClient.swift */; };
-		1602DF92251C1160004D96B2 /* YearMonthDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF91251C1160004D96B2 /* YearMonthDay.swift */; };
-		1602DF93251C1160004D96B2 /* YearMonthDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF91251C1160004D96B2 /* YearMonthDay.swift */; };
 		1602DFA4251C12A8004D96B2 /* APODShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF9B251C12A8004D96B2 /* APODShared.framework */; };
 		1602DFAB251C12A8004D96B2 /* SharedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DFAA251C12A8004D96B2 /* SharedTests.swift */; };
-		1602DFAD251C12A8004D96B2 /* Shared.h in Headers */ = {isa = PBXBuildFile; fileRef = 1602DF9D251C12A8004D96B2 /* Shared.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1602DFB0251C12A8004D96B2 /* APODShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF9B251C12A8004D96B2 /* APODShared.framework */; };
 		1602DFB1251C12A8004D96B2 /* APODShared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF9B251C12A8004D96B2 /* APODShared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1602DFBC251C12BD004D96B2 /* APODShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF9B251C12A8004D96B2 /* APODShared.framework */; };
 		1602DFC6251C12E2004D96B2 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF83251BEA99004D96B2 /* Utilities.swift */; };
 		1602DFCA251C12EB004D96B2 /* SortedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF8A251C062C004D96B2 /* SortedDictionary.swift */; };
+		1602DFEA251C1526004D96B2 /* APODEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DFE9251C1526004D96B2 /* APODEntryView.swift */; };
+		1602DFEE251C153C004D96B2 /* APODClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF76251BC4A4004D96B2 /* APODClient.swift */; };
+		1602DFF2251C1579004D96B2 /* YearMonthDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF91251C1160004D96B2 /* YearMonthDay.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -120,11 +118,11 @@
 		1602DF8A251C062C004D96B2 /* SortedDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedDictionary.swift; sourceTree = "<group>"; };
 		1602DF91251C1160004D96B2 /* YearMonthDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearMonthDay.swift; sourceTree = "<group>"; };
 		1602DF9B251C12A8004D96B2 /* APODShared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = APODShared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1602DF9D251C12A8004D96B2 /* Shared.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shared.h; sourceTree = "<group>"; };
 		1602DF9E251C12A8004D96B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1602DFA3251C12A8004D96B2 /* SharedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SharedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1602DFAA251C12A8004D96B2 /* SharedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTests.swift; sourceTree = "<group>"; };
 		1602DFAC251C12A8004D96B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1602DFE9251C1526004D96B2 /* APODEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APODEntryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,9 +191,7 @@
 			isa = PBXGroup;
 			children = (
 				1602DF72251BC448004D96B2 /* APOD.entitlements */,
-				1602DF76251BC4A4004D96B2 /* APODClient.swift */,
 				1602DF41251BC0F7004D96B2 /* AppDelegate.swift */,
-				1602DF91251C1160004D96B2 /* YearMonthDay.swift */,
 				1602DF47251BC0F8004D96B2 /* Assets.xcassets */,
 				1602DF45251BC0F7004D96B2 /* ContentView.swift */,
 				1602DF4F251BC0F8004D96B2 /* Info.plist */,
@@ -238,9 +234,11 @@
 		1602DF9C251C12A8004D96B2 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				1602DF76251BC4A4004D96B2 /* APODClient.swift */,
+				1602DFE9251C1526004D96B2 /* APODEntryView.swift */,
 				1602DF83251BEA99004D96B2 /* Utilities.swift */,
+				1602DF91251C1160004D96B2 /* YearMonthDay.swift */,
 				1602DF8A251C062C004D96B2 /* SortedDictionary.swift */,
-				1602DF9D251C12A8004D96B2 /* Shared.h */,
 				1602DF9E251C12A8004D96B2 /* Info.plist */,
 			);
 			path = Shared;
@@ -262,7 +260,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1602DFAD251C12A8004D96B2 /* Shared.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -431,11 +428,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				1602DF68251BC266004D96B2 /* Widget.intentdefinition in Sources */,
-				1602DF92251C1160004D96B2 /* YearMonthDay.swift in Sources */,
 				1602DF42251BC0F7004D96B2 /* AppDelegate.swift in Sources */,
 				1602DF44251BC0F7004D96B2 /* SceneDelegate.swift in Sources */,
 				1602DF46251BC0F7004D96B2 /* ContentView.swift in Sources */,
-				1602DF77251BC4A4004D96B2 /* APODClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -443,9 +438,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1602DF7C251BD1E0004D96B2 /* APODClient.swift in Sources */,
 				1602DF67251BC266004D96B2 /* Widget.intentdefinition in Sources */,
-				1602DF93251C1160004D96B2 /* YearMonthDay.swift in Sources */,
 				1602DF62251BC263004D96B2 /* Widget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -454,7 +447,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1602DFF2251C1579004D96B2 /* YearMonthDay.swift in Sources */,
+				1602DFEA251C1526004D96B2 /* APODEntryView.swift in Sources */,
 				1602DFCA251C12EB004D96B2 /* SortedDictionary.swift in Sources */,
+				1602DFEE251C153C004D96B2 /* APODClient.swift in Sources */,
 				1602DFC6251C12E2004D96B2 /* Utilities.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
