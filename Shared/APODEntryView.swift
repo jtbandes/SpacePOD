@@ -15,7 +15,7 @@ struct PhotoView: View {
 
   var body: some View {
     ZStack() {
-      Color.red.edgesIgnoringSafeArea(.all)
+      Color.black.edgesIgnoringSafeArea(.all)
         .ifLet(image) {
           $0.overlay($1)
         }

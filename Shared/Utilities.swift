@@ -9,10 +9,10 @@ import Foundation
 import Combine
 import SwiftUI
 
-infix operator ??=
-public func ??=<T>(lhs: inout T?, rhs: @autoclosure () -> T?) {
-  lhs = lhs ?? rhs()
-}
+//infix operator ??=
+//public func ??=<T>(lhs: inout T?, rhs: @autoclosure () -> T?) {
+//  lhs = lhs ?? rhs()
+//}
 
 public func with<T>(_ arg: T, _ body: (inout T) -> Void) -> T {
   var result = arg
@@ -45,6 +45,24 @@ public extension Optional {
     }
     fatalError(message(), file: file, line: line)
   }
+
+  // https://forums.swift.org/t/mutating-t-with-a-default-value-or-returning-inout-or-extending-any/40593
+  subscript(withDefault value: @autoclosure () -> Wrapped) -> Wrapped {
+    get {
+      return self ?? value()
+    }
+    set {
+      self = newValue
+    }
+//    _read {
+//      yield self ?? value()
+//    }
+//    _modify {
+//      if self == nil { self = value() }
+//      yield &self!
+//    }
+  }
+
 }
 
 public extension DateComponents {

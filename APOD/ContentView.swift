@@ -27,12 +27,11 @@ extension Publisher {
 class ViewModel: ObservableObject {
   @Published var currentEntry: Loading<Result<APODEntry, Error>> = .notLoading
 
-  private var _cancellable: AnyCancellable?
+  private var cancellable: AnyCancellable?
 
-  func startLoad() {
+  init() {
     currentEntry = .loading
-    _cancellable?.cancel()
-    _cancellable = APODClient.shared.loadLatestImage().sinkResult {
+    cancellable = APODClient.shared.loadLatestImage().sinkResult { [unowned self] in
       self.currentEntry = .loaded($0)
     }
   }
@@ -42,9 +41,6 @@ struct ContentView: View {
   @ObservedObject var viewModel = ViewModel()
 
   var body: some View {
-    Button("Load latest") {
-      viewModel.startLoad()
-    }
     APODEntryView(entry: viewModel.currentEntry)
   }
 }

@@ -100,8 +100,8 @@ public class APODClient {
 
   public func loadLatestImage() -> AnyPublisher<APODEntry, Error> {
     var components = API_URL
-    components.queryItems ??= []
-    components.queryItems!.append(URLQueryItem(name: "date", value: YearMonthDay.current.description))
+    components.queryItems[withDefault: []]
+      .append(URLQueryItem(name: "date", value: YearMonthDay.current.description))
 
     if let lastCached = _cache.last?.value, lastCached.date.isCurrent {
       print("Loaded \(lastCached.date) from cache")

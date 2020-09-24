@@ -61,7 +61,7 @@ struct APODWidget: Widget {
     IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
       WidgetEntryView(entry: entry)
     }
-    .configurationDisplayName("My Widget")
-    .description("This is an example widget.")
+    .configurationDisplayName("Astronomy Photo of the Day")
+    .description("See the latest photo from NASA.")
   }
 }
