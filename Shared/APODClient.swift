@@ -16,7 +16,7 @@ private let CACHE_URL = URL(
   fileURLWithPath: "cache", relativeTo:
     FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.APOD")!)
 
-public struct APODEntry: Decodable {
+public class APODEntry: Decodable {
   public var date: YearMonthDay
   var remoteImageURL: URL
   public var copyright: String?
@@ -30,8 +30,10 @@ public struct APODEntry: Decodable {
   }
 
   var PREVIEW_overrideImage: UIImage?
+  private var _loadedImage: UIImage?
   public func loadImage() -> UIImage? {
-    return PREVIEW_overrideImage ?? UIImage(contentsOfFile: localImageURL.path)
+    _loadedImage = _loadedImage ?? PREVIEW_overrideImage ?? UIImage(contentsOfFile: localImageURL.path)?.decoded()
+    return _loadedImage
   }
 
   enum CodingKeys: String, CodingKey {
@@ -45,7 +47,7 @@ public struct APODEntry: Decodable {
     case title
   }
 
-  public init(from decoder: Decoder) throws {
+  public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     date = try container.decode(YearMonthDay.self, forKey: .date)
     let urlString = try container.decodeIfPresent(String.self, forKey: .hdurl) ?? container.decode(String.self, forKey: .url)
@@ -53,6 +55,21 @@ public struct APODEntry: Decodable {
     copyright = try container.decodeIfPresent(String.self, forKey: .copyright)
     title = try container.decodeIfPresent(String.self, forKey: .title)
   }
+}
+
+func _downloadImageIfNeeded(_ entry: APODEntry) -> AnyPublisher<APODEntry, Error> {
+  if (try? entry.localImageURL.checkResourceIsReachable()) ?? false {
+    return CurrentValueSubject<APODEntry, Error>(entry).eraseToAnyPublisher()
+  }
+
+  print("Downloading image for \(entry.date)")
+  return URLSession.shared.downloadTaskPublisher(for: entry.remoteImageURL)
+    .tryMap { url in
+      try FileManager.default.moveItem(at: url, to: entry.localImageURL)
+      print("Moved downloaded file!")
+      return entry
+    }
+    .eraseToAnyPublisher()
 }
 
 public class APODClient {
@@ -81,21 +98,6 @@ public class APODClient {
     catch let error {
       print("Error loading cache: \(error)")
     }
-  }
-
-  private func _downloadImageIfNeeded(_ entry: APODEntry) -> AnyPublisher<APODEntry, Error> {
-    if (try? entry.localImageURL.checkResourceIsReachable()) ?? false {
-      return CurrentValueSubject<APODEntry, Error>(entry).eraseToAnyPublisher()
-    }
-
-    print("Downloading image for \(entry.date)")
-    return URLSession.shared.downloadTaskPublisher(for: entry.remoteImageURL)
-      .tryMap { url in
-        try FileManager.default.moveItem(at: url, to: entry.localImageURL)
-        print("Moved downloaded file!")
-        return entry
-      }
-      .eraseToAnyPublisher()
   }
 
   public func loadLatestImage() -> AnyPublisher<APODEntry, Error> {

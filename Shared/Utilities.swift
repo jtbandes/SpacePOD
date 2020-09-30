@@ -9,7 +9,7 @@ import Foundation
 import Combine
 import SwiftUI
 
-//infix operator ??=
+//infix operator ??= : AssignmentPrecedence
 //public func ??=<T>(lhs: inout T?, rhs: @autoclosure () -> T?) {
 //  lhs = lhs ?? rhs()
 //}
@@ -162,5 +162,16 @@ extension View {
     } else {
       self
     }
+  }
+}
+
+extension UIImage {
+  func decoded() -> UIImage {
+    UIGraphicsBeginImageContextWithOptions(size, /*opaque*/true, scale)
+    defer {
+      UIGraphicsEndImageContext()
+    }
+    draw(at: .zero)
+    return UIGraphicsGetImageFromCurrentImageContext() ?? self
   }
 }
