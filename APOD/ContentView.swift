@@ -60,10 +60,6 @@ struct ContentView: View {
   func detailsSheet(_ entry: APODEntry) -> some View {
     ScrollView {
       VStack(alignment: .leading) {
-        if let date = entry.date.asDate() {
-          Text(date, style: .date).font(.system(.subheadline)).foregroundColor(.secondary)
-          Spacer().fixedSize()
-        }
         if let title = entry.title {
           Text(title).font(Font.system(.title).weight(.heavy))
         }
@@ -116,7 +112,14 @@ struct ContentView: View {
               .onTapGesture { withAnimation { detailsShown.toggle() } }
           }
         }
-      }.sheet(isPresented: $detailsShown) { detailsSheet(entry) }
+      }.sheet(isPresented: $detailsShown) {
+        NavigationView {
+          detailsSheet(entry)
+            .navigationTitle(entry.date.asDate().map { Text($0, style: .date) } ?? Text(""))
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(trailing: Button("Done") { detailsShown = false })
+        }
+      }
     }
   }
 }
