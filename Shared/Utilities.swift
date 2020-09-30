@@ -163,6 +163,13 @@ extension View {
       self
     }
   }
+
+  public func flexibleFrame(_ flexibleAxis: Axis.Set = [.horizontal, .vertical], alignment: Alignment = .center) -> some View {
+    return frame(
+      maxWidth: flexibleAxis.contains(.horizontal) ? .infinity : nil,
+      maxHeight: flexibleAxis.contains(.vertical) ? .infinity : nil,
+      alignment: alignment)
+  }
 }
 
 extension UIImage {
@@ -173,5 +180,27 @@ extension UIImage {
     }
     draw(at: .zero)
     return UIGraphicsGetImageFromCurrentImageContext() ?? self
+  }
+}
+
+extension AnyTransition {
+  public static func animatableModifier<Body: View>(_ modifier: @escaping (AnyAnimatableModifier.Content, CGFloat) -> Body) -> AnyTransition {
+    return .modifier(active: AnyAnimatableModifier(modifier, 1), identity: AnyAnimatableModifier(modifier, 0))
+  }
+}
+
+public struct AnyAnimatableModifier: AnimatableModifier {
+  public typealias AnimatableData = CGFloat
+  public var animatableData: CGFloat
+
+  private var modifier: (Content, CGFloat) -> AnyView
+
+  public init<Body: View>(_ modifier: @escaping (Content, CGFloat) -> Body, _ animatableData: CGFloat) {
+    self.animatableData = animatableData
+    self.modifier = { AnyView(modifier($0, $1)) }
+  }
+
+  public func body(content: Content) -> some View {
+    return modifier(content, animatableData)
   }
 }

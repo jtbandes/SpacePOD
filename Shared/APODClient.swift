@@ -21,6 +21,7 @@ public class APODEntry: Decodable {
   var remoteImageURL: URL
   public var copyright: String?
   public var title: String?
+  public var explanation: String?
 
   var localDataURL: URL {
     CACHE_URL.appendingPathComponent(date.description).appendingPathExtension(DATA_PATH_EXTENSION)
@@ -54,6 +55,7 @@ public class APODEntry: Decodable {
     remoteImageURL = try URL(string: urlString).orThrow(APODErrors.invalidURL(urlString))
     copyright = try container.decodeIfPresent(String.self, forKey: .copyright)
     title = try container.decodeIfPresent(String.self, forKey: .title)
+    explanation = try container.decodeIfPresent(String.self, forKey: .explanation)
   }
 }
 

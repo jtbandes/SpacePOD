@@ -39,7 +39,47 @@ class ViewModel: ObservableObject {
 
 struct ContentView: View {
   @ObservedObject var viewModel = ViewModel()
-  @State var detailsShown = true
+  @State var titleShown = true
+  @State var detailsShown = false
+
+  @ViewBuilder
+  func titleContent(_ entry: APODEntry) -> some View {
+    VStack(alignment: .leading) {
+      if let date = entry.date.asDate() {
+        Text(date, style: .date).font(.system(.caption)).foregroundColor(.secondary)
+      }
+      if let title = entry.title {
+        Text(title).font(.system(.headline))
+      }
+      if let copyright = entry.copyright {
+        Text(copyright).font(.system(.subheadline)).foregroundColor(.secondary)
+      }
+    }
+  }
+
+  func detailsSheet(_ entry: APODEntry) -> some View {
+    ScrollView {
+      VStack(alignment: .leading) {
+        if let date = entry.date.asDate() {
+          Text(date, style: .date).font(.system(.subheadline)).foregroundColor(.secondary)
+          Spacer().fixedSize()
+        }
+        if let title = entry.title {
+          Text(title).font(Font.system(.title).weight(.heavy))
+        }
+        if let copyright = entry.copyright {
+          Text(copyright).font(.system(.callout)).foregroundColor(.secondary)
+        }
+        Spacer().frame(height: 24)
+        if let explanation = entry.explanation {
+          Text(explanation).font(.system(.body, design: .serif))
+        } else {
+          Text("No details available").foregroundColor(.secondary).flexibleFrame(alignment: .center)
+        }
+      }.padding()
+      .flexibleFrame(alignment: .topLeading)
+    }
+  }
 
   var body: some View {
     switch viewModel.currentEntry {
@@ -55,32 +95,28 @@ struct ContentView: View {
 
     case .loaded(.success(let entry)):
       ZStack(alignment: .leading) {
-        if let image = entry.loadImage() {
-          ZoomableScrollView {
-            Image(uiImage: image)
+        Group {
+          if let image = entry.loadImage() {
+            ZoomableScrollView {
+              Image(uiImage: image)
+            }
+          } else {
+            APODEntryView.failureImage
           }
-        } else {
-          APODEntryView.failureImage
-        }
+        }.onTapGesture { withAnimation { titleShown.toggle() } }
 
         VStack(alignment: .leading) {
           Spacer()
-          if detailsShown {
-            Group {
-              if let title = entry.title {
-                Text(title).font(.system(.headline))
-              }
-              if let copyright = entry.copyright {
-                Text(copyright).font(.system(.subheadline))
-              }
-            }.transition(.move(edge: .bottom))
+          if titleShown {
+            titleContent(entry)
+              .flexibleFrame(.horizontal, alignment: .leading)
+              .padding()
+              .contentShape(Rectangle())
+              .shadow(color: .black, radius: 2, x: 0.0, y: 0.0)
+              .onTapGesture { withAnimation { detailsShown.toggle() } }
           }
         }
-      }.onTapGesture {
-        withAnimation {
-          detailsShown.toggle()
-        }
-      }
+      }.sheet(isPresented: $detailsShown) { detailsSheet(entry) }
     }
   }
 }

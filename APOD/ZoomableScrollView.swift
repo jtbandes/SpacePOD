@@ -106,8 +106,6 @@ struct ZoomableScrollView<Content: View>: UIViewControllerRepresentable {
 
     private var hostedView: UIView { coordinator.hostingController.view! }
 
-    private var hasZoomed = false
-
     private var contentSizeConstraints: [NSLayoutConstraint] = [] {
       willSet { NSLayoutConstraint.deactivate(contentSizeConstraints) }
       didSet { NSLayoutConstraint.activate(contentSizeConstraints) }
@@ -157,6 +155,10 @@ struct ZoomableScrollView<Content: View>: UIViewControllerRepresentable {
       ]
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+      scrollView.zoom(to: hostedView.bounds, animated: false)
+    }
+
     override func viewDidLayoutSubviews() {
       super.viewDidLayoutSubviews()
 
@@ -164,20 +166,6 @@ struct ZoomableScrollView<Content: View>: UIViewControllerRepresentable {
       scrollView.minimumZoomScale = min(
         scrollView.bounds.width / hostedContentSize.width,
         scrollView.bounds.height / hostedContentSize.height)
-
-      initialZoomIfNeeded()
-    }
-
-    func initialZoomIfNeeded() {
-      if !hasZoomed {
-        print("Initial zoom to \(hostedView.frame): \(scrollView.minimumZoomScale)")
-        scrollView.zoom(to: hostedView.bounds, animated: false)
-        print(scrollView)
-      }
-    }
-
-    func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-      hasZoomed = true
     }
 
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
