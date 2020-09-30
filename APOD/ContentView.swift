@@ -39,14 +39,55 @@ class ViewModel: ObservableObject {
 
 struct ContentView: View {
   @ObservedObject var viewModel = ViewModel()
+  @State var detailsShown = true
 
   var body: some View {
-    APODEntryView(entry: viewModel.currentEntry)
+    switch viewModel.currentEntry {
+
+    case .notLoading:
+      Text("Not loading")
+
+    case .loading:
+      Text("Loading")
+
+    case .loaded(.failure(let error)):
+      Text(verbatim: "Error: \(error)")
+
+    case .loaded(.success(let entry)):
+      ZStack(alignment: .leading) {
+        if let image = entry.loadImage() {
+          ZoomableScrollView {
+            Image(uiImage: image)
+          }
+        } else {
+          APODEntryView.failureImage
+        }
+
+        VStack(alignment: .leading) {
+          Spacer()
+          if detailsShown {
+            Group {
+              if let title = entry.title {
+                Text(title).font(.system(.headline))
+              }
+              if let copyright = entry.copyright {
+                Text(copyright).font(.system(.subheadline))
+              }
+            }.transition(.move(edge: .bottom))
+          }
+        }
+      }.onTapGesture {
+        withAnimation {
+          detailsShown.toggle()
+        }
+      }
+    }
   }
 }
 
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
-    ContentView().previewLayout(.fixed(width: 300, height: 400))
+    ContentView()
+      .previewLayout(.fixed(width: 300, height: 400))
   }
 }

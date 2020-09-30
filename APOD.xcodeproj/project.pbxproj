@@ -32,6 +32,8 @@
 		1602E00A251C448A004D96B2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF4A251BC0F8004D96B2 /* Preview Assets.xcassets */; };
 		1625BF6E251C46A20004BB61 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF4A251BC0F8004D96B2 /* Preview Assets.xcassets */; };
 		1625BF72251C46A20004BB61 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF4A251BC0F8004D96B2 /* Preview Assets.xcassets */; };
+		16AEE9FF25229D4600A2D094 /* ZoomableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEE9FE25229D4600A2D094 /* ZoomableScrollView.swift */; };
+		16AEEA1C252425BC00A2D094 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEEA1B252425BA00A2D094 /* Utilities.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -125,6 +127,8 @@
 		1602DFAA251C12A8004D96B2 /* SharedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTests.swift; sourceTree = "<group>"; };
 		1602DFAC251C12A8004D96B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1602DFE9251C1526004D96B2 /* APODEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APODEntryView.swift; sourceTree = "<group>"; };
+		16AEE9FE25229D4600A2D094 /* ZoomableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomableScrollView.swift; sourceTree = "<group>"; };
+		16AEEA1B252425BA00A2D094 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -199,6 +203,8 @@
 				1602DF4F251BC0F8004D96B2 /* Info.plist */,
 				1602DF4C251BC0F8004D96B2 /* LaunchScreen.storyboard */,
 				1602DF43251BC0F7004D96B2 /* SceneDelegate.swift */,
+				16AEE9FE25229D4600A2D094 /* ZoomableScrollView.swift */,
+				16AEEA1B252425BA00A2D094 /* Utilities.swift */,
 			);
 			path = APOD;
 			sourceTree = "<group>";
@@ -431,6 +437,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16AEEA1C252425BC00A2D094 /* Utilities.swift in Sources */,
+				16AEE9FF25229D4600A2D094 /* ZoomableScrollView.swift in Sources */,
 				1602DF68251BC266004D96B2 /* Widget.intentdefinition in Sources */,
 				1602DF42251BC0F7004D96B2 /* AppDelegate.swift in Sources */,
 				1602DF44251BC0F7004D96B2 /* SceneDelegate.swift in Sources */,

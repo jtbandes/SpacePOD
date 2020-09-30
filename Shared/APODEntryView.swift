@@ -8,14 +8,8 @@
 import SwiftUI
 import struct WidgetKit.WidgetPreviewContext
 
-extension DateFormatter {
-  static let monthDay = with(DateFormatter()) {
-    $0.setLocalizedDateFormatFromTemplate("MMM dd")
-  }
-}
-
 struct PhotoView: View {
-  let date: Date
+  let date: Date?
   let image: AnyView?
   let caption: String?
   let copyright: String?
@@ -29,14 +23,18 @@ struct PhotoView: View {
 
       HStack {
         VStack(alignment: .leading, spacing: 4) {
-          HStack {
-            Spacer()
-            Text(date, formatter: DateFormatter.monthDay)
-              .font(.caption2)
+          if let date = date {
+            HStack {
+              Spacer()
+              Text(date, formatter: DateFormatter.monthDay)
+                .font(.caption2)
+            }
           }
           Spacer()
           if let caption = caption {
-            Text(caption).font(.system(.footnote)).bold().lineSpacing(-4)
+            Text(caption).font(.system(.footnote))
+              .bold()
+              .lineSpacing(-4)
           }
           if let copyright = copyright {
             Text(copyright).font(.system(.caption2))
@@ -62,37 +60,46 @@ public struct APODEntryView: View {
     self.entry = .loaded(.success(entry))
   }
 
+  public/*FIXME*/ static let failureImage = AnyView(
+    Image(systemName: "exclamationmark.triangle")
+      .font(.system(size: 64, weight: .ultraLight))
+      .foregroundColor(Color(.sRGB, white: 0.5)))
+
   public var body: some View {
     switch entry {
     case .notLoading:
-      Group {}
+      PhotoView(
+        date: Date(),
+        image: nil,
+        caption: "A loading image",
+        copyright: "Person Name")
+        .redacted(reason: .placeholder)
 
     case .loading:
-      Color.black
-        .overlay(ProgressView())
-        .colorScheme(.dark)
+      PhotoView(
+        date: Date(),
+        image: AnyView(ProgressView().colorScheme(.dark)),
+        caption: "A loading image",
+        copyright: "Person Name")
+        .redacted(reason: .placeholder)
 
     case .loaded(.failure(let error)):
-      Group {}
+      PhotoView(
+        date: nil,
+        image: APODEntryView.failureImage,
+        caption: "Couldn‘t load image",
+        copyright: nil)
 
     case .loaded(.success(let entry)):
-      if let image = entry.loadImage() {
-        PhotoView(
-          date: entry.date.asDate()!,
-          image: AnyView(Image(uiImage: image).resizable().aspectRatio(contentMode: .fill)),
-          caption: entry.title,
-          copyright: entry.copyright)
-      } else {
-        ZStack {
-          Color.black.edgesIgnoringSafeArea(.all)
-          VStack(spacing: 8) {
-            Image(systemName: "exclamationmark.triangle")
-              .font(.system(size: 64, weight: .ultraLight))
-            Text("Couldn‘t load image")
-              .font(.footnote)
-          }.foregroundColor(.gray)
-        }
-      }
+      let image = entry.loadImage().map {
+        AnyView(Image(uiImage: $0).resizable().aspectRatio(contentMode: .fill))
+      } ?? APODEntryView.failureImage
+
+      PhotoView(
+        date: entry.date.asDate()!,
+        image: image,
+        caption: entry.title,
+        copyright: entry.copyright)
     }
   }
 }
@@ -135,23 +142,14 @@ struct APODEntryView_Previews: PreviewProvider {
       .previewContext(WidgetPreviewContext(family: .systemMedium))
 
     APODEntryView(
-      entry: (try! JSONDecoder().decode(APODEntry.self, from: previewJSON)))
-      .redacted(reason: .placeholder)
-      .previewContext(WidgetPreviewContext(family: .systemMedium))
-
-    APODEntryView(
       entry: .notLoading)
-      .redacted(reason: .placeholder)
       .previewLayout(.fixed(width: 200, height: 200))
 
-    APODEntryView(
-      entry: .loading)
-      .redacted(reason: .placeholder)
+    APODEntryView(entry: .loading)
       .previewLayout(.fixed(width: 200, height: 200))
 
     APODEntryView(
       entry: .loaded(.failure(URLError(.badServerResponse))))
-      .redacted(reason: .placeholder)
       .previewLayout(.fixed(width: 200, height: 200))
   }
 }

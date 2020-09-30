@@ -53,3 +53,9 @@ extension SortedDictionary: Collection {
     return (key, _dict[key]!)
   }
 }
+
+extension SortedDictionary: CustomDebugStringConvertible {
+  public var debugDescription: String {
+    "\(Self.self)(\(count)) {\n" + self.map { "\t- [\(reflecting: $0.key)]: \(reflecting: $0.value)" }.joined(separator: "\n") + "\n}"
+  }
+}

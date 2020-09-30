@@ -19,6 +19,15 @@ public func with<T>(_ arg: T, _ body: (inout T) -> Void) -> T {
   body(&result)
   return result
 }
+public func mutate<T>(_ arg: inout T, _ body: (inout T) -> Void) {
+  body(&arg)
+}
+
+extension DefaultStringInterpolation {
+  mutating func appendInterpolation(reflecting value: Any) {
+    appendInterpolation(String(reflecting: value))
+  }
+}
 
 public enum Loading<T> {
   case notLoading
@@ -75,6 +84,12 @@ public extension DateComponents {
       throw APODErrors.invalidDate(string)
     }
     self = DateComponents(year: year, month: month, day: day)
+  }
+}
+
+extension DateFormatter {
+  static let monthDay = with(DateFormatter()) {
+    $0.setLocalizedDateFormatFromTemplate("MMM dd")
   }
 }
 

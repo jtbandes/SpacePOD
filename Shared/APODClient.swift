@@ -30,7 +30,7 @@ public struct APODEntry: Decodable {
   }
 
   var PREVIEW_overrideImage: UIImage?
-  func loadImage() -> UIImage? {
+  public func loadImage() -> UIImage? {
     return PREVIEW_overrideImage ?? UIImage(contentsOfFile: localImageURL.path)
   }
 
@@ -99,14 +99,14 @@ public class APODClient {
   }
 
   public func loadLatestImage() -> AnyPublisher<APODEntry, Error> {
-    var components = API_URL
-    components.queryItems[withDefault: []]
-      .append(URLQueryItem(name: "date", value: YearMonthDay.current.description))
-
     if let lastCached = _cache.last?.value, lastCached.date.isCurrent {
       print("Loaded \(lastCached.date) from cache")
       return CurrentValueSubject(lastCached).eraseToAnyPublisher()
     }
+
+    var components = API_URL
+    components.queryItems[withDefault: []]
+      .append(URLQueryItem(name: "date", value: YearMonthDay.current.description))
 
     return URLSession.shared.dataTaskPublisher(for: components.url.orFatalError("Failed to build API URL"))
       .tryMap() { (data, response) in
