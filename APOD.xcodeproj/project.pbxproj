@@ -127,6 +127,7 @@
 		1602DFAA251C12A8004D96B2 /* SharedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTests.swift; sourceTree = "<group>"; };
 		1602DFAC251C12A8004D96B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1602DFE9251C1526004D96B2 /* APODEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APODEntryView.swift; sourceTree = "<group>"; };
+		16622E852525786900C86A6F /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		16AEE9FE25229D4600A2D094 /* ZoomableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomableScrollView.swift; sourceTree = "<group>"; };
 		16AEEA1B252425BA00A2D094 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -247,6 +248,7 @@
 				1602DF83251BEA99004D96B2 /* Utilities.swift */,
 				1602DF91251C1160004D96B2 /* YearMonthDay.swift */,
 				1602DF8A251C062C004D96B2 /* SortedDictionary.swift */,
+				16622E852525786900C86A6F /* Config.xcconfig */,
 				1602DF9E251C12A8004D96B2 /* Info.plist */,
 			);
 			path = Shared;
@@ -727,6 +729,7 @@
 		};
 		1602DFB3251C12A8004D96B2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 16622E852525786900C86A6F /* Config.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -756,6 +759,7 @@
 		};
 		1602DFB4251C12A8004D96B2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 16622E852525786900C86A6F /* Config.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_STYLE = Automatic;

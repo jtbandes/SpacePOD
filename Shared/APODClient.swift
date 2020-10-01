@@ -9,7 +9,14 @@ import Foundation
 import Combine
 import UIKit
 
-private let API_URL = URLComponents(string: "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY")!
+func getAPIKey() -> String {
+  if let key = Bundle(for: APODEntry.self).object(forInfoDictionaryKey: "NASA_API_KEY") as? String, !key.isEmpty {
+    return key
+  }
+  return "DEMO_KEY"
+}
+
+private let API_URL = URLComponents(string: "https://api.nasa.gov/planetary/apod?api_key=\(getAPIKey())")!
 private let DATA_PATH_EXTENSION = "json"
 
 private let CACHE_URL = URL(

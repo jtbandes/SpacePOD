@@ -1,0 +1,14 @@
+//
+//  Config.xcconfig
+//  APODShared
+//
+//  Created by Jacob Bandes-Storch on 9/30/20.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+// Storing secrets in xcconfig (or in the client at all) is a bad practice:
+// https://nshipster.com/secrets/
+// But it's also really easy.
+#include? "Secrets.xcconfig"
