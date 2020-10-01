@@ -104,12 +104,17 @@ struct ContentView: View {
         VStack(alignment: .leading) {
           Spacer()
           if titleShown {
-            titleContent(entry)
-              .flexibleFrame(.horizontal, alignment: .leading)
-              .padding()
-              .contentShape(Rectangle())
-              .shadow(color: .black, radius: 2, x: 0.0, y: 0.0)
-              .onTapGesture { withAnimation { detailsShown.toggle() } }
+            Button {
+              withAnimation { detailsShown.toggle() }
+            } label: {
+              titleContent(entry)
+                .flexibleFrame(.horizontal, alignment: .leading)
+                .padding()
+                .contentShape(Rectangle())
+                .shadow(color: .black, radius: 2, x: 0.0, y: 0.0)
+            }
+            .foregroundColor(.primary)
+            .accessibilityHint("Show details")
           }
         }
       }.sheet(isPresented: $detailsShown) {
