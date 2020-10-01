@@ -29,6 +29,7 @@ public class APODEntry: Decodable {
   public var copyright: String?
   public var title: String?
   public var explanation: String?
+  public var mediaType: MediaType
 
   var localDataURL: URL {
     CACHE_URL.appendingPathComponent(date.description).appendingPathExtension(DATA_PATH_EXTENSION)
@@ -42,6 +43,22 @@ public class APODEntry: Decodable {
   public func loadImage() -> UIImage? {
     _loadedImage = _loadedImage ?? PREVIEW_overrideImage ?? UIImage(contentsOfFile: localImageURL.path)?.decoded()
     return _loadedImage
+  }
+
+  public enum MediaType {
+    case image
+    case video
+    case unknown(String?)
+
+    init(rawValue: String?) {
+      if rawValue == "image" {
+        self = .image
+      } else if rawValue == "video" {
+        self = .video
+      } else {
+        self = .unknown(rawValue)
+      }
+    }
   }
 
   enum CodingKeys: String, CodingKey {
@@ -63,6 +80,7 @@ public class APODEntry: Decodable {
     copyright = try container.decodeIfPresent(String.self, forKey: .copyright)
     title = try container.decodeIfPresent(String.self, forKey: .title)
     explanation = try container.decodeIfPresent(String.self, forKey: .explanation)
+    mediaType = MediaType(rawValue: try container.decodeIfPresent(String.self, forKey: .media_type))
   }
 }
 
