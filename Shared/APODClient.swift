@@ -61,7 +61,7 @@ public class APODEntry: Decodable {
 
 func _downloadImageIfNeeded(_ entry: APODEntry) -> AnyPublisher<APODEntry, Error> {
   if (try? entry.localImageURL.checkResourceIsReachable()) ?? false {
-    return CurrentValueSubject<APODEntry, Error>(entry).eraseToAnyPublisher()
+    return Just(entry).mapError { SR_13638 -> Error in }.eraseToAnyPublisher()
   }
 
   print("Downloading image for \(entry.date)")
@@ -105,7 +105,7 @@ public class APODClient {
   public func loadLatestImage() -> AnyPublisher<APODEntry, Error> {
     if let lastCached = _cache.last?.value, lastCached.date.isCurrent {
       print("Loaded \(lastCached.date) from cache")
-      return CurrentValueSubject(lastCached).eraseToAnyPublisher()
+      return Just(lastCached).mapError { SR_13638 -> Error in }.eraseToAnyPublisher()
     }
 
     var components = API_URL
