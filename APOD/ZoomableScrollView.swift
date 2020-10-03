@@ -9,59 +9,6 @@ import SwiftUI
 import Combine
 import APODShared
 
-struct ZoomableScrollView2<Content: View>: UIViewRepresentable {
-  private var content: Content
-
-  init(@ViewBuilder content: () -> Content) {
-    self.content = content()
-  }
-
-  func makeUIView(context: Context) -> UIScrollView {
-    let scrollView = UIScrollView()
-    scrollView.delegate = context.coordinator  // for viewForZooming(in:)
-    scrollView.maximumZoomScale = 10
-    scrollView.minimumZoomScale = 1
-    scrollView.bouncesZoom = true
-    scrollView.showsHorizontalScrollIndicator = false
-    scrollView.showsVerticalScrollIndicator = false
-
-    let hostedView = context.coordinator.hostingController.view!
-    scrollView.contentSize = context.coordinator.hostingController.sizeThatFits(in: UIScreen.main.bounds.size)
-    scrollView.addSubview(hostedView)
-    scrollView.addConstraints([
-      hostedView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-      hostedView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-      hostedView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-      hostedView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-    ])
-
-    return scrollView
-  }
-
-  func makeCoordinator() -> Coordinator {
-    return Coordinator(hostingController: UIHostingController(rootView: self.content))
-  }
-
-  func updateUIView(_ uiView: UIScrollView, context: Context) {
-    context.coordinator.hostingController.rootView = self.content
-    assert(context.coordinator.hostingController.view.superview == uiView)
-  }
-
-  // MARK: - Coordinator
-
-  class Coordinator: NSObject, UIScrollViewDelegate {
-    var hostingController: UIHostingController<Content>
-
-    init(hostingController: UIHostingController<Content>) {
-      self.hostingController = hostingController
-    }
-
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-      return hostingController.view
-    }
-  }
-}
-
 class CenteringScrollView: UIScrollView {
   func centerContent() {
     assert(subviews.count == 1)
