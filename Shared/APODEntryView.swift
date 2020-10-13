@@ -83,7 +83,7 @@ public struct APODEntryView: View {
         copyright: "Person Name")
         .redacted(reason: .placeholder)
 
-    case .loaded(.failure(let error)):
+    case .loaded(.failure):
       PhotoView(
         date: nil,
         image: APODEntryView.failureImage,
@@ -92,7 +92,22 @@ public struct APODEntryView: View {
 
     case .loaded(.success(let entry)):
       let image = entry.loadImage().map {
-        AnyView(Image(uiImage: $0).resizable().aspectRatio(contentMode: .fill))
+        let image = Image(uiImage: $0).resizable().aspectRatio(contentMode: .fill)
+        if case .youtubeVideo = entry.asset {
+          // FIXME: it might be nicer to switch at the top level, removing loadImage(), so we can't forget to handle videos separately elsewhere
+          return image
+            .overlay(
+              ZStack {
+                Color.gray
+                image.opacity(0.8)
+              }
+              .blur(radius: 4)
+              .brightness(0.2)
+              .mask(Image(systemName: "play.circle.fill").font(.system(size: 40)).compositingGroup())
+            )
+            .eraseToAnyView()
+        }
+        return image.eraseToAnyView()
       } ?? APODEntryView.failureImage
 
       PhotoView(
@@ -118,9 +133,20 @@ struct APODEntryView_Previews: PreviewProvider {
   "url": "https://apod.nasa.gov/apod/image/2009/m31abtpmoon1024.jpg"
 }
 """.data(using: .utf8)!
+    let videoPreviewJSON = """
+{
+  "copyright": "Adam Block",
+  "date": "2020-09-25",
+  "explanation": "...",
+  "media_type": "video",
+  "service_version": "v1",
+  "title": "Moon over Andromeda",
+  "url": "https://www.youtube.com/embed/fbEcHDfi-vM?rel=0"
+}
+""".data(using: .utf8)!
 
     APODEntryView(
-      entry: with(try! JSONDecoder().decode(APODEntry.self, from: previewJSON)) {
+      entry: with(try! JSONDecoder().decode(APODEntry.self, from: videoPreviewJSON)) {
         $0.PREVIEW_overrideImage = #imageLiteral(resourceName: "sampleImage")
       })
       .previewContext(WidgetPreviewContext(family: .systemSmall))

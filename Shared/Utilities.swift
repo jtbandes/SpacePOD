@@ -41,6 +41,8 @@ public enum APODErrors: Error {
   case missingURL
   case emptyResponse
   case failureResponse(statusCode: Int)
+  case invalidYouTubeVideo(String)
+  case invalidImage
 }
 
 public extension Optional {
@@ -75,6 +77,12 @@ public extension Optional {
 //    }
   }
 
+  func asResult<E>(ifNil makeError: @autoclosure () -> E) -> Result<Wrapped, E> {
+    if let self = self {
+      return .success(self)
+    }
+    return .failure(makeError())
+  }
 }
 
 public extension DateComponents {
@@ -172,6 +180,10 @@ extension View {
       maxWidth: flexibleAxis.contains(.horizontal) ? .infinity : nil,
       maxHeight: flexibleAxis.contains(.vertical) ? .infinity : nil,
       alignment: alignment)
+  }
+
+  public func eraseToAnyView() -> AnyView {
+    return AnyView(self)
   }
 }
 

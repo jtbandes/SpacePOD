@@ -23,6 +23,48 @@ private let CACHE_URL = URL(
   fileURLWithPath: "cache", relativeTo:
     FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.APOD")!)
 
+let youtubeRegex = try! NSRegularExpression(pattern: #"://.*youtube\.com/embed/([^/?#]+)"#)
+
+public enum Asset {
+  case image(URL)
+  case youtubeVideo(id: String, url: URL)
+  case unknown(URL)
+
+  init(mediaType: String, url: URL) {
+    switch mediaType {
+    case "image":
+      self = .image(url)
+
+    case "video":
+      let str = url.absoluteString
+      if let match = youtubeRegex.firstMatch(in: str, range: NSRange(str.startIndex..<str.endIndex, in: str)),
+         let range = Range(match.range(at: 1), in: str) {
+        self = .youtubeVideo(id: String(str[range]), url: url)
+      } else {
+        self = .unknown(url)
+      }
+
+    default:
+      self = .unknown(url)
+    }
+  }
+
+  var imageOrThumbnailURL: Result<URL, Error> {
+    switch self {
+    case .image(let url):
+      return .success(url)
+
+    case .youtubeVideo(let id, _):
+      // https://stackoverflow.com/q/2068344/23649
+      return URL(string: "https://img.youtube.com/vi/\(id)/0.jpg")
+        .asResult(ifNil: APODErrors.invalidYouTubeVideo(id))
+
+    case .unknown:
+      return .failure(APODErrors.missingURL)
+    }
+  }
+}
+
 public class APODEntry: Codable {
   private let rawEntry: RawAPODEntry
 
@@ -31,9 +73,9 @@ public class APODEntry: Codable {
   public var copyright: String? { rawEntry.copyright }
   public var explanation: String? { rawEntry.explanation }
 
+  public let asset: Asset
   public let localDataURL: URL
   public let localImageURL: URL
-  public let remoteImageURL: URL
 
   var PREVIEW_overrideImage: UIImage?
   private var _loadedImage: UIImage?
@@ -47,13 +89,16 @@ public class APODEntry: Codable {
     localDataURL = CACHE_URL.appendingPathComponent(rawEntry.date.description).appendingPathExtension(DATA_PATH_EXTENSION)
     localImageURL = CACHE_URL.appendingPathComponent(rawEntry.date.description)
 
+    let mediaURL: URL
     if let hdurl = rawEntry.hdurl {
-      remoteImageURL = hdurl
+      mediaURL = hdurl
     } else if let url = rawEntry.url {
-      remoteImageURL = url
+      mediaURL = url
     } else {
       throw APODErrors.missingURL
     }
+
+    asset = Asset(mediaType: rawEntry.mediaType, url: mediaURL)
   }
 
   public func encode(to encoder: Encoder) throws {
@@ -68,7 +113,7 @@ struct RawAPODEntry: Codable {
   var title: String?
   var copyright: String?
   var explanation: String?
-  var mediaType: String?
+  var mediaType: String
 
   enum CodingKeys: String, CodingKey {
     case copyright
@@ -83,12 +128,17 @@ struct RawAPODEntry: Codable {
 
 func _downloadImageIfNeeded(_ entry: APODEntry) -> AnyPublisher<APODEntry, Error> {
   if (try? entry.localImageURL.checkResourceIsReachable()) ?? false {
-    return Just(entry).mapError { SR_13638 -> Error in }.eraseToAnyPublisher()
+    return Result.success(entry).publisher.eraseToAnyPublisher()
   }
 
   print("Downloading image for \(entry.date)")
-  return URLSession.shared.downloadTaskPublisher(for: entry.remoteImageURL)
+  return entry.asset.imageOrThumbnailURL.publisher
+    .flatMap(URLSession.shared.downloadTaskPublisher(for:))
     .tryMap { url in
+      // Ensure the image is parseable before saving it in the cache
+      guard UIImage(contentsOfFile: url.path) != nil else {
+        throw APODErrors.invalidImage
+      }
       print("Trying to move \(url) to \(entry.localImageURL)")
       do {
         try FileManager.default.moveItem(at: url, to: entry.localImageURL)
@@ -113,6 +163,10 @@ public class APODClient {
 
   private var _cache = SortedDictionary<YearMonthDay, APODEntry>()
 
+  fileprivate func _clearCache() throws {
+    try FileManager.default.removeItem(at: CACHE_URL)
+  }
+
   private init() {
     do {
       try FileManager.default.createDirectory(at: CACHE_URL, withIntermediateDirectories: true)
@@ -120,6 +174,7 @@ public class APODClient {
         do {
           let data = try Data(contentsOf: url)
           let entry = try JSONDecoder().decode(APODEntry.self, from: data)
+          print(entry.localImageURL)
           if (try? entry.localImageURL.checkResourceIsReachable()) ?? false {
             _cache[entry.date] = entry
           }
@@ -137,7 +192,7 @@ public class APODClient {
   public func loadLatestImage() -> AnyPublisher<APODEntry, Error> {
     if let lastCached = _cache.last?.value, lastCached.date.isCurrent {
       print("Loaded \(lastCached.date) from cache")
-      return Just(lastCached).mapError { SR_13638 -> Error in }.eraseToAnyPublisher()
+      return Result.success(lastCached).publisher.eraseToAnyPublisher()
     }
 
     var components = API_URL
