@@ -38,14 +38,17 @@ public enum Loading<T> {
 public enum APODErrors: Error {
   case invalidDate(String)
   case invalidURL(String)
+  case missingURL
+  case emptyResponse
+  case failureResponse(statusCode: Int)
 }
 
 public extension Optional {
-  func orThrow(_ error: Error) throws -> Wrapped {
+  func orThrow(_ error: @autoclosure () -> Error) throws -> Wrapped {
     if let self = self {
       return self
     }
-    throw error
+    throw error()
   }
 
   func orFatalError(_ message: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line) -> Wrapped {

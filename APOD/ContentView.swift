@@ -97,7 +97,7 @@ struct ContentView: View {
               Image(uiImage: image)
             }
           } else {
-            APODEntryView.failureImage
+            APODEntryView.failureImage.flexibleFrame()
           }
         }.onTapGesture { withAnimation { titleShown.toggle() } }
 

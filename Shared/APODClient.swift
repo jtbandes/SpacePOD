@@ -23,20 +23,17 @@ private let CACHE_URL = URL(
   fileURLWithPath: "cache", relativeTo:
     FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.APOD")!)
 
-public class APODEntry: Decodable {
-  public var date: YearMonthDay
-  var remoteImageURL: URL
-  public var copyright: String?
-  public var title: String?
-  public var explanation: String?
-  public var mediaType: MediaType
+public class APODEntry: Codable {
+  private let rawEntry: RawAPODEntry
 
-  var localDataURL: URL {
-    CACHE_URL.appendingPathComponent(date.description).appendingPathExtension(DATA_PATH_EXTENSION)
-  }
-  var localImageURL: URL {
-    CACHE_URL.appendingPathComponent(date.description)
-  }
+  public var date: YearMonthDay { rawEntry.date }
+  public var title: String? { rawEntry.title }
+  public var copyright: String? { rawEntry.copyright }
+  public var explanation: String? { rawEntry.explanation }
+
+  public let localDataURL: URL
+  public let localImageURL: URL
+  public let remoteImageURL: URL
 
   var PREVIEW_overrideImage: UIImage?
   private var _loadedImage: UIImage?
@@ -45,21 +42,33 @@ public class APODEntry: Decodable {
     return _loadedImage
   }
 
-  public enum MediaType {
-    case image
-    case video
-    case unknown(String?)
+  public required init(from decoder: Decoder) throws {
+    rawEntry = try RawAPODEntry(from: decoder)
+    localDataURL = CACHE_URL.appendingPathComponent(rawEntry.date.description).appendingPathExtension(DATA_PATH_EXTENSION)
+    localImageURL = CACHE_URL.appendingPathComponent(rawEntry.date.description)
 
-    init(rawValue: String?) {
-      if rawValue == "image" {
-        self = .image
-      } else if rawValue == "video" {
-        self = .video
-      } else {
-        self = .unknown(rawValue)
-      }
+    if let hdurl = rawEntry.hdurl {
+      remoteImageURL = hdurl
+    } else if let url = rawEntry.url {
+      remoteImageURL = url
+    } else {
+      throw APODErrors.missingURL
     }
   }
+
+  public func encode(to encoder: Encoder) throws {
+    try rawEntry.encode(to: encoder)
+  }
+}
+
+struct RawAPODEntry: Codable {
+  var date: YearMonthDay
+  var hdurl: URL?
+  var url: URL?
+  var title: String?
+  var copyright: String?
+  var explanation: String?
+  var mediaType: String?
 
   enum CodingKeys: String, CodingKey {
     case copyright
@@ -67,20 +76,8 @@ public class APODEntry: Decodable {
     case explanation
     case hdurl
     case url
-    case media_type
-    case service_version
+    case mediaType = "media_type"
     case title
-  }
-
-  public required init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: CodingKeys.self)
-    date = try container.decode(YearMonthDay.self, forKey: .date)
-    let urlString = try container.decodeIfPresent(String.self, forKey: .hdurl) ?? container.decode(String.self, forKey: .url)
-    remoteImageURL = try URL(string: urlString).orThrow(APODErrors.invalidURL(urlString))
-    copyright = try container.decodeIfPresent(String.self, forKey: .copyright)
-    title = try container.decodeIfPresent(String.self, forKey: .title)
-    explanation = try container.decodeIfPresent(String.self, forKey: .explanation)
-    mediaType = MediaType(rawValue: try container.decodeIfPresent(String.self, forKey: .media_type))
   }
 }
 
@@ -92,7 +89,18 @@ func _downloadImageIfNeeded(_ entry: APODEntry) -> AnyPublisher<APODEntry, Error
   print("Downloading image for \(entry.date)")
   return URLSession.shared.downloadTaskPublisher(for: entry.remoteImageURL)
     .tryMap { url in
-      try FileManager.default.moveItem(at: url, to: entry.localImageURL)
+      print("Trying to move \(url) to \(entry.localImageURL)")
+      do {
+        try FileManager.default.moveItem(at: url, to: entry.localImageURL)
+      } catch {
+        if (try? entry.localImageURL.checkResourceIsReachable()) ?? false {
+          // This race should be rare in practice, but happens frequently during development, when a new build
+          // is installed in the simulator, and the app and extension both try to fill the cache at the same time.
+          print("Image already cached for \(entry.date), continuing")
+          return entry
+        }
+        throw error
+      }
       print("Moved downloaded file!")
       return entry
     }
@@ -108,7 +116,6 @@ public class APODClient {
   private init() {
     do {
       try FileManager.default.createDirectory(at: CACHE_URL, withIntermediateDirectories: true)
-
       for url in try FileManager.default.contentsOfDirectory(at: CACHE_URL, includingPropertiesForKeys: nil) where url.pathExtension == DATA_PATH_EXTENSION {
         do {
           let data = try Data(contentsOf: url)
@@ -135,17 +142,28 @@ public class APODClient {
 
     var components = API_URL
     components.queryItems[withDefault: []]
-      .append(URLQueryItem(name: "date", value: YearMonthDay.current.description))
+      .append(contentsOf: [
+        // Rather than requesting the current date, request a range starting from yesterday to avoid "no data available"
+        // https://github.com/nasa/apod-api/issues/48
+        URLQueryItem(name: "start_date", value: (YearMonthDay.yesterday ?? YearMonthDay.today).description),
+        // Including end_date returns 400 when end_date is after today
+      ])
 
     return URLSession.shared.dataTaskPublisher(for: components.url.orFatalError("Failed to build API URL"))
       .tryMap() { (data, response) in
         print("Got response! \(response)")
-        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+        guard let response = response as? HTTPURLResponse else {
           throw URLError(.badServerResponse)
         }
+        guard response.statusCode == 200 else {
+          throw APODErrors.failureResponse(statusCode: response.statusCode)
+        }
 
-        let entry = try JSONDecoder().decode(APODEntry.self, from: data)
-        try data.write(to: entry.localDataURL)
+        let entries = try JSONDecoder().decode([APODEntry].self, from: data)
+        guard let entry = entries.last else {
+          throw APODErrors.emptyResponse
+        }
+        try JSONEncoder().encode(entry).write(to: entry.localDataURL)
         return entry
       }
       .flatMap(_downloadImageIfNeeded)

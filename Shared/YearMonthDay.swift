@@ -10,16 +10,31 @@ import Foundation
 let TIME_ZONE_LA = TimeZone(identifier: "America/Los_Angeles")!
 
 public struct YearMonthDay {
-  let year: Int
-  let month: Int
-  let day: Int
+  public let year: Int
+  public let month: Int
+  public let day: Int
 
-  public static var current: YearMonthDay {
-    // Use current time zone in LA because in evenings the API starts returning "No data available for [tomorrow's date]"
-    var calendar = Calendar.current
-    calendar.timeZone = TIME_ZONE_LA
-    let components = calendar.dateComponents([.year, .month, .day], from: Date())
-    return YearMonthDay(year: components.year!, month: components.month!, day: components.day!)
+  public init(year: Int, month: Int, day: Int) {
+    self.year = year
+    self.month = month
+    self.day = day
+  }
+
+  public init(localTime date: Date) {
+    let components = Calendar.current.dateComponents([.year, .month, .day], from: date)
+    year = components.year!
+    month = components.month!
+    day = components.day!
+  }
+
+  public static var yesterday: YearMonthDay? {
+    return Calendar.current.date(byAdding: .day, value: -1, to: Date()).map(YearMonthDay.init)
+  }
+  public static var today: YearMonthDay {
+    return YearMonthDay(localTime: Date())
+  }
+  public static var tomorrow: YearMonthDay? {
+    return Calendar.current.date(byAdding: .day, value: 1, to: Date()).map(YearMonthDay.init)
   }
 
   public func asDate() -> Date? {
