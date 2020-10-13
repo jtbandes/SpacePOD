@@ -124,7 +124,7 @@ struct ContentView: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(trailing: Button("Done") { detailsShown = false })
         }
-      }
+      }.statusBar(hidden: !titleShown)
     }
   }
 }
