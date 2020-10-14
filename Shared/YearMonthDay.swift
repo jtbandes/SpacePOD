@@ -1,10 +1,3 @@
-//
-//  YearMonthDay.swift
-//  APOD
-//
-//  Created by Jacob Bandes-Storch on 9/23/20.
-//
-
 import Foundation
 
 let TIME_ZONE_LA = TimeZone(identifier: "America/Los_Angeles")!

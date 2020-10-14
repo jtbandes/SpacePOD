@@ -1,10 +1,3 @@
-//
-//  SortedDictionary.swift
-//  APOD
-//
-//  Created by Jacob Bandes-Storch on 9/23/20.
-//
-
 import Foundation
 
 public struct SortedDictionary<Key: Hashable & Comparable, Value>: BidirectionalCollection {

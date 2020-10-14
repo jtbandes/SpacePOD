@@ -1,10 +1,3 @@
-//
-//  AppDelegate.swift
-//  APOD
-//
-//  Created by Jacob Bandes-Storch on 9/23/20.
-//
-
 import UIKit
 
 @main

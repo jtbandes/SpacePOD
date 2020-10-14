@@ -1,10 +1,3 @@
-//
-//  SharedTests.swift
-//  SharedTests
-//
-//  Created by Jacob Bandes-Storch on 9/23/20.
-//
-
 import XCTest
 @testable import Shared
 

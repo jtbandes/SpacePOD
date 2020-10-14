@@ -1,10 +1,3 @@
-//
-//  Utilities.swift
-//  APOD
-//
-//  Created by Jacob Bandes-Storch on 9/29/20.
-//
-
 import UIKit
 
 extension UIViewControllerTransitionCoordinator {
