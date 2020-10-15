@@ -16,8 +16,6 @@
 		1602DF5F251BC263004D96B2 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF5E251BC263004D96B2 /* SwiftUI.framework */; };
 		1602DF62251BC263004D96B2 /* Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF61251BC263004D96B2 /* Widget.swift */; };
 		1602DF65251BC266004D96B2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF64251BC266004D96B2 /* Assets.xcassets */; };
-		1602DF67251BC266004D96B2 /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; };
-		1602DF68251BC266004D96B2 /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; };
 		1602DF6B251BC266004D96B2 /* WidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1602DF5A251BC263004D96B2 /* WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1602DFA4251C12A8004D96B2 /* APODShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF9B251C12A8004D96B2 /* APODShared.framework */; };
 		1602DFAB251C12A8004D96B2 /* SharedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DFAA251C12A8004D96B2 /* SharedTests.swift */; };
@@ -32,6 +30,10 @@
 		1602E00A251C448A004D96B2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF4A251BC0F8004D96B2 /* Preview Assets.xcassets */; };
 		1625BF6E251C46A20004BB61 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF4A251BC0F8004D96B2 /* Preview Assets.xcassets */; };
 		1625BF72251C46A20004BB61 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF4A251BC0F8004D96B2 /* Preview Assets.xcassets */; };
+		16622EB62535637900C86A6F /* APODTimelineEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16622EB52535637700C86A6F /* APODTimelineEntry.swift */; };
+		16622EBA253563D800C86A6F /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; };
+		16622EC4253653EF00C86A6F /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
+		16622EC5253653EF00C86A6F /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		16AEE9FF25229D4600A2D094 /* ZoomableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEE9FE25229D4600A2D094 /* ZoomableScrollView.swift */; };
 		16AEEA1C252425BC00A2D094 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEEA1B252425BA00A2D094 /* Utilities.swift */; };
 /* End PBXBuildFile section */
@@ -128,6 +130,7 @@
 		1602DFAC251C12A8004D96B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1602DFE9251C1526004D96B2 /* APODEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APODEntryView.swift; sourceTree = "<group>"; };
 		16622E852525786900C86A6F /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		16622EB52535637700C86A6F /* APODTimelineEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APODTimelineEntry.swift; sourceTree = "<group>"; };
 		16AEE9FE25229D4600A2D094 /* ZoomableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomableScrollView.swift; sourceTree = "<group>"; };
 		16AEEA1B252425BA00A2D094 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -245,6 +248,7 @@
 				1602DF49251BC0F8004D96B2 /* Preview Content */,
 				1602DF76251BC4A4004D96B2 /* APODClient.swift */,
 				1602DFE9251C1526004D96B2 /* APODEntryView.swift */,
+				16622EB52535637700C86A6F /* APODTimelineEntry.swift */,
 				1602DF83251BEA99004D96B2 /* Utilities.swift */,
 				1602DF91251C1160004D96B2 /* YearMonthDay.swift */,
 				1602DF8A251C062C004D96B2 /* SortedDictionary.swift */,
@@ -441,7 +445,7 @@
 			files = (
 				16AEEA1C252425BC00A2D094 /* Utilities.swift in Sources */,
 				16AEE9FF25229D4600A2D094 /* ZoomableScrollView.swift in Sources */,
-				1602DF68251BC266004D96B2 /* Widget.intentdefinition in Sources */,
+				16622EC5253653EF00C86A6F /* Widget.intentdefinition in Sources */,
 				1602DF42251BC0F7004D96B2 /* AppDelegate.swift in Sources */,
 				1602DF44251BC0F7004D96B2 /* SceneDelegate.swift in Sources */,
 				1602DF46251BC0F7004D96B2 /* ContentView.swift in Sources */,
@@ -452,7 +456,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1602DF67251BC266004D96B2 /* Widget.intentdefinition in Sources */,
+				16622EC4253653EF00C86A6F /* Widget.intentdefinition in Sources */,
 				1602DF62251BC263004D96B2 /* Widget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -463,7 +467,9 @@
 			files = (
 				1602DFF2251C1579004D96B2 /* YearMonthDay.swift in Sources */,
 				1602DFEA251C1526004D96B2 /* APODEntryView.swift in Sources */,
+				16622EBA253563D800C86A6F /* Widget.intentdefinition in Sources */,
 				1602DFCA251C12EB004D96B2 /* SortedDictionary.swift in Sources */,
+				16622EB62535637900C86A6F /* APODTimelineEntry.swift in Sources */,
 				1602DFEE251C153C004D96B2 /* APODClient.swift in Sources */,
 				1602DFC6251C12E2004D96B2 /* Utilities.swift in Sources */,
 			);

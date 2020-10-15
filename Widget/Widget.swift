@@ -4,17 +4,9 @@ import Intents
 import APODShared
 import Combine
 
-struct APODTimelineEntry: TimelineEntry {
-  let cacheEntry: APODEntry?
-  let configuration: ConfigurationIntent
-  var date: Date {
-    cacheEntry?.date.asDate() ?? Date()
-  }
-}
-
 class Provider: IntentTimelineProvider {
   func placeholder(in context: Context) -> APODTimelineEntry {
-    APODTimelineEntry(cacheEntry: nil, configuration: ConfigurationIntent())
+    return APODTimelineEntry(entry: .placeholder, configuration: ConfigurationIntent())
   }
 
   var cancellable: AnyCancellable?
@@ -22,26 +14,16 @@ class Provider: IntentTimelineProvider {
   func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (APODTimelineEntry) -> ()) {
 
     cancellable = APODClient.shared.loadLatestImage().sink { completion in
-      print("Fail :( \(completion)")
+      print("Latest image completion: \(completion)")
     } receiveValue: { cacheEntry in
-      completion(APODTimelineEntry(cacheEntry: cacheEntry, configuration: configuration))
+      print("Latest image value \(cacheEntry)")
+      completion(APODTimelineEntry(entry: cacheEntry, configuration: configuration))
     }
   }
 
   func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-
     getSnapshot(for: configuration, in: context) {
       completion(Timeline(entries: [$0], policy: .atEnd))
-    }
-  }
-}
-
-struct WidgetEntryView : View {
-  var entry: APODTimelineEntry
-
-  var body: some View {
-    entry.cacheEntry.map {
-      APODEntryView(entry: $0)
     }
   }
 }
@@ -51,8 +33,8 @@ struct APODWidget: Widget {
   let kind: String = "Widget"
 
   var body: some WidgetConfiguration {
-    IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
-      WidgetEntryView(entry: entry)
+    IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) {
+      APODEntryView(timelineEntry: $0)
     }
     .configurationDisplayName("Astronomy Photo of the Day")
     .description("See the latest photo from NASA.")

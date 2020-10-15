@@ -53,7 +53,7 @@ public enum Asset {
         .asResult(ifNil: APODErrors.invalidYouTubeVideo(id))
 
     case .unknown:
-      return .failure(APODErrors.missingURL)
+      return .failure(APODErrors.unsupportedAsset)
     }
   }
 }
@@ -72,8 +72,14 @@ public class APODEntry: Codable {
 
   var PREVIEW_overrideImage: UIImage?
   private var _loadedImage: UIImage?
-  public func loadImage() -> UIImage? {
-    _loadedImage = _loadedImage ?? PREVIEW_overrideImage ?? UIImage(contentsOfFile: localImageURL.path)?.decoded()
+  public func loadImage(decode: Bool) -> UIImage? {
+    _loadedImage = _loadedImage ?? PREVIEW_overrideImage
+    if _loadedImage == nil {
+      _loadedImage = UIImage(contentsOfFile: localImageURL.path)
+      if decode {
+        _loadedImage = _loadedImage?.decoded()
+      }
+    }
     return _loadedImage
   }
 
@@ -97,6 +103,16 @@ public class APODEntry: Codable {
   public func encode(to encoder: Encoder) throws {
     try rawEntry.encode(to: encoder)
   }
+
+  private init(rawEntry: RawAPODEntry, asset: Asset, localDataURL: URL, localImageURL: URL) {
+    self.rawEntry = rawEntry
+    self.asset = asset
+    self.localDataURL = localDataURL
+    self.localImageURL = localImageURL
+  }
+
+
+  public static let placeholder: APODEntry = APODEntry(rawEntry: RawAPODEntry(date: YearMonthDay.today, hdurl: nil, url: nil, title: "Example", copyright: "Example copyright", explanation: nil, mediaType: "blah"), asset: .unknown(URL(fileURLWithPath: "/dev/null")), localDataURL: URL(fileURLWithPath: "/dev/null"), localImageURL: URL(fileURLWithPath: "/dev/null"))
 }
 
 struct RawAPODEntry: Codable {
@@ -156,9 +172,11 @@ public class APODClient {
 
   private var _cache = SortedDictionary<YearMonthDay, APODEntry>()
 
-  fileprivate func _clearCache() throws {
-    try FileManager.default.removeItem(at: CACHE_URL)
+  #if DEBUG
+  public func debug_clearCache() {
+    try? FileManager.default.removeItem(at: CACHE_URL)
   }
+  #endif
 
   private init() {
     do {

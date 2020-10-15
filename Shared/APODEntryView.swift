@@ -2,6 +2,7 @@ import SwiftUI
 import struct WidgetKit.WidgetPreviewContext
 
 struct PhotoView: View {
+  let configuration: ConfigurationIntent
   let date: Date?
   let image: AnyView?
   let caption: String?
@@ -16,7 +17,7 @@ struct PhotoView: View {
 
       HStack {
         VStack(alignment: .leading, spacing: 4) {
-          if let date = date {
+          if configuration.showDate?.boolValue ?? true, let date = date {
             HStack {
               Spacer()
               Text(date, formatter: DateFormatter.monthDay)
@@ -24,13 +25,15 @@ struct PhotoView: View {
             }
           }
           Spacer()
-          if let caption = caption {
-            Text(caption).font(.system(.footnote))
-              .bold()
-              .lineSpacing(-4)
-          }
-          if let copyright = copyright {
-            Text(copyright).font(.system(.caption2))
+          if configuration.showTitle?.boolValue ?? true {
+            if let caption = caption {
+              Text(caption).font(.system(.footnote))
+                .bold()
+                .lineSpacing(-4)
+            }
+            if let copyright = copyright {
+              Text(copyright).font(.system(.caption2))
+            }
           }
         }
         Spacer()
@@ -43,14 +46,17 @@ struct PhotoView: View {
 }
 
 public struct APODEntryView: View {
-  let entry: Loading<Result<APODEntry, Error>>
+  let entry: APODEntry
+  let configuration: ConfigurationIntent
 
-  public init(entry: Loading<Result<APODEntry, Error>>) {
-    self.entry = entry
+  public init(timelineEntry: APODTimelineEntry) {
+    self.entry = timelineEntry.entry
+    self.configuration = timelineEntry.configuration
   }
 
   public init(entry: APODEntry) {
-    self.entry = .loaded(.success(entry))
+    self.entry = entry
+    self.configuration = ConfigurationIntent()
   }
 
   public/*FIXME*/ static let failureImage = AnyView(
@@ -59,56 +65,31 @@ public struct APODEntryView: View {
       .foregroundColor(Color(.sRGB, white: 0.5)))
 
   public var body: some View {
-    switch entry {
-    case .notLoading:
-      PhotoView(
-        date: Date(),
-        image: nil,
-        caption: "A loading image",
-        copyright: "Person Name")
-        .redacted(reason: .placeholder)
+    let image = entry.loadImage(decode: false).map {
+      let image = Image(uiImage: $0).resizable().aspectRatio(contentMode: .fill)
+      if case .youtubeVideo = entry.asset {
+        // FIXME: it might be nicer to switch at the top level, removing loadImage(), so we can't forget to handle videos separately elsewhere
+        return image
+          .overlay(
+            ZStack {
+              Color.gray
+              image.opacity(0.8)
+            }
+            .blur(radius: 4)
+            .brightness(0.2)
+            .mask(Image(systemName: "play.circle.fill").font(.system(size: 40)).compositingGroup())
+          )
+          .eraseToAnyView()
+      }
+      return image.eraseToAnyView()
+    } ?? APODEntryView.failureImage
 
-    case .loading:
-      PhotoView(
-        date: Date(),
-        image: AnyView(ProgressView().colorScheme(.dark)),
-        caption: "A loading image",
-        copyright: "Person Name")
-        .redacted(reason: .placeholder)
-
-    case .loaded(.failure):
-      PhotoView(
-        date: nil,
-        image: APODEntryView.failureImage,
-        caption: "Couldn‘t load image",
-        copyright: nil)
-
-    case .loaded(.success(let entry)):
-      let image = entry.loadImage().map {
-        let image = Image(uiImage: $0).resizable().aspectRatio(contentMode: .fill)
-        if case .youtubeVideo = entry.asset {
-          // FIXME: it might be nicer to switch at the top level, removing loadImage(), so we can't forget to handle videos separately elsewhere
-          return image
-            .overlay(
-              ZStack {
-                Color.gray
-                image.opacity(0.8)
-              }
-              .blur(radius: 4)
-              .brightness(0.2)
-              .mask(Image(systemName: "play.circle.fill").font(.system(size: 40)).compositingGroup())
-            )
-            .eraseToAnyView()
-        }
-        return image.eraseToAnyView()
-      } ?? APODEntryView.failureImage
-
-      PhotoView(
-        date: entry.date.asDate()!,
-        image: image,
-        caption: entry.title,
-        copyright: entry.copyright)
-    }
+    PhotoView(
+      configuration: configuration,
+      date: entry.date.asDate()!,
+      image: image,
+      caption: entry.title,
+      copyright: entry.copyright)
   }
 }
 
@@ -150,25 +131,14 @@ struct APODEntryView_Previews: PreviewProvider {
       })
       .previewContext(WidgetPreviewContext(family: .systemMedium))
 
-    PhotoView(date: Date(), image: AnyView(Image(uiImage: #imageLiteral(resourceName: "sampleImage")).resizable().aspectRatio(3, contentMode: .fill)), caption: "Hello", copyright: "There")
+    PhotoView(configuration: ConfigurationIntent(), date: Date(), image: AnyView(Image(uiImage: #imageLiteral(resourceName: "sampleImage")).resizable().aspectRatio(3, contentMode: .fill)), caption: "Hello", copyright: "There")
       .previewContext(WidgetPreviewContext(family: .systemMedium))
 
-    PhotoView(date: Date(), image: AnyView(Image(uiImage: #imageLiteral(resourceName: "sampleImage")).resizable().aspectRatio(0.3, contentMode: .fill)), caption: "Hello", copyright: "There")
+    PhotoView(configuration: ConfigurationIntent(), date: Date(), image: AnyView(Image(uiImage: #imageLiteral(resourceName: "sampleImage")).resizable().aspectRatio(0.3, contentMode: .fill)), caption: "Hello", copyright: "There")
       .previewContext(WidgetPreviewContext(family: .systemMedium))
 
     APODEntryView(
       entry: try! JSONDecoder().decode(APODEntry.self, from: previewJSON))
       .previewContext(WidgetPreviewContext(family: .systemMedium))
-
-    APODEntryView(
-      entry: .notLoading)
-      .previewLayout(.fixed(width: 200, height: 200))
-
-    APODEntryView(entry: .loading)
-      .previewLayout(.fixed(width: 200, height: 200))
-
-    APODEntryView(
-      entry: .loaded(.failure(URLError(.badServerResponse))))
-      .previewLayout(.fixed(width: 200, height: 200))
   }
 }

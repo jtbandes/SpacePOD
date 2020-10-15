@@ -23,19 +23,39 @@ extension DefaultStringInterpolation {
 }
 
 public enum Loading<T> {
-  case notLoading
   case loading
   case loaded(T)
 }
 
 public enum APODErrors: Error {
   case invalidDate(String)
-  case invalidURL(String)
   case missingURL
   case emptyResponse
   case failureResponse(statusCode: Int)
   case invalidYouTubeVideo(String)
   case invalidImage
+  case unsupportedAsset
+}
+
+extension APODErrors: LocalizedError {
+  public var errorDescription: String? {
+    switch self {
+    case .invalidDate(let str):
+      return "Couldn’t interpret “\(str)” as a date."
+    case .missingURL:
+      return "No photo was found."
+    case .emptyResponse:
+      return "The server returned no data."
+    case .failureResponse(let status):
+      return "The server returned an unexpected status: \(status)."
+    case .invalidYouTubeVideo(let str):
+      return "Invalid video ID “\(str)”."
+    case .invalidImage:
+      return "The image couldn’t be loaded."
+    case .unsupportedAsset:
+      return "This media couldn’t be displayed."
+    }
+  }
 }
 
 public extension Optional {

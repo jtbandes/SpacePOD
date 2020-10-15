@@ -1,6 +1,7 @@
 import SwiftUI
 import Combine
 import APODShared
+import WidgetKit
 
 extension Publisher {
   func sinkResult(_ receiveResult: @escaping (Result<Output, Failure>) -> Void) -> AnyCancellable {
@@ -18,13 +19,13 @@ extension Publisher {
 }
 
 class ViewModel: ObservableObject {
-  @Published var currentEntry: Loading<Result<APODEntry, Error>> = .notLoading
+  @Published var currentEntry: Loading<Result<APODEntry, Error>> = .loading
 
   private var cancellable: AnyCancellable?
 
   init() {
-    currentEntry = .loading
     cancellable = APODClient.shared.loadLatestImage().sinkResult { [unowned self] in
+      WidgetCenter.shared.reloadAllTimelines()
       self.currentEntry = .loaded($0)
     }
   }
@@ -35,19 +36,33 @@ struct ContentView: View {
   @State var titleShown = true
   @State var detailsShown = false
 
+  func titleView(for entry: APODEntry) -> some View {
+    titleView(date: entry.date.asDate(), title: entry.title, copyright: entry.copyright)
+  }
+
   @ViewBuilder
-  func titleContent(_ entry: APODEntry) -> some View {
+  func titleView(date: Date?, title: String?, copyright: String?) -> some View {
     VStack(alignment: .leading) {
-      if let date = entry.date.asDate() {
-        Text(date, style: .date).font(.system(.caption)).foregroundColor(.secondary)
+      if let date = date {
+        Text(date, style: .date)
+          .font(.system(.caption))
+          .foregroundColor(.secondary)
+          .unredacted()
       }
-      if let title = entry.title {
-        Text(title).font(.system(.headline))
+      if let title = title {
+        Text(title)
+          .font(.system(.headline))
       }
-      if let copyright = entry.copyright {
-        Text(copyright).font(.system(.subheadline)).foregroundColor(.secondary)
+      if let copyright = copyright {
+        Text(copyright)
+          .font(.system(.subheadline))
+          .foregroundColor(.secondary)
       }
     }
+    .flexibleFrame(.horizontal, alignment: .leading)
+    .padding()
+    .contentShape(Rectangle())
+    .shadow(color: .black, radius: 2, x: 0.0, y: 0.0)
   }
 
   func detailsSheet(_ entry: APODEntry) -> some View {
@@ -72,20 +87,32 @@ struct ContentView: View {
 
   var body: some View {
     switch viewModel.currentEntry {
-
-    case .notLoading:
-      Text("Not loading")
-
     case .loading:
-      Text("Loading")
+      ZStack(alignment: .leading) {
+        ProgressView()
+          .colorScheme(.dark)
+          .flexibleFrame()
+
+        VStack(alignment: .leading) {
+          Spacer()
+          titleView(for: .placeholder).redacted(reason: .placeholder)
+        }
+      }
 
     case .loaded(.failure(let error)):
-      Text(verbatim: "Error: \(error)")
+      ZStack(alignment: .leading) {
+        APODEntryView.failureImage.flexibleFrame()
+
+        VStack(alignment: .leading) {
+          Spacer()
+          titleView(date: nil, title: "Couldn’t load image", copyright: error.localizedDescription)
+        }
+      }
 
     case .loaded(.success(let entry)):
       ZStack(alignment: .leading) {
         Group {
-          if let image = entry.loadImage() {
+          if let image = entry.loadImage(decode: true) {
             ZoomableScrollView {
               Image(uiImage: image)
             }
@@ -100,11 +127,7 @@ struct ContentView: View {
             Button {
               withAnimation { detailsShown.toggle() }
             } label: {
-              titleContent(entry)
-                .flexibleFrame(.horizontal, alignment: .leading)
-                .padding()
-                .contentShape(Rectangle())
-                .shadow(color: .black, radius: 2, x: 0.0, y: 0.0)
+              titleView(for: entry)
             }
             .foregroundColor(.primary)
             .accessibilityHint("Show details")
