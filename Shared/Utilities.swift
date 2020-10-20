@@ -16,6 +16,12 @@ public func mutate<T>(_ arg: inout T, _ body: (inout T) -> Void) {
   body(&arg)
 }
 
+public func DBG(_ item: Any) {
+  #if DEBUG
+  print(item)
+  #endif
+}
+
 extension DefaultStringInterpolation {
   mutating func appendInterpolation(reflecting value: Any) {
     appendInterpolation(String(reflecting: value))

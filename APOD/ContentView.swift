@@ -10,7 +10,7 @@ extension Publisher {
       case .failure(let err):
         receiveResult(.failure(err))
       case .finished:
-        print("Finished, ignoring")
+        DBG("Finished, ignoring")
       }
     } receiveValue: {
       receiveResult(.success($0))

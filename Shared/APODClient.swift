@@ -140,7 +140,7 @@ func _downloadImageIfNeeded(_ entry: APODEntry) -> AnyPublisher<APODEntry, Error
     return Result.success(entry).publisher.eraseToAnyPublisher()
   }
 
-  print("Downloading image for \(entry.date)")
+  DBG("Downloading image for \(entry.date)")
   return entry.asset.imageOrThumbnailURL.publisher
     .flatMap(URLSession.shared.downloadTaskPublisher(for:))
     .tryMap { url in
@@ -148,19 +148,19 @@ func _downloadImageIfNeeded(_ entry: APODEntry) -> AnyPublisher<APODEntry, Error
       guard UIImage(contentsOfFile: url.path) != nil else {
         throw APODErrors.invalidImage
       }
-      print("Trying to move \(url) to \(entry.localImageURL)")
+      DBG("Trying to move \(url) to \(entry.localImageURL)")
       do {
         try FileManager.default.moveItem(at: url, to: entry.localImageURL)
       } catch {
         if (try? entry.localImageURL.checkResourceIsReachable()) ?? false {
           // This race should be rare in practice, but happens frequently during development, when a new build
           // is installed in the simulator, and the app and extension both try to fill the cache at the same time.
-          print("Image already cached for \(entry.date), continuing")
+          DBG("Image already cached for \(entry.date), continuing")
           return entry
         }
         throw error
       }
-      print("Moved downloaded file!")
+      DBG("Moved downloaded file!")
       return entry
     }
     .eraseToAnyPublisher()
@@ -185,7 +185,6 @@ public class APODClient {
         do {
           let data = try Data(contentsOf: url)
           let entry = try JSONDecoder().decode(APODEntry.self, from: data)
-          print(entry.localImageURL)
           if (try? entry.localImageURL.checkResourceIsReachable()) ?? false {
             _cache[entry.date] = entry
           }
@@ -193,7 +192,7 @@ public class APODClient {
           print("Invalid cache entry: \(error) \(url)")
         }
       }
-      print("There are \(_cache.count) cached images: \(_cache)")
+      DBG("There are \(_cache.count) cached images: \(_cache)")
     }
     catch let error {
       print("Error loading cache: \(error)")
@@ -202,7 +201,7 @@ public class APODClient {
 
   public func loadLatestImage() -> AnyPublisher<APODEntry, Error> {
     if let lastCached = _cache.last?.value, lastCached.date.isCurrent {
-      print("Loaded \(lastCached.date) from cache")
+      DBG("Loaded \(lastCached.date) from cache")
       return Result.success(lastCached).publisher.eraseToAnyPublisher()
     }
 
@@ -217,7 +216,7 @@ public class APODClient {
 
     return URLSession.shared.dataTaskPublisher(for: components.url.orFatalError("Failed to build API URL"))
       .tryMap() { (data, response) in
-        print("Got response! \(response)")
+        DBG("Got response! \(response)")
         guard let response = response as? HTTPURLResponse else {
           throw URLError(.badServerResponse)
         }

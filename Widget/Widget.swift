@@ -14,9 +14,9 @@ class Provider: IntentTimelineProvider {
   func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (APODTimelineEntry) -> ()) {
 
     cancellable = APODClient.shared.loadLatestImage().sink { completion in
-      print("Latest image completion: \(completion)")
+      DBG("Latest image completion: \(completion)")
     } receiveValue: { cacheEntry in
-      print("Latest image value \(cacheEntry)")
+      DBG("Latest image value \(cacheEntry)")
       completion(APODTimelineEntry(entry: cacheEntry, configuration: configuration))
     }
   }
