@@ -45,7 +45,7 @@ public struct YearMonthDay {
     var calendar = Calendar.current
     calendar.locale = Locale(identifier: "en_US")
     calendar.timeZone = TIME_ZONE_LA
-    return calendar.isDateInToday(date)
+    return calendar.isDateInToday(date) || calendar.isDateInTomorrow(date)
   }
 }
 
