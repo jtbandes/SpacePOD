@@ -185,6 +185,18 @@ public class APODClient {
         do {
           let data = try Data(contentsOf: url)
           let entry = try JSONDecoder().decode(APODEntry.self, from: data)
+
+          // Delete entries older than 2 days
+          if let date = entry.date.asDate(), date.timeIntervalSinceNow < -2*24*60*60 {
+            do {
+              try FileManager.default.removeItem(at: url)
+              try FileManager.default.removeItem(at: entry.localImageURL)
+              print("Removed old data for \(entry.date)")
+            } catch {
+              print("Error removing old data for \(entry.date): \(error)")
+            }
+          }
+
           if (try? entry.localImageURL.checkResourceIsReachable()) ?? false {
             _cache[entry.date] = entry
           }
