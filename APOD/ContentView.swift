@@ -2,6 +2,7 @@ import SwiftUI
 import Combine
 import APODShared
 import WidgetKit
+import YTPlayerView
 
 extension Publisher {
   func sinkResult(_ receiveResult: @escaping (Result<Output, Failure>) -> Void) -> AnyCancellable {
@@ -14,6 +15,45 @@ extension Publisher {
       }
     } receiveValue: {
       receiveResult(.success($0))
+    }
+  }
+}
+
+struct YouTubePlayer: UIViewRepresentable {
+  let videoId: String
+
+  func makeCoordinator() -> Coordinator {
+    return Coordinator()
+  }
+
+  func makeUIView(context: Context) -> YTPlayerView {
+    let player = YTPlayerView()
+    player.delegate = context.coordinator
+    context.coordinator.currentId = videoId
+    player.load(withVideoId: videoId, playerVars: ["playsinline": 1])
+    return player
+  }
+
+  func updateUIView(_ uiView: YTPlayerView, context: Context) {
+    // In practice, this is called when dismissing the details sheet, so the id doesn't actually change.
+    if context.coordinator.currentId != videoId {
+      DBG("Updating video id: \(context.coordinator.currentId ?? "nil") -> \(videoId). This should likely never happen.")
+      uiView.cueVideo(byId: videoId, startSeconds: 0)
+      context.coordinator.currentId = videoId
+    }
+  }
+
+  class Coordinator: NSObject, YTPlayerViewDelegate {
+    var currentId: String?
+
+    func playerViewPreferredInitialLoading(_ playerView: YTPlayerView) -> UIView? {
+      return with(UIActivityIndicatorView()) {
+        $0.startAnimating()
+      }
+    }
+
+    func playerViewPreferredWebViewBackgroundColor(_ playerView: YTPlayerView) -> UIColor {
+      return .clear
     }
   }
 }
@@ -88,60 +128,68 @@ struct ContentView: View {
   var body: some View {
     switch viewModel.currentEntry {
     case .loading:
-      ZStack(alignment: .leading) {
+      VStack(alignment: .leading) {
         ProgressView()
           .colorScheme(.dark)
           .flexibleFrame()
 
-        VStack(alignment: .leading) {
-          Spacer()
-          titleView(for: .placeholder).redacted(reason: .placeholder)
-        }
+        titleView(for: .placeholder).redacted(reason: .placeholder)
       }
 
     case .loaded(.failure(let error)):
-      ZStack(alignment: .leading) {
+      VStack(alignment: .leading) {
         APODEntryView.failureImage.flexibleFrame()
 
-        VStack(alignment: .leading) {
-          Spacer()
-          titleView(date: nil, title: "Couldn’t load image", copyright: error.localizedDescription)
-        }
+        titleView(date: nil, title: "Couldn’t load image", copyright: error.localizedDescription)
       }
 
-    case .loaded(.success(let entry)):
-      ZStack(alignment: .leading) {
-        Group {
-          if let image = entry.loadImage(decode: true) {
-            ZoomableScrollView {
-              Image(uiImage: image)
-            }
-          } else {
-            APODEntryView.failureImage.flexibleFrame()
-          }
-        }.onTapGesture { withAnimation { titleShown.toggle() } }
+    case .loaded(.success(let entry)): Group {
+      let title = Button {
+        withAnimation { detailsShown.toggle() }
+      } label: {
+        titleView(for: entry)
+      }
+      .foregroundColor(.primary)
+      .accessibilityHint("Show details")
 
-        VStack(alignment: .leading) {
-          Spacer()
-          if titleShown {
-            Button {
-              withAnimation { detailsShown.toggle() }
-            } label: {
-              titleView(for: entry)
+      switch entry.asset {
+      case let .youtubeVideo(id: id, _):
+        VStack {
+          YouTubePlayer(videoId: id)
+          title
+        }
+
+      default:
+        ZStack(alignment: .leading) {
+          Group {
+            if let image = entry.loadImage(decode: true) {
+              ZoomableScrollView {
+                Image(uiImage: image)
+              }
+            } else {
+              APODEntryView.failureImage.flexibleFrame()
             }
-            .foregroundColor(.primary)
-            .accessibilityHint("Show details")
+          }.onTapGesture { withAnimation { titleShown.toggle() } }
+
+          VStack(alignment: .leading) {
+            Spacer()
+            if titleShown {
+              title
+            }
           }
         }
-      }.sheet(isPresented: $detailsShown) {
-        NavigationView {
-          detailsSheet(entry)
-            .navigationTitle(entry.date.asDate().map { Text($0, style: .date) } ?? Text(""))
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(trailing: Button("Done") { detailsShown = false })
-        }
-      }.statusBar(hidden: !titleShown)
+      }
     }
+    .statusBar(hidden: !titleShown)
+    .sheet(isPresented: $detailsShown) {
+      NavigationView {
+        detailsSheet(entry)
+          .navigationTitle(entry.date.asDate().map { Text($0, style: .date) } ?? Text(""))
+          .navigationBarTitleDisplayMode(.inline)
+          .navigationBarItems(trailing: Button("Done") { detailsShown = false })
+      }
+    }
+    } // Group
   }
 }
 
