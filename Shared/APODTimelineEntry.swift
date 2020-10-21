@@ -13,4 +13,8 @@ public struct APODTimelineEntry: TimelineEntry {
   public var date: Date {
     entry.date.asDate() ?? Date()
   }
+
+  public var relevance: TimelineEntryRelevance? {
+    TimelineEntryRelevance(score: 1, duration: 24*60*60)
+  }
 }
