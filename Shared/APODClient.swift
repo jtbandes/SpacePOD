@@ -14,7 +14,7 @@ private let DATA_PATH_EXTENSION = "json"
 
 private let CACHE_URL = URL(
   fileURLWithPath: "cache", relativeTo:
-    FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.APOD")!)
+    FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.SpacePOD")!)
 
 let youtubeRegex = try! NSRegularExpression(pattern: #"://.*youtube\.com/embed/([^/?#]+)"#)
 

@@ -16,11 +16,11 @@
 		1602DF62251BC263004D96B2 /* Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF61251BC263004D96B2 /* Widget.swift */; };
 		1602DF65251BC266004D96B2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF64251BC266004D96B2 /* Assets.xcassets */; };
 		1602DF6B251BC266004D96B2 /* WidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1602DF5A251BC263004D96B2 /* WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		1602DFA4251C12A8004D96B2 /* APODShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF9B251C12A8004D96B2 /* APODShared.framework */; };
+		1602DFA4251C12A8004D96B2 /* SpacePODShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF9B251C12A8004D96B2 /* SpacePODShared.framework */; };
 		1602DFAB251C12A8004D96B2 /* SharedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DFAA251C12A8004D96B2 /* SharedTests.swift */; };
-		1602DFB0251C12A8004D96B2 /* APODShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF9B251C12A8004D96B2 /* APODShared.framework */; };
-		1602DFB1251C12A8004D96B2 /* APODShared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF9B251C12A8004D96B2 /* APODShared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1602DFBC251C12BD004D96B2 /* APODShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF9B251C12A8004D96B2 /* APODShared.framework */; };
+		1602DFB0251C12A8004D96B2 /* SpacePODShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF9B251C12A8004D96B2 /* SpacePODShared.framework */; };
+		1602DFB1251C12A8004D96B2 /* SpacePODShared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF9B251C12A8004D96B2 /* SpacePODShared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1602DFBC251C12BD004D96B2 /* SpacePODShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF9B251C12A8004D96B2 /* SpacePODShared.framework */; };
 		1602DFC6251C12E2004D96B2 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF83251BEA99004D96B2 /* Utilities.swift */; };
 		1602DFCA251C12EB004D96B2 /* SortedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF8A251C062C004D96B2 /* SortedDictionary.swift */; };
 		1602DFEA251C1526004D96B2 /* APODEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DFE9251C1526004D96B2 /* APODEntryView.swift */; };
@@ -105,7 +105,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				1602DFB1251C12A8004D96B2 /* APODShared.framework in Embed Frameworks */,
+				1602DFB1251C12A8004D96B2 /* SpacePODShared.framework in Embed Frameworks */,
 				160F5268253FB729005A12EE /* YTPlayerView.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -114,7 +114,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1602DF3E251BC0F7004D96B2 /* APOD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APOD.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1602DF3E251BC0F7004D96B2 /* Space!.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Space!.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1602DF41251BC0F7004D96B2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1602DF43251BC0F7004D96B2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		1602DF45251BC0F7004D96B2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -128,13 +128,13 @@
 		1602DF63251BC263004D96B2 /* Widget.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = Widget.intentdefinition; sourceTree = "<group>"; };
 		1602DF64251BC266004D96B2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1602DF66251BC266004D96B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1602DF72251BC448004D96B2 /* APOD.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = APOD.entitlements; sourceTree = "<group>"; };
+		1602DF72251BC448004D96B2 /* SpacePOD.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SpacePOD.entitlements; sourceTree = "<group>"; };
 		1602DF73251BC46C004D96B2 /* WidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgetExtension.entitlements; sourceTree = "<group>"; };
 		1602DF76251BC4A4004D96B2 /* APODClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APODClient.swift; sourceTree = "<group>"; };
 		1602DF83251BEA99004D96B2 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		1602DF8A251C062C004D96B2 /* SortedDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedDictionary.swift; sourceTree = "<group>"; };
 		1602DF91251C1160004D96B2 /* YearMonthDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearMonthDay.swift; sourceTree = "<group>"; };
-		1602DF9B251C12A8004D96B2 /* APODShared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = APODShared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1602DF9B251C12A8004D96B2 /* SpacePODShared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SpacePODShared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1602DF9E251C12A8004D96B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1602DFA3251C12A8004D96B2 /* SharedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SharedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1602DFAA251C12A8004D96B2 /* SharedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTests.swift; sourceTree = "<group>"; };
@@ -156,7 +156,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1602DFB0251C12A8004D96B2 /* APODShared.framework in Frameworks */,
+				1602DFB0251C12A8004D96B2 /* SpacePODShared.framework in Frameworks */,
 				160F5267253FB729005A12EE /* YTPlayerView.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -166,7 +166,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1602DF5F251BC263004D96B2 /* SwiftUI.framework in Frameworks */,
-				1602DFBC251C12BD004D96B2 /* APODShared.framework in Frameworks */,
+				1602DFBC251C12BD004D96B2 /* SpacePODShared.framework in Frameworks */,
 				1602DF5D251BC263004D96B2 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -182,7 +182,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1602DFA4251C12A8004D96B2 /* APODShared.framework in Frameworks */,
+				1602DFA4251C12A8004D96B2 /* SpacePODShared.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,7 +199,7 @@
 		1602DF35251BC0F7004D96B2 = {
 			isa = PBXGroup;
 			children = (
-				1602DF40251BC0F7004D96B2 /* APOD */,
+				1602DF40251BC0F7004D96B2 /* SpacePOD */,
 				1602DF60251BC263004D96B2 /* Widget */,
 				1602DF9C251C12A8004D96B2 /* Shared */,
 				1602DFA9251C12A8004D96B2 /* SharedTests */,
@@ -214,19 +214,19 @@
 		1602DF3F251BC0F7004D96B2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1602DF3E251BC0F7004D96B2 /* APOD.app */,
+				1602DF3E251BC0F7004D96B2 /* Space!.app */,
 				1602DF5A251BC263004D96B2 /* WidgetExtension.appex */,
-				1602DF9B251C12A8004D96B2 /* APODShared.framework */,
+				1602DF9B251C12A8004D96B2 /* SpacePODShared.framework */,
 				1602DFA3251C12A8004D96B2 /* SharedTests.xctest */,
 				160F5260253FB729005A12EE /* YTPlayerView.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		1602DF40251BC0F7004D96B2 /* APOD */ = {
+		1602DF40251BC0F7004D96B2 /* SpacePOD */ = {
 			isa = PBXGroup;
 			children = (
-				1602DF72251BC448004D96B2 /* APOD.entitlements */,
+				1602DF72251BC448004D96B2 /* SpacePOD.entitlements */,
 				1602DF41251BC0F7004D96B2 /* AppDelegate.swift */,
 				1602DF47251BC0F8004D96B2 /* Assets.xcassets */,
 				1602DF45251BC0F7004D96B2 /* ContentView.swift */,
@@ -235,7 +235,7 @@
 				16AEE9FE25229D4600A2D094 /* ZoomableScrollView.swift */,
 				16AEEA1B252425BA00A2D094 /* Utilities.swift */,
 			);
-			path = APOD;
+			path = SpacePOD;
 			sourceTree = "<group>";
 		};
 		1602DF49251BC0F8004D96B2 /* Preview Content */ = {
@@ -324,9 +324,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		1602DF3D251BC0F7004D96B2 /* APOD */ = {
+		1602DF3D251BC0F7004D96B2 /* Space! */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1602DF52251BC0F8004D96B2 /* Build configuration list for PBXNativeTarget "APOD" */;
+			buildConfigurationList = 1602DF52251BC0F8004D96B2 /* Build configuration list for PBXNativeTarget "Space!" */;
 			buildPhases = (
 				1602DF3A251BC0F7004D96B2 /* Sources */,
 				1602DF3B251BC0F7004D96B2 /* Frameworks */,
@@ -341,9 +341,9 @@
 				1602DFAF251C12A8004D96B2 /* PBXTargetDependency */,
 				160F5266253FB729005A12EE /* PBXTargetDependency */,
 			);
-			name = APOD;
+			name = "Space!";
 			productName = APOD;
-			productReference = 1602DF3E251BC0F7004D96B2 /* APOD.app */;
+			productReference = 1602DF3E251BC0F7004D96B2 /* Space!.app */;
 			productType = "com.apple.product-type.application";
 		};
 		1602DF59251BC263004D96B2 /* WidgetExtension */ = {
@@ -364,9 +364,9 @@
 			productReference = 1602DF5A251BC263004D96B2 /* WidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		1602DF9A251C12A8004D96B2 /* APODShared */ = {
+		1602DF9A251C12A8004D96B2 /* SpacePODShared */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1602DFB2251C12A8004D96B2 /* Build configuration list for PBXNativeTarget "APODShared" */;
+			buildConfigurationList = 1602DFB2251C12A8004D96B2 /* Build configuration list for PBXNativeTarget "SpacePODShared" */;
 			buildPhases = (
 				1602DF96251C12A8004D96B2 /* Headers */,
 				1602DF97251C12A8004D96B2 /* Sources */,
@@ -377,9 +377,9 @@
 			);
 			dependencies = (
 			);
-			name = APODShared;
+			name = SpacePODShared;
 			productName = Shared;
-			productReference = 1602DF9B251C12A8004D96B2 /* APODShared.framework */;
+			productReference = 1602DF9B251C12A8004D96B2 /* SpacePODShared.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		1602DFA2251C12A8004D96B2 /* SharedTests */ = {
@@ -446,7 +446,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 1602DF39251BC0F7004D96B2 /* Build configuration list for PBXProject "APOD" */;
+			buildConfigurationList = 1602DF39251BC0F7004D96B2 /* Build configuration list for PBXProject "SpacePOD" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -459,9 +459,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1602DF3D251BC0F7004D96B2 /* APOD */,
+				1602DF3D251BC0F7004D96B2 /* Space! */,
 				1602DF59251BC263004D96B2 /* WidgetExtension */,
-				1602DF9A251C12A8004D96B2 /* APODShared */,
+				1602DF9A251C12A8004D96B2 /* SpacePODShared */,
 				1602DFA2251C12A8004D96B2 /* SharedTests */,
 				160F525F253FB729005A12EE /* YTPlayerView */,
 			);
@@ -575,22 +575,22 @@
 		};
 		1602DFA6251C12A8004D96B2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1602DF9A251C12A8004D96B2 /* APODShared */;
+			target = 1602DF9A251C12A8004D96B2 /* SpacePODShared */;
 			targetProxy = 1602DFA5251C12A8004D96B2 /* PBXContainerItemProxy */;
 		};
 		1602DFA8251C12A8004D96B2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1602DF3D251BC0F7004D96B2 /* APOD */;
+			target = 1602DF3D251BC0F7004D96B2 /* Space! */;
 			targetProxy = 1602DFA7251C12A8004D96B2 /* PBXContainerItemProxy */;
 		};
 		1602DFAF251C12A8004D96B2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1602DF9A251C12A8004D96B2 /* APODShared */;
+			target = 1602DF9A251C12A8004D96B2 /* SpacePODShared */;
 			targetProxy = 1602DFAE251C12A8004D96B2 /* PBXContainerItemProxy */;
 		};
 		1602DFBF251C12BD004D96B2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1602DF9A251C12A8004D96B2 /* APODShared */;
+			target = 1602DF9A251C12A8004D96B2 /* SpacePODShared */;
 			targetProxy = 1602DFBE251C12BD004D96B2 /* PBXContainerItemProxy */;
 		};
 		160F5266253FB729005A12EE /* PBXTargetDependency */ = {
@@ -723,17 +723,17 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = APOD/APOD.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SpacePOD/SpacePOD.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
 				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = APOD/Info.plist;
+				INFOPLIST_FILE = SpacePOD/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.APOD";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.SpacePOD";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -746,17 +746,17 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = APOD/APOD.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SpacePOD/SpacePOD.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
 				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = APOD/Info.plist;
+				INFOPLIST_FILE = SpacePOD/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.APOD";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.SpacePOD";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -778,7 +778,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.APOD.Widget";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.SpacePOD.Widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -801,7 +801,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.APOD.Widget";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.SpacePOD.Widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -829,7 +829,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.APOD.APODShared";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.SpacePOD.SpacePODShared";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -859,7 +859,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.APOD.APODShared";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.SpacePOD.SpacePODShared";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -881,11 +881,11 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.APOD.SharedTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.SpacePOD.SharedTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APOD.app/APOD";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SpacePOD.app/SpacePOD";
 			};
 			name = Debug;
 		};
@@ -901,11 +901,11 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.APOD.SharedTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.SpacePOD.SharedTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APOD.app/APOD";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SpacePOD.app/SpacePOD";
 			};
 			name = Release;
 		};
@@ -964,7 +964,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1602DF39251BC0F7004D96B2 /* Build configuration list for PBXProject "APOD" */ = {
+		1602DF39251BC0F7004D96B2 /* Build configuration list for PBXProject "SpacePOD" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1602DF50251BC0F8004D96B2 /* Debug */,
@@ -973,7 +973,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1602DF52251BC0F8004D96B2 /* Build configuration list for PBXNativeTarget "APOD" */ = {
+		1602DF52251BC0F8004D96B2 /* Build configuration list for PBXNativeTarget "Space!" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1602DF53251BC0F8004D96B2 /* Debug */,
@@ -991,7 +991,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1602DFB2251C12A8004D96B2 /* Build configuration list for PBXNativeTarget "APODShared" */ = {
+		1602DFB2251C12A8004D96B2 /* Build configuration list for PBXNativeTarget "SpacePODShared" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1602DFB3251C12A8004D96B2 /* Debug */,

@@ -1,7 +1,7 @@
 import WidgetKit
 import SwiftUI
 import Intents
-import APODShared
+import SpacePODShared
 import Combine
 
 class Provider: IntentTimelineProvider {
@@ -36,7 +36,7 @@ struct APODWidget: Widget {
     IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) {
       APODEntryView(timelineEntry: $0)
     }
-    .configurationDisplayName("Astronomy Photo of the Day")
-    .description("See the latest photo from NASA.")
+    .configurationDisplayName("Space Photo of the Day")
+    .description("See the latest image from NASA’s Astronomy Picture of the Day.")
   }
 }

@@ -1,6 +1,6 @@
 import SwiftUI
 import Combine
-import APODShared
+import SpacePODShared
 
 class CenteringScrollView: UIScrollView {
   func centerContent() {

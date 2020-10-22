@@ -1,6 +1,6 @@
 import UIKit
 import SwiftUI
-import APODShared
+import SpacePODShared
 
 class ContentViewController: UIHostingController<ContentView> {
   #if DEBUG

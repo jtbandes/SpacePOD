@@ -1,5 +1,5 @@
 import XCTest
-@testable import APODShared
+@testable import SpacePODShared
 
 class SharedTests: XCTestCase {
 

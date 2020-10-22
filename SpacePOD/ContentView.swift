@@ -1,6 +1,6 @@
 import SwiftUI
 import Combine
-import APODShared
+import SpacePODShared
 import WidgetKit
 import YTPlayerView
 
