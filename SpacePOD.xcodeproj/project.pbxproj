@@ -203,7 +203,7 @@
 				1602DF60251BC263004D96B2 /* Widget */,
 				1602DF9C251C12A8004D96B2 /* Shared */,
 				1602DFA9251C12A8004D96B2 /* SharedTests */,
-				160F5261253FB729005A12EE /* YTPlayerView */,
+				160F52AE2541ED24005A12EE /* vendor */,
 				1602DF5B251BC263004D96B2 /* Frameworks */,
 				1602DF3F251BC0F7004D96B2 /* Products */,
 			);
@@ -301,6 +301,14 @@
 				160F5263253FB729005A12EE /* Info.plist */,
 			);
 			path = YTPlayerView;
+			sourceTree = "<group>";
+		};
+		160F52AE2541ED24005A12EE /* vendor */ = {
+			isa = PBXGroup;
+			children = (
+				160F5261253FB729005A12EE /* YTPlayerView */,
+			);
+			path = vendor;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -919,7 +927,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = YTPlayerView/Info.plist;
+				INFOPLIST_FILE = vendor/YTPlayerView/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -945,7 +953,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = YTPlayerView/Info.plist;
+				INFOPLIST_FILE = vendor/YTPlayerView/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
