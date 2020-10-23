@@ -2,7 +2,6 @@ import SwiftUI
 import Combine
 import SpacePODShared
 import WidgetKit
-import YTPlayerView
 
 extension Publisher {
   func sinkResult(_ receiveResult: @escaping (Result<Output, Failure>) -> Void) -> AnyCancellable {
@@ -15,45 +14,6 @@ extension Publisher {
       }
     } receiveValue: {
       receiveResult(.success($0))
-    }
-  }
-}
-
-struct YouTubePlayer: UIViewRepresentable {
-  let videoId: String
-
-  func makeCoordinator() -> Coordinator {
-    return Coordinator()
-  }
-
-  func makeUIView(context: Context) -> YTPlayerView {
-    let player = YTPlayerView()
-    player.delegate = context.coordinator
-    context.coordinator.currentId = videoId
-    player.load(withVideoId: videoId, playerVars: ["playsinline": 1])
-    return player
-  }
-
-  func updateUIView(_ uiView: YTPlayerView, context: Context) {
-    // In practice, this is called when dismissing the details sheet, so the id doesn't actually change.
-    if context.coordinator.currentId != videoId {
-      DBG("Updating video id: \(context.coordinator.currentId ?? "nil") -> \(videoId). This should likely never happen.")
-      uiView.cueVideo(byId: videoId, startSeconds: 0)
-      context.coordinator.currentId = videoId
-    }
-  }
-
-  class Coordinator: NSObject, YTPlayerViewDelegate {
-    var currentId: String?
-
-    func playerViewPreferredInitialLoading(_ playerView: YTPlayerView) -> UIView? {
-      return with(UIActivityIndicatorView()) {
-        $0.startAnimating()
-      }
-    }
-
-    func playerViewPreferredWebViewBackgroundColor(_ playerView: YTPlayerView) -> UIColor {
-      return .clear
     }
   }
 }
