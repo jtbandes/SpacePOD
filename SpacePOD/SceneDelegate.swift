@@ -4,7 +4,7 @@ import SpacePODShared
 
 class ContentViewController: UIHostingController<ContentView> {
   #if DEBUG
-  let debugActions = with(UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)) {
+  let debugActions = configure(UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)) {
     $0.addAction(UIAlertAction(title: "Clear Cache", style: .destructive) { _ in APODClient.shared.debug_clearCache() })
     $0.addAction(UIAlertAction(title: "Cancel", style: .cancel))
   }

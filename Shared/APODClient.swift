@@ -72,14 +72,8 @@ public class APODEntry: Codable {
 
   var PREVIEW_overrideImage: UIImage?
   private var _loadedImage: UIImage?
-  public func loadImage(decode: Bool) -> UIImage? {
-    _loadedImage = _loadedImage ?? PREVIEW_overrideImage
-    if _loadedImage == nil {
-      _loadedImage = UIImage(contentsOfFile: localImageURL.path)
-      if decode {
-        _loadedImage = _loadedImage?.decoded()
-      }
-    }
+  public func loadImage() -> UIImage? {
+    _loadedImage = _loadedImage ?? PREVIEW_overrideImage ?? UIImage(contentsOfFile: localImageURL.path)
     return _loadedImage
   }
 

@@ -65,7 +65,7 @@ public struct APODEntryView: View {
       .foregroundColor(Color(.sRGB, white: 0.5)))
 
   public var body: some View {
-    let image = entry.loadImage(decode: false).map {
+    let image = entry.loadImage().map {
       let image = Image(uiImage: $0).resizable().aspectRatio(contentMode: .fill)
       if case .youtubeVideo = entry.asset {
         // FIXME: it might be nicer to switch at the top level, removing loadImage(), so we can't forget to handle videos separately elsewhere
@@ -120,13 +120,13 @@ struct APODEntryView_Previews: PreviewProvider {
 """.data(using: .utf8)!
 
     APODEntryView(
-      entry: with(try! JSONDecoder().decode(APODEntry.self, from: videoPreviewJSON)) {
+      entry: configure(try! JSONDecoder().decode(APODEntry.self, from: videoPreviewJSON)) {
         $0.PREVIEW_overrideImage = #imageLiteral(resourceName: "sampleImage")
       })
       .previewContext(WidgetPreviewContext(family: .systemSmall))
 
     APODEntryView(
-      entry: with(try! JSONDecoder().decode(APODEntry.self, from: previewJSON)) {
+      entry: configure(try! JSONDecoder().decode(APODEntry.self, from: previewJSON)) {
         $0.PREVIEW_overrideImage = #imageLiteral(resourceName: "sampleImage")
       })
       .previewContext(WidgetPreviewContext(family: .systemMedium))

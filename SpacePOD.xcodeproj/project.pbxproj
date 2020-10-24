@@ -39,6 +39,11 @@
 		16622EC4253653EF00C86A6F /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		16622EC5253653EF00C86A6F /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		16AEA76C25438EE600CA0B30 /* YouTubePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEA76B25438EE500CA0B30 /* YouTubePlayer.swift */; };
+		16AEA7762543920700CA0B30 /* Combine+SpacePOD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEA7752543920700CA0B30 /* Combine+SpacePOD.swift */; };
+		16AEA77C2543932400CA0B30 /* Foundation+SpacePOD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEA77B2543932400CA0B30 /* Foundation+SpacePOD.swift */; };
+		16AEA782254399F700CA0B30 /* Collection+SpacePOD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEA781254399F700CA0B30 /* Collection+SpacePOD.swift */; };
+		16AEA78825439AFE00CA0B30 /* Optional+SpacePOD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEA78725439AFE00CA0B30 /* Optional+SpacePOD.swift */; };
+		16AEA7922543CDD700CA0B30 /* SwiftUI+SpacePOD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEA7912543CDD700CA0B30 /* SwiftUI+SpacePOD.swift */; };
 		16AEE9FF25229D4600A2D094 /* ZoomableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEE9FE25229D4600A2D094 /* ZoomableScrollView.swift */; };
 		16AEEA1C252425BC00A2D094 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEEA1B252425BA00A2D094 /* Utilities.swift */; };
 /* End PBXBuildFile section */
@@ -149,6 +154,11 @@
 		16622E852525786900C86A6F /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		16622EB52535637700C86A6F /* APODTimelineEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APODTimelineEntry.swift; sourceTree = "<group>"; };
 		16AEA76B25438EE500CA0B30 /* YouTubePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubePlayer.swift; sourceTree = "<group>"; };
+		16AEA7752543920700CA0B30 /* Combine+SpacePOD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Combine+SpacePOD.swift"; sourceTree = "<group>"; };
+		16AEA77B2543932400CA0B30 /* Foundation+SpacePOD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Foundation+SpacePOD.swift"; sourceTree = "<group>"; };
+		16AEA781254399F700CA0B30 /* Collection+SpacePOD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+SpacePOD.swift"; sourceTree = "<group>"; };
+		16AEA78725439AFE00CA0B30 /* Optional+SpacePOD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optional+SpacePOD.swift"; sourceTree = "<group>"; };
+		16AEA7912543CDD700CA0B30 /* SwiftUI+SpacePOD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SwiftUI+SpacePOD.swift"; sourceTree = "<group>"; };
 		16AEE9FE25229D4600A2D094 /* ZoomableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomableScrollView.swift; sourceTree = "<group>"; };
 		16AEEA1B252425BA00A2D094 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -273,6 +283,8 @@
 		1602DF9C251C12A8004D96B2 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				16622E852525786900C86A6F /* Config.xcconfig */,
+				1602DF9E251C12A8004D96B2 /* Info.plist */,
 				1602DF49251BC0F8004D96B2 /* Preview Content */,
 				1602DF76251BC4A4004D96B2 /* APODClient.swift */,
 				1602DFE9251C1526004D96B2 /* APODEntryView.swift */,
@@ -280,8 +292,11 @@
 				1602DF83251BEA99004D96B2 /* Utilities.swift */,
 				1602DF91251C1160004D96B2 /* YearMonthDay.swift */,
 				1602DF8A251C062C004D96B2 /* SortedDictionary.swift */,
-				16622E852525786900C86A6F /* Config.xcconfig */,
-				1602DF9E251C12A8004D96B2 /* Info.plist */,
+				16AEA781254399F700CA0B30 /* Collection+SpacePOD.swift */,
+				16AEA7752543920700CA0B30 /* Combine+SpacePOD.swift */,
+				16AEA77B2543932400CA0B30 /* Foundation+SpacePOD.swift */,
+				16AEA78725439AFE00CA0B30 /* Optional+SpacePOD.swift */,
+				16AEA7912543CDD700CA0B30 /* SwiftUI+SpacePOD.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -551,12 +566,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16AEA7762543920700CA0B30 /* Combine+SpacePOD.swift in Sources */,
+				16AEA77C2543932400CA0B30 /* Foundation+SpacePOD.swift in Sources */,
+				16AEA782254399F700CA0B30 /* Collection+SpacePOD.swift in Sources */,
 				1602DFF2251C1579004D96B2 /* YearMonthDay.swift in Sources */,
 				1602DFEA251C1526004D96B2 /* APODEntryView.swift in Sources */,
 				16622EBA253563D800C86A6F /* Widget.intentdefinition in Sources */,
 				1602DFCA251C12EB004D96B2 /* SortedDictionary.swift in Sources */,
 				16622EB62535637900C86A6F /* APODTimelineEntry.swift in Sources */,
+				16AEA78825439AFE00CA0B30 /* Optional+SpacePOD.swift in Sources */,
 				1602DFEE251C153C004D96B2 /* APODClient.swift in Sources */,
+				16AEA7922543CDD700CA0B30 /* SwiftUI+SpacePOD.swift in Sources */,
 				1602DFC6251C12E2004D96B2 /* Utilities.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -13,7 +13,7 @@ struct YouTubePlayer: UIViewRepresentable {
 
   func makeUIView(context: Context) -> YTPlayerView {
     context.coordinator.currentId = videoId
-    return with(YTPlayerView()) {
+    return configure(YTPlayerView()) {
       $0.delegate = context.coordinator
       $0.load(
         withVideoId: videoId,
@@ -41,7 +41,7 @@ struct YouTubePlayer: UIViewRepresentable {
 
     // Show a spinner while the video loads.
     func playerViewPreferredInitialLoading(_ playerView: YTPlayerView) -> UIView? {
-      return with(UIActivityIndicatorView()) {
+      return configure(UIActivityIndicatorView()) {
         $0.startAnimating()
       }
     }

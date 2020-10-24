@@ -3,21 +3,6 @@ import Combine
 import SpacePODShared
 import WidgetKit
 
-extension Publisher {
-  func sinkResult(_ receiveResult: @escaping (Result<Output, Failure>) -> Void) -> AnyCancellable {
-    return sink {
-      switch $0 {
-      case .failure(let err):
-        receiveResult(.failure(err))
-      case .finished:
-        DBG("Finished, ignoring")
-      }
-    } receiveValue: {
-      receiveResult(.success($0))
-    }
-  }
-}
-
 class ViewModel: ObservableObject {
   @Published var currentEntry: Loading<Result<APODEntry, Error>> = .loading
 
@@ -122,7 +107,7 @@ struct ContentView: View {
       default:
         ZStack(alignment: .leading) {
           Group {
-            if let image = entry.loadImage(decode: true) {
+            if let image = entry.loadImage() {
               ZoomableScrollView {
                 Image(uiImage: image)
               }
