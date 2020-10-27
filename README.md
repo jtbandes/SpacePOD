@@ -1,4 +1,5 @@
-# Space! &nbsp;&nbsp;[<img src="https://user-images.githubusercontent.com/14237/97336451-41719800-183c-11eb-815f-27ead318c4ec.png" width="120" valign="bottom">](https://apps.apple.com/us/app/space-daily-photos/id1536864924)
+# Space! &nbsp;&nbsp;[<img src="https://user-images.githubusercontent.com/14237/97336451-41719800-183c-11eb-815f-27ead318c4ec.png" alt="Download on the App Store" width="120" valign="middle">](https://apps.apple.com/us/app/space-daily-photos/id1536864924) [<img src="https://user-images.githubusercontent.com/14237/97349057-37579580-184c-11eb-8158-4842a31ac190.png" width="217" alt="Donate on Ko-fi" valign="middle">](https://ko-fi.com/B0B62J36X)
+
 
 NASA's Astronomy Picture of the Day – now on your Home Screen with widgets!
 
