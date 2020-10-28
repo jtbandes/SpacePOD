@@ -1,5 +1,9 @@
 import SwiftUI
 
+extension URL: Identifiable {
+  public var id: Self { self }
+}
+
 extension View {
 
   // See also: prior art
@@ -9,7 +13,7 @@ extension View {
   /// Conditionally apply a modifier to the view based on a boolean value.
   /// - Returns: `modifier(self)` if `condition` is true; `self` otherwise.
   @ViewBuilder
-  func `if`<T: View>(_ condition: Bool, _ modifier: (Self) -> T) -> some View {
+  public func `if`<T: View>(_ condition: Bool, _ modifier: (Self) -> T) -> some View {
     if condition {
       modifier(self)
     } else {
@@ -20,7 +24,7 @@ extension View {
   /// Conditionally apply a modifier to the view based on the presence of an optional value.
   /// - Returns: `modifier(self)` if `condition` is true; `self` otherwise.
   @ViewBuilder
-  func `ifLet`<T: View, U>(_ value: U?, _ modifier: (Self, U) -> T) -> some View {
+  public func `ifLet`<T: View, U>(_ value: U?, _ modifier: (Self, U) -> T) -> some View {
     if let value = value {
       modifier(self, value)
     } else {
@@ -43,4 +47,26 @@ extension View {
       alignment: alignment)
   }
 
+}
+
+extension Text {
+  public init(_ date: Date, dateStyle: DateFormatter.Style) {
+    let formatter = DateFormatter()
+    formatter.dateStyle = dateStyle
+    self.init(verbatim: formatter.string(from: date))
+  }
+
+  public init(_ date: Date, formatter: DateFormatter) {
+    self.init(verbatim: formatter.string(from: date))
+  }
+
+  @available(*, deprecated, message: "Date formatting is buggy in 14.1: https://developer.apple.com/forums/thread/665081")
+  public init<S: ReferenceConvertible>(_ subject: S, formatter: Formatter) {
+    fatalError()
+  }
+
+  @available(*, deprecated, message: "Date formatting is buggy in 14.1: https://developer.apple.com/forums/thread/665081")
+  public init(_ date: Date, style: DateStyle) {
+    fatalError()
+  }
 }

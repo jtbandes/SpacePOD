@@ -77,6 +77,11 @@ public class APODEntry: Codable {
     return _loadedImage
   }
 
+  public var webURL: URL? {
+    let dateStr = String(format: "%02d%02d%02d", date.year % 100, date.month, date.day)
+    return URL(string: "https://apod.nasa.gov/apod/ap\(dateStr).html")
+  }
+
   public required init(from decoder: Decoder) throws {
     rawEntry = try RawAPODEntry(from: decoder)
     localDataURL = CACHE_URL.appendingPathComponent(rawEntry.date.description).appendingPathExtension(DATA_PATH_EXTENSION)

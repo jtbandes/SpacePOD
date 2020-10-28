@@ -69,6 +69,8 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Images will be saved to your photo library.</string>
 	<key>UIUserInterfaceStyle</key>
 	<string>Dark</string>
 </dict>

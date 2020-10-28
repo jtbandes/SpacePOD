@@ -38,6 +38,7 @@
 		16622EBA253563D800C86A6F /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; };
 		16622EC4253653EF00C86A6F /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		16622EC5253653EF00C86A6F /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
+		16923317254756C3002CDDF2 /* SafariViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16923316254756C0002CDDF2 /* SafariViewController.swift */; };
 		16AEA76C25438EE600CA0B30 /* YouTubePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEA76B25438EE500CA0B30 /* YouTubePlayer.swift */; };
 		16AEA7762543920700CA0B30 /* Combine+SpacePOD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEA7752543920700CA0B30 /* Combine+SpacePOD.swift */; };
 		16AEA77C2543932400CA0B30 /* Foundation+SpacePOD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEA77B2543932400CA0B30 /* Foundation+SpacePOD.swift */; };
@@ -153,6 +154,7 @@
 		160F527C253FB773005A12EE /* Assets.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Assets.bundle; sourceTree = "<group>"; };
 		16622E852525786900C86A6F /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		16622EB52535637700C86A6F /* APODTimelineEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APODTimelineEntry.swift; sourceTree = "<group>"; };
+		16923316254756C0002CDDF2 /* SafariViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariViewController.swift; sourceTree = "<group>"; };
 		16AEA76B25438EE500CA0B30 /* YouTubePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubePlayer.swift; sourceTree = "<group>"; };
 		16AEA7752543920700CA0B30 /* Combine+SpacePOD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Combine+SpacePOD.swift"; sourceTree = "<group>"; };
 		16AEA77B2543932400CA0B30 /* Foundation+SpacePOD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Foundation+SpacePOD.swift"; sourceTree = "<group>"; };
@@ -247,6 +249,7 @@
 				16AEE9FE25229D4600A2D094 /* ZoomableScrollView.swift */,
 				16AEEA1B252425BA00A2D094 /* Utilities.swift */,
 				16AEA76B25438EE500CA0B30 /* YouTubePlayer.swift */,
+				16923316254756C0002CDDF2 /* SafariViewController.swift */,
 			);
 			path = SpacePOD;
 			sourceTree = "<group>";
@@ -544,6 +547,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				16AEEA1C252425BC00A2D094 /* Utilities.swift in Sources */,
+				16923317254756C3002CDDF2 /* SafariViewController.swift in Sources */,
 				16AEE9FF25229D4600A2D094 /* ZoomableScrollView.swift in Sources */,
 				16622EC5253653EF00C86A6F /* Widget.intentdefinition in Sources */,
 				1602DF42251BC0F7004D96B2 /* AppDelegate.swift in Sources */,
