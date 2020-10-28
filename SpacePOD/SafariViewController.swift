@@ -1,10 +1,3 @@
-//
-//  SafariViewController.swift
-//  Space!
-//
-//  Created by Jacob Bandes-Storch on 10/26/20.
-//
-
 import SwiftUI
 import SafariServices
 import SpacePODShared

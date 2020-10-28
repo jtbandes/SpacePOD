@@ -20,12 +20,25 @@ class ViewModel: ObservableObject {
 /// We present the UIActivityViewController imperatively rather than wrapping it with UIViewControllerRepresentable
 /// because SwiftUI doesn't display it properly (full sheet instead of half sheet on iPhone) and the interactive swipe-to-dismiss
 /// causes the `isPresented` binding to immediately become false, which suddenly removes the view controller.
-func presentShareSheet(_ entry: APODEntry, _ image: UIImage) {
+func presentShareSheet(_ entry: APODEntry, loadedImage: UIImage?) {
   guard let visibleViewController = UIApplication.shared.visibleViewController else {
     print("No view controller from which to present share sheet")
     return
   }
 
+  let activityVC: UIActivityViewController
+  if let loadedImage = loadedImage, let vc = shareSheetForImage(entry, loadedImage) {
+    activityVC = vc
+  } else if let webURL = entry.webURL {
+    activityVC = UIActivityViewController(activityItems: [webURL], applicationActivities: [OpenInBrowserActivity()])
+  } else {
+    print("No image or web URL for share sheet")
+    return
+  }
+  visibleViewController.present(activityVC, animated: true)
+}
+
+func shareSheetForImage(_ entry: APODEntry, _ image: UIImage) -> UIActivityViewController? {
   // Our cache saves images without file extensions, so if we want the extension to be shown
   // when sharing a URL, we need to actually create a new temporary file.
 
@@ -48,7 +61,7 @@ func presentShareSheet(_ entry: APODEntry, _ image: UIImage) {
     activityVC = UIActivityViewController(activityItems: [tmpFile], applicationActivities: nil)
   } catch {
     print("Unable to create temporary file: \(error)")
-    return
+    return nil
   }
 
   activityVC.completionWithItemsHandler = { (activityType, completed, returnedItems, activityError) in
@@ -58,7 +71,7 @@ func presentShareSheet(_ entry: APODEntry, _ image: UIImage) {
       print("Unable to remove temporary file: \(error)")
     }
   }
-  visibleViewController.present(activityVC, animated: true)
+  return activityVC
 }
 
 struct ContentView: View {
@@ -97,6 +110,22 @@ struct ContentView: View {
     .shadow(color: .black, radius: 2, x: 0.0, y: 0.0)
   }
 
+  func bottomBar(_ entry: APODEntry, loadedImage: UIImage?) -> some View {
+    HStack {
+      Button {
+        withAnimation { detailsShown.toggle() }
+      } label: {
+        titleView(for: entry)
+      }
+      .foregroundColor(.primary)
+      .accessibilityHint("Show details")
+
+      Button(action: { presentShareSheet(entry, loadedImage: loadedImage) }) {
+        Image(systemName: "square.and.arrow.up").imageScale(.large).padding()
+      }
+    }
+  }
+
   func detailsSheet(_ entry: APODEntry) -> some View {
     ScrollView {
       VStack(alignment: .leading) {
@@ -119,19 +148,11 @@ struct ContentView: View {
 
   @ViewBuilder
   func entryBody(_ entry: APODEntry) -> some View {
-    let title = Button {
-      withAnimation { detailsShown.toggle() }
-    } label: {
-      titleView(for: entry)
-    }
-    .foregroundColor(.primary)
-    .accessibilityHint("Show details")
-
     switch entry.asset {
     case let .youtubeVideo(id: id, _):
       VStack {
         YouTubePlayer(videoId: id)
-        title
+        bottomBar(entry, loadedImage: nil)
       }
 
     default:
@@ -150,14 +171,7 @@ struct ContentView: View {
         VStack(alignment: .leading) {
           Spacer()
           if titleShown {
-            HStack {
-              title
-              if let image = image {
-                Button(action: { presentShareSheet(entry, image) }) {
-                  Image(systemName: "square.and.arrow.up").imageScale(.large).padding()
-                }
-              }
-            }
+            bottomBar(entry, loadedImage: image)
           }
         }
       }
@@ -172,7 +186,7 @@ struct ContentView: View {
           .colorScheme(.dark)
           .flexibleFrame()
 
-        titleView(for: .placeholder).redacted(reason: .placeholder)
+        bottomBar(.placeholder, loadedImage: nil).redacted(reason: .placeholder)
       }
 
     case .loaded(.failure(let error)):
