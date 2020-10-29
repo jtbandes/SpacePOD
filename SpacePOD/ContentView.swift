@@ -20,14 +20,14 @@ class ViewModel: ObservableObject {
 /// We present the UIActivityViewController imperatively rather than wrapping it with UIViewControllerRepresentable
 /// because SwiftUI doesn't display it properly (full sheet instead of half sheet on iPhone) and the interactive swipe-to-dismiss
 /// causes the `isPresented` binding to immediately become false, which suddenly removes the view controller.
-func presentShareSheet(_ entry: APODEntry, loadedImage: UIImage?) {
+func presentShareSheet(_ entry: APODEntry) {
   guard let visibleViewController = UIApplication.shared.visibleViewController else {
     print("No view controller from which to present share sheet")
     return
   }
 
   let activityVC: UIActivityViewController
-  if let loadedImage = loadedImage, let vc = shareSheetForImage(entry, loadedImage) {
+  if let loadedImage = entry.loadImage(), let vc = shareSheetForImage(entry, loadedImage) {
     activityVC = vc
   } else if let webURL = entry.webURL {
     activityVC = UIActivityViewController(activityItems: [webURL], applicationActivities: [OpenInBrowserActivity()])
@@ -110,22 +110,6 @@ struct ContentView: View {
     .shadow(color: .black, radius: 2, x: 0.0, y: 0.0)
   }
 
-  func bottomBar(_ entry: APODEntry, loadedImage: UIImage?) -> some View {
-    HStack {
-      Button {
-        withAnimation { detailsShown.toggle() }
-      } label: {
-        titleView(for: entry)
-      }
-      .foregroundColor(.primary)
-      .accessibilityHint("Show details")
-
-      Button(action: { presentShareSheet(entry, loadedImage: loadedImage) }) {
-        Image(systemName: "square.and.arrow.up").imageScale(.large).padding()
-      }
-    }
-  }
-
   func detailsSheet(_ entry: APODEntry) -> some View {
     ScrollView {
       VStack(alignment: .leading) {
@@ -144,22 +128,51 @@ struct ContentView: View {
       }.padding()
       .flexibleFrame(alignment: .topLeading)
     }
+    .navigationTitle(
+      entry.date.asDate().map { Text($0, dateStyle: .long) } ?? Text("")
+    )
+    .navigationBarTitleDisplayMode(.inline)
+    .toolbar {
+      ToolbarItem(placement: .navigationBarLeading) {
+        Button("Done") { detailsShown = false }
+      }
+      ToolbarItem(placement: .navigationBarTrailing) {
+        Button(action: { urlForWebView = entry.webURL }) {
+          Image(systemName: "safari").imageScale(.large)
+        }.sheet(item: $urlForWebView) {
+          SafariViewController(url: $0)
+        }
+      }
+      ToolbarItem(placement: .navigationBarTrailing) {
+        Button(action: { presentShareSheet(entry) }) {
+          Image(systemName: "square.and.arrow.up").imageScale(.large).padding()
+        }
+      }
+    }
   }
 
   @ViewBuilder
   func entryBody(_ entry: APODEntry) -> some View {
+    let bottomBar = Button {
+      withAnimation { detailsShown.toggle() }
+    } label: {
+      titleView(for: entry)
+    }
+    .foregroundColor(.primary)
+    .accessibilityHint("Show details")
+
     switch entry.asset {
     case let .youtubeVideo(id: id, _):
       VStack {
         YouTubePlayer(videoId: id)
-        bottomBar(entry, loadedImage: nil)
+        bottomBar
       }
 
     default:
       ZStack(alignment: .leading) {
         let image = entry.loadImage()
         Group {
-          if let image = image{
+          if let image = image {
             ZoomableScrollView {
               Image(uiImage: image)
             }
@@ -171,7 +184,7 @@ struct ContentView: View {
         VStack(alignment: .leading) {
           Spacer()
           if titleShown {
-            bottomBar(entry, loadedImage: image)
+            bottomBar
           }
         }
       }
@@ -186,7 +199,7 @@ struct ContentView: View {
           .colorScheme(.dark)
           .flexibleFrame()
 
-        bottomBar(.placeholder, loadedImage: nil).redacted(reason: .placeholder)
+        titleView(for: .placeholder).redacted(reason: .placeholder)
       }
 
     case .loaded(.failure(let error)):
@@ -202,22 +215,6 @@ struct ContentView: View {
         .sheet(isPresented: $detailsShown) {
           NavigationView {
             detailsSheet(entry)
-              .navigationTitle(
-                entry.date.asDate().map { Text($0, dateStyle: .long) } ?? Text("")
-              )
-              .navigationBarTitleDisplayMode(.inline)
-              .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                  Button("Done") { detailsShown = false }
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                  Button(action: { urlForWebView = entry.webURL }) {
-                    Image(systemName: "safari").imageScale(.large)
-                  }.sheet(item: $urlForWebView) {
-                    SafariViewController(url: $0)
-                  }
-                }
-              }
           }
         }
     }
