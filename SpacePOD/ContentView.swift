@@ -53,10 +53,16 @@ func shareSheetForImage(_ entry: APODEntry, _ image: UIImage) -> UIActivityViewC
   let activityVC: UIActivityViewController
   let tmpDir = FileManager.default.temporaryDirectory
     .appendingPathComponent(ProcessInfo.processInfo.globallyUniqueString, isDirectory: true)
-  let tmpFile = tmpDir.appendingPathComponent(filename)
+  var tmpFile = tmpDir.appendingPathComponent(filename)
   do {
     try FileManager.default.createDirectory(at: tmpDir, withIntermediateDirectories: true)
     try FileManager.default.linkItem(at: entry.localImageURL, to: tmpFile)
+    // Update creation/modification dates so the photo shows up in the newest spot in the photos library.
+    try tmpFile.setResourceValues(configure(URLResourceValues()) {
+      let now = Date()
+      $0.creationDate = now
+      $0.contentModificationDate = now
+    })
 
     activityVC = UIActivityViewController(activityItems: [tmpFile], applicationActivities: nil)
   } catch {
