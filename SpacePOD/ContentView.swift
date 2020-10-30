@@ -7,12 +7,26 @@ import UniformTypeIdentifiers
 class ViewModel: ObservableObject {
   @Published var currentEntry: Loading<Result<APODEntry, Error>> = .loading
 
-  private var cancellable: AnyCancellable?
+  private var imageCancellable: AnyCancellable?
+  private var cancellables = Set<AnyCancellable>()
 
   init() {
-    cancellable = APODClient.shared.loadLatestImage().sinkResult { [unowned self] in
-      WidgetCenter.shared.reloadAllTimelines()
-      self.currentEntry = .loaded($0)
+    // Reload whenever the app is foregrounded, including at launch.
+    NotificationCenter.default.publisher(for: UIScene.willEnterForegroundNotification)
+      .sink { [unowned self] _ in reload() }
+      .store(in: &cancellables)
+  }
+
+  func reload() {
+    imageCancellable = APODClient.shared.loadLatestImage().sinkResult { [unowned self] in
+      switch (self.currentEntry, $0) {
+      case let (.loaded(.success(value)), .success(newValue)) where value.date == newValue.date:
+        // If the date has not changed, don't reload the view.
+        break
+      default:
+        self.currentEntry = .loaded($0)
+        WidgetCenter.shared.reloadAllTimelines()
+      }
     }
   }
 }

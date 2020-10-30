@@ -19,3 +19,12 @@ extension DateFormatter {
     $0.setLocalizedDateFormatFromTemplate("MMM dd")
   }
 }
+
+public extension UserDefaults {
+  static var spaceAppGroup = UserDefaults(suiteName: Constants.spaceAppGroupID)!
+
+  var lastAPODCacheDate: Date? {
+    get { object(forKey: "lastAPODCacheDate") as? Date }
+    set { set(newValue, forKey: "lastAPODCacheDate") }
+  }
+}

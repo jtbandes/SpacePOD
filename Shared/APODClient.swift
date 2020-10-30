@@ -14,7 +14,7 @@ private let DATA_PATH_EXTENSION = "json"
 
 private let CACHE_URL = URL(
   fileURLWithPath: "cache", relativeTo:
-    FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.SpacePOD")!)
+    FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Constants.spaceAppGroupID)!)
 
 let youtubeRegex = try! NSRegularExpression(pattern: #"://.*youtube\.com/embed/([^/?#]+)"#)
 
@@ -211,9 +211,17 @@ public class APODClient {
   }
 
   public func loadLatestImage() -> AnyPublisher<APODEntry, Error> {
-    if let lastCached = _cache.last?.value, lastCached.date.isCurrent {
-      DBG("Loaded \(lastCached.date) from cache")
-      return Result.success(lastCached).publisher.eraseToAnyPublisher()
+    // Return the latest cached entry if it's not stale.
+    if let lastCached = _cache.last?.value {
+      // TODO: maybe improve this by predicting the next expected entry date (midnight Pacific)?
+      let lastCacheDate = UserDefaults.spaceAppGroup.lastAPODCacheDate
+      let cacheIsStale = lastCacheDate.map { -$0.timeIntervalSinceNow > 60*60 } ?? true
+      if !lastCached.date.isCurrent && cacheIsStale {
+        DBG("Cache is stale: \(lastCacheDate?.description ?? "never cached")")
+      } else {
+        DBG("Loaded \(lastCached.date) from cache")
+        return Result.success(lastCached).publisher.eraseToAnyPublisher()
+      }
     }
 
     var components = API_URL
@@ -246,6 +254,7 @@ public class APODClient {
       .receive(on: DispatchQueue.main)
       .map { [weak self] entry in
         self?._cache[entry.date] = entry
+        UserDefaults.spaceAppGroup.lastAPODCacheDate = Date()
         return entry
       }
       .eraseToAnyPublisher()
