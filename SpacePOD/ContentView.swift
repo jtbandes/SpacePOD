@@ -237,6 +237,9 @@ struct ContentView: View {
             detailsSheet(entry)
           }
         }
+        .userActivity(NSUserActivityTypeBrowsingWeb, element: entry.webURL) {
+          $1.webpageURL = $0
+        }
     }
   }
 }
