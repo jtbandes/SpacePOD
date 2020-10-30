@@ -33,6 +33,7 @@
 		160F527D253FB773005A12EE /* Assets.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 160F527C253FB773005A12EE /* Assets.bundle */; };
 		1625BF6E251C46A20004BB61 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF4A251BC0F8004D96B2 /* Preview Assets.xcassets */; };
 		1625BF72251C46A20004BB61 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF4A251BC0F8004D96B2 /* Preview Assets.xcassets */; };
+		164AD066254CB84A00CEF1BB /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164AD065254CB84A00CEF1BB /* TextView.swift */; };
 		165231B8254A301700C5978E /* OpenInBrowserActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 165231B7254A301700C5978E /* OpenInBrowserActivity.swift */; };
 		16622EB62535637900C86A6F /* APODTimelineEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16622EB52535637700C86A6F /* APODTimelineEntry.swift */; };
 		16622EBA253563D800C86A6F /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; };
@@ -151,6 +152,7 @@
 		160F5263253FB729005A12EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		160F5270253FB739005A12EE /* YTPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YTPlayerView.m; sourceTree = "<group>"; };
 		160F527C253FB773005A12EE /* Assets.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Assets.bundle; sourceTree = "<group>"; };
+		164AD065254CB84A00CEF1BB /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
 		165231B7254A301700C5978E /* OpenInBrowserActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenInBrowserActivity.swift; sourceTree = "<group>"; };
 		16622E852525786900C86A6F /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		16622EB52535637700C86A6F /* APODTimelineEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APODTimelineEntry.swift; sourceTree = "<group>"; };
@@ -247,6 +249,7 @@
 				1602DF45251BC0F7004D96B2 /* ContentView.swift */,
 				165231B7254A301700C5978E /* OpenInBrowserActivity.swift */,
 				16923316254756C0002CDDF2 /* SafariViewController.swift */,
+				164AD065254CB84A00CEF1BB /* TextView.swift */,
 				16AEEA1B252425BA00A2D094 /* Utilities.swift */,
 				16AEA76B25438EE500CA0B30 /* YouTubePlayer.swift */,
 				16AEE9FE25229D4600A2D094 /* ZoomableScrollView.swift */,
@@ -552,6 +555,7 @@
 				16622EC5253653EF00C86A6F /* Widget.intentdefinition in Sources */,
 				1602DF42251BC0F7004D96B2 /* App.swift in Sources */,
 				16AEA76C25438EE600CA0B30 /* YouTubePlayer.swift in Sources */,
+				164AD066254CB84A00CEF1BB /* TextView.swift in Sources */,
 				165231B8254A301700C5978E /* OpenInBrowserActivity.swift in Sources */,
 				1602DF46251BC0F7004D96B2 /* ContentView.swift in Sources */,
 			);

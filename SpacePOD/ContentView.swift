@@ -131,23 +131,33 @@ struct ContentView: View {
   }
 
   func detailsSheet(_ entry: APODEntry) -> some View {
-    ScrollView {
-      VStack(alignment: .leading) {
-        if let title = entry.title {
-          Text(title).font(Font.system(.title).weight(.heavy))
-        }
-        if let copyright = entry.copyright {
-          Text(copyright).font(.system(.callout)).foregroundColor(.secondary)
-        }
-        Spacer().frame(height: 24)
-        if let explanation = entry.explanation {
-          Text(explanation).font(.system(.body, design: .serif))
-        } else {
-          Text("No details available").foregroundColor(.secondary).flexibleFrame(alignment: .center)
-        }
-      }.padding()
-      .flexibleFrame(alignment: .topLeading)
+    TextView {
+      if let title = entry.title {
+        title.withAttributes([
+          .font: UIFont.preferredFont(forTextStyle: .title1, weight: .heavy),
+          .foregroundColor: UIColor.label,
+        ])
+      }
+      if let copyright = entry.copyright {
+        copyright.withAttributes([
+          .font: UIFont.preferredFont(forTextStyle: .callout),
+          .foregroundColor: UIColor.secondaryLabel,
+        ])
+      }
+      "" // line break
+      if let explanation = entry.explanation {
+        explanation.withAttributes([
+          .font: UIFont.preferredFont(forTextStyle: .body, design: .serif),
+          .foregroundColor: UIColor.label,
+        ])
+      } else {
+        "No details available".withAttributes([
+          .font: UIFont.preferredFont(forTextStyle: .body, design: .serif),
+          .foregroundColor: UIColor.secondaryLabel,
+        ])
+      }
     }
+    .padding()
     .navigationTitle(
       entry.date.asDate().map { Text($0, dateStyle: .long) } ?? Text("")
     )
