@@ -100,4 +100,6 @@ extension APODErrors: LocalizedError {
 public enum Constants {
   /// The app group identifier shared between the main app & widget extension.
   public static let spaceAppGroupID = "group.SpacePOD"
+
+  public static let userActivityType = "net.bandes-storch.SpacePOD.browsing"
 }

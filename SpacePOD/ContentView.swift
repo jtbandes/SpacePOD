@@ -211,7 +211,8 @@ struct ContentView: View {
     }
   }
 
-  var body: some View {
+  @ViewBuilder
+  var mainBody: some View {
     switch viewModel.currentEntry {
     case .loading:
       VStack(alignment: .leading) {
@@ -237,10 +238,15 @@ struct ContentView: View {
             detailsSheet(entry)
           }
         }
-        .userActivity(NSUserActivityTypeBrowsingWeb, element: entry.webURL) {
+        .userActivity(Constants.userActivityType, element: entry.webURL) {
           $1.webpageURL = $0
         }
     }
+  }
+
+  var body: some View {
+    mainBody
+      .onContinueUserActivity(Constants.userActivityType) { _ in }
   }
 }
 

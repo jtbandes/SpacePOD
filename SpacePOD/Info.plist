@@ -25,6 +25,7 @@
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>ConfigurationIntent</string>
+		<string>net.bandes-storch.SpacePOD.browsing</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
