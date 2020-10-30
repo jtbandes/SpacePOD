@@ -7,8 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1602DF42251BC0F7004D96B2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF41251BC0F7004D96B2 /* AppDelegate.swift */; };
-		1602DF44251BC0F7004D96B2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF43251BC0F7004D96B2 /* SceneDelegate.swift */; };
+		1602DF42251BC0F7004D96B2 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF41251BC0F7004D96B2 /* App.swift */; };
 		1602DF46251BC0F7004D96B2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF45251BC0F7004D96B2 /* ContentView.swift */; };
 		1602DF48251BC0F8004D96B2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF47251BC0F8004D96B2 /* Assets.xcassets */; };
 		1602DF5D251BC263004D96B2 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF5C251BC263004D96B2 /* WidgetKit.framework */; };
@@ -123,8 +122,7 @@
 
 /* Begin PBXFileReference section */
 		1602DF3E251BC0F7004D96B2 /* Space!.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Space!.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1602DF41251BC0F7004D96B2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		1602DF43251BC0F7004D96B2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		1602DF41251BC0F7004D96B2 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		1602DF45251BC0F7004D96B2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		1602DF47251BC0F8004D96B2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1602DF4A251BC0F8004D96B2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -245,8 +243,7 @@
 				1602DF72251BC448004D96B2 /* SpacePOD.entitlements */,
 				1602DF4F251BC0F8004D96B2 /* Info.plist */,
 				1602DF47251BC0F8004D96B2 /* Assets.xcassets */,
-				1602DF41251BC0F7004D96B2 /* AppDelegate.swift */,
-				1602DF43251BC0F7004D96B2 /* SceneDelegate.swift */,
+				1602DF41251BC0F7004D96B2 /* App.swift */,
 				1602DF45251BC0F7004D96B2 /* ContentView.swift */,
 				165231B7254A301700C5978E /* OpenInBrowserActivity.swift */,
 				16923316254756C0002CDDF2 /* SafariViewController.swift */,
@@ -553,8 +550,7 @@
 				16923317254756C3002CDDF2 /* SafariViewController.swift in Sources */,
 				16AEE9FF25229D4600A2D094 /* ZoomableScrollView.swift in Sources */,
 				16622EC5253653EF00C86A6F /* Widget.intentdefinition in Sources */,
-				1602DF42251BC0F7004D96B2 /* AppDelegate.swift in Sources */,
-				1602DF44251BC0F7004D96B2 /* SceneDelegate.swift in Sources */,
+				1602DF42251BC0F7004D96B2 /* App.swift in Sources */,
 				16AEA76C25438EE600CA0B30 /* YouTubePlayer.swift in Sources */,
 				165231B8254A301700C5978E /* OpenInBrowserActivity.swift in Sources */,
 				1602DF46251BC0F7004D96B2 /* ContentView.swift in Sources */,
