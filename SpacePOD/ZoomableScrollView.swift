@@ -18,15 +18,30 @@ class CenteringScrollView: UIScrollView {
   }
 }
 
-struct ZoomableScrollView<Content: View>: UIViewControllerRepresentable {
-  private var content: Content
-
+struct ZoomableScrollView<Content: View>: View {
+  let content: Content
   init(@ViewBuilder content: () -> Content) {
     self.content = content()
   }
 
+  @State var doubleTap = PassthroughSubject<Void, Never>()
+
+  var body: some View {
+    ZoomableScrollViewImpl(content: content, doubleTap: doubleTap.eraseToAnyPublisher())
+      /// The double tap gesture is a modifier on a SwiftUI wrapper view, rather than just putting a UIGestureRecognizer on the wrapped view,
+      /// because SwiftUI and UIKit gesture recognizers don't work together correctly correctly for failure and other interactions.
+      .onTapGesture(count: 2) {
+        doubleTap.send()
+      }
+  }
+}
+
+fileprivate struct ZoomableScrollViewImpl<Content: View>: UIViewControllerRepresentable {
+  let content: Content
+  let doubleTap: AnyPublisher<Void, Never>
+
   func makeUIViewController(context: Context) -> ViewController {
-    return ViewController(coordinator: context.coordinator)
+    return ViewController(coordinator: context.coordinator, doubleTap: doubleTap)
   }
 
   func makeCoordinator() -> Coordinator {
@@ -34,15 +49,17 @@ struct ZoomableScrollView<Content: View>: UIViewControllerRepresentable {
   }
 
   func updateUIViewController(_ viewController: ViewController, context: Context) {
-    viewController.update(self.content)
+    viewController.update(content: self.content, doubleTap: doubleTap)
   }
 
   // MARK: - ViewController
 
   class ViewController: UIViewController, UIScrollViewDelegate {
     let coordinator: Coordinator
-    let scrollView = CenteringScrollView()//UIScrollView()
-    var cancellable: Cancellable?
+    let scrollView = CenteringScrollView()
+
+    var doubleTapCancellable: Cancellable?
+    var updateConstraintsCancellable: Cancellable?
 
     private var hostedView: UIView { coordinator.hostingController.view! }
 
@@ -52,7 +69,7 @@ struct ZoomableScrollView<Content: View>: UIViewControllerRepresentable {
     }
 
     required init?(coder: NSCoder) { fatalError() }
-    init(coordinator: Coordinator) {
+    init(coordinator: Coordinator, doubleTap: AnyPublisher<Void, Never>) {
       self.coordinator = coordinator
       super.init(nibName: nil, bundle: nil)
       self.view = scrollView
@@ -75,15 +92,21 @@ struct ZoomableScrollView<Content: View>: UIViewControllerRepresentable {
         hostedView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
       ])
 
-      cancellable = scrollView.publisher(for: \.bounds).map(\.size).removeDuplicates()
+      updateConstraintsCancellable = scrollView.publisher(for: \.bounds).map(\.size).removeDuplicates()
         .sink { [unowned self] size in
           view.setNeedsUpdateConstraints()
         }
+      doubleTapCancellable = doubleTap.sink { [unowned self] in handleDoubleTap() }
     }
 
-    func update(_ content: Content) {
+    func update(content: Content, doubleTap: AnyPublisher<Void, Never>) {
       coordinator.hostingController.rootView = content
       scrollView.setNeedsUpdateConstraints()
+      doubleTapCancellable = doubleTap.sink { [unowned self] in handleDoubleTap() }
+    }
+
+    func handleDoubleTap() {
+      scrollView.setZoomScale(scrollView.zoomScale >= 1 ? scrollView.minimumZoomScale : 1, animated: true)
     }
 
     override func updateViewConstraints() {
