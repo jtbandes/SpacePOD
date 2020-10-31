@@ -1,6 +1,17 @@
 import Foundation
 import Combine
 
+extension Calendar {
+  public static let losAngeles = configure(Calendar(identifier: .gregorian)) {
+    $0.locale = Locale(identifier: "en_US")
+    $0.timeZone = .losAngeles
+  }
+}
+
+extension TimeZone {
+  public static let losAngeles = TimeZone(identifier: "America/Los_Angeles")!
+}
+
 public extension DateComponents {
   init(YMDString string: String) throws {
     let components = string.split(separator: "-")

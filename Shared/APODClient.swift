@@ -113,6 +113,11 @@ public class APODEntry: Codable {
 
 
   public static let placeholder: APODEntry = APODEntry(rawEntry: RawAPODEntry(date: YearMonthDay.today, hdurl: nil, url: nil, title: "Example", copyright: "Example copyright", explanation: nil, mediaType: "blah"), asset: .unknown(URL(fileURLWithPath: "/dev/null")), localDataURL: URL(fileURLWithPath: "/dev/null"), localImageURL: URL(fileURLWithPath: "/dev/null"))
+
+  /// The earliest expected date that the next entry will be available from the server.
+  static func nextExpectedEntryDate(after entry: APODEntry) -> Date? {
+    return entry.date.nextDate(in: .losAngeles)
+  }
 }
 
 struct RawAPODEntry: Codable {
@@ -214,10 +219,15 @@ public class APODClient {
   public func loadLatestImage() -> AnyPublisher<APODEntry, Error> {
     // Return the latest cached entry if it's not stale.
     if let lastCached = _cache.last?.value {
-      // TODO: maybe improve this by predicting the next expected entry date (midnight Pacific)?
+      // Would we expect to find a new entry if we queried the server now?
+      let newEntryExpected = APODEntry.nextExpectedEntryDate(after: lastCached)
+        .map { $0.timeIntervalSinceNow > 0 } ?? true
+
+      // Has it been an hour since we last queried the server?
       let lastCacheDate = UserDefaults.spaceAppGroup.lastAPODCacheDate
       let cacheIsStale = lastCacheDate.map { -$0.timeIntervalSinceNow > 60*60 } ?? true
-      if !lastCached.date.isCurrent && cacheIsStale {
+
+      if newEntryExpected && cacheIsStale {
         DBG("Cache is stale: \(lastCacheDate?.description ?? "never cached")")
       } else {
         DBG("Loaded \(lastCached.date) from cache")

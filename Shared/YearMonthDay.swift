@@ -1,7 +1,5 @@
 import Foundation
 
-let TIME_ZONE_LA = TimeZone(identifier: "America/Los_Angeles")!
-
 public struct YearMonthDay {
   public let year: Int
   public let month: Int
@@ -31,21 +29,20 @@ public struct YearMonthDay {
   }
 
   public func asDate() -> Date? {
-    guard let date = Calendar.current.date(from: DateComponents(timeZone: TIME_ZONE_LA, year: year, month: month, day: day))
+    guard let date = Calendar.current.date(from: DateComponents(timeZone: .losAngeles, year: year, month: month, day: day))
     else {
       return nil
     }
     return date
   }
 
-  var isCurrent: Bool {
-    guard let date = asDate() else {
-      return false
-    }
-    var calendar = Calendar.current
-    calendar.locale = Locale(identifier: "en_US")
-    calendar.timeZone = TIME_ZONE_LA
-    return calendar.isDateInToday(date) || calendar.isDateInTomorrow(date)
+  public func nextDate(in calendar: Calendar) -> Date? {
+    guard
+      let thisDate = calendar.date(from: DateComponents(year: year, month: month, day: day)),
+      let nextDate = calendar.date(byAdding: .day, value: 1, to: thisDate)
+    else { return nil }
+
+    return calendar.startOfDay(for: nextDate)
   }
 }
 
