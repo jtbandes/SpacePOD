@@ -12,9 +12,7 @@ func getAPIKey() -> String {
 private let API_URL = URLComponents(string: "https://api.nasa.gov/planetary/apod?api_key=\(getAPIKey())")!
 private let DATA_PATH_EXTENSION = "json"
 
-private let CACHE_URL = URL(
-  fileURLWithPath: "cache", relativeTo:
-    FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Constants.spaceAppGroupID)!)
+private let CACHE_URL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Constants.spaceAppGroupID)!.appendingPathComponent("cache")
 
 let youtubeRegex = try! NSRegularExpression(pattern: #"://.*youtube\.com/embed/([^/?#]+)"#)
 
@@ -83,6 +81,9 @@ public class APODEntry: Codable {
   }
 
   public required init(from decoder: Decoder) throws {
+    #if DEBUG && targetEnvironment(simulator)
+    print("Cache URL: \(CACHE_URL.path)")
+    #endif
     rawEntry = try RawAPODEntry(from: decoder)
     localDataURL = CACHE_URL.appendingPathComponent(rawEntry.date.description).appendingPathExtension(DATA_PATH_EXTENSION)
     localImageURL = CACHE_URL.appendingPathComponent(rawEntry.date.description)
