@@ -37,7 +37,9 @@ func presentShareSheet(_ entry: APODEntry) {
   }
 
   let activityVC: UIActivityViewController
-  if let loadedImage = entry.loadImage(), let vc = shareSheetForImage(entry, loadedImage) {
+  if case .image = entry.asset,
+     let loadedImage = entry.loadImage(),
+     let vc = shareSheetForImage(entry, loadedImage) {
     activityVC = vc
   } else if let webURL = entry.webURL {
     activityVC = UIActivityViewController(activityItems: [webURL], applicationActivities: [OpenInBrowserActivity()])
