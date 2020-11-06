@@ -7,27 +7,23 @@ import UniformTypeIdentifiers
 class ViewModel: ObservableObject {
   @Published var currentEntry: Loading<Result<APODEntry, Error>> = .loading
 
-  private var imageCancellable: AnyCancellable?
-  private var cancellables = Set<AnyCancellable>()
-
-  init() {
-    // Reload whenever the app is foregrounded, including at launch.
-    NotificationCenter.default.publisher(for: UIScene.willEnterForegroundNotification)
-      .sink { [unowned self] _ in reload() }
-      .store(in: &cancellables)
-  }
+  private var cancellable: AnyCancellable?
 
   func reload() {
-    imageCancellable = APODClient.shared.loadLatestImage().sinkResult { [unowned self] in
-      switch (self.currentEntry, $0) {
-      case let (.loaded(.success(value)), .success(newValue)) where value.date == newValue.date:
-        // If the date has not changed, don't reload the view.
-        break
-      default:
-        self.currentEntry = .loaded($0)
-        WidgetCenter.shared.reloadAllTimelines()
+    print("Starting load (current: \(currentEntry))")
+    cancellable ??= APODClient.shared.loadLatestImage()
+      .receive(on: DispatchQueue.main)  // Avoid overlapping access to cancellable
+      .sinkResult { [unowned self] in
+        switch (currentEntry, $0) {
+        case let (.loaded(.success(value)), .success(newValue)) where value.date == newValue.date:
+          // If the date has not changed, don't reload the view.
+          break
+        default:
+          currentEntry = .loaded($0)
+          cancellable = nil
+          WidgetCenter.shared.reloadAllTimelines()
+        }
       }
-    }
   }
 }
 
@@ -95,10 +91,10 @@ func shareSheetForImage(_ entry: APODEntry, _ image: UIImage) -> UIActivityViewC
 }
 
 struct ContentView: View {
-  @ObservedObject var viewModel = ViewModel()
+  @Environment(\.scenePhase) var scenePhase
+  @StateObject var viewModel = ViewModel()
   @State var titleShown = true
   @State var detailsShown = false
-  @State var shareSheetShown = false
   @State var urlForWebView: URL?
 
   func titleView(for entry: APODEntry) -> some View {
@@ -257,6 +253,13 @@ struct ContentView: View {
   var body: some View {
     mainBody
       .onContinueUserActivity(Constants.userActivityType) { _ in }
+      // Reload whenever the app is foregrounded, and at first launch.
+      .onAppear { viewModel.reload() }
+      .onChange(of: scenePhase) {
+        if $0 == .active {
+          viewModel.reload()
+        }
+      }
   }
 }
 

@@ -1,4 +1,10 @@
+infix operator ??= : AssignmentPrecedence
+
 public extension Optional {
+
+  static func ??=(_ lhs: inout Self, _ rhs: @autoclosure () -> Self) {
+    lhs = lhs ?? rhs()
+  }
 
   /// Unwrap the optional, throwing an error if it contained `nil`.
   func orThrow(_ error: @autoclosure () -> Error) throws -> Wrapped {
