@@ -35,6 +35,7 @@ struct APODWidget: Widget {
   var body: some WidgetConfiguration {
     IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) {
       APODEntryView(timelineEntry: $0)
+        .widgetURL(Constants.widgetURL)
     }
     .configurationDisplayName("Space Photo of the Day")
     .description("See the latest image from NASA’s Astronomy Picture of the Day.")

@@ -183,6 +183,7 @@ struct ContentView: View {
   func entryBody(_ entry: APODEntry) -> some View {
     let bottomBar = Button {
       withAnimation { detailsShown.toggle() }
+      maybeRequestReview(because: .detailsViewed, delay: .seconds(2))
     } label: {
       titleView(for: entry)
     }
@@ -254,12 +255,20 @@ struct ContentView: View {
 
   var body: some View {
     mainBody
-      .onContinueUserActivity(Constants.userActivityType) { _ in }
+      .onContinueUserActivity(Constants.userActivityType) { _ in
+        maybeRequestReview(because: .continuedUserActivity, delay: .seconds(2))
+      }
       // Reload whenever the app is foregrounded, and at first launch.
       .onAppear { viewModel.reload() }
       .onChange(of: scenePhase) {
         if $0 == .active {
           viewModel.reload()
+        }
+      }
+      .onOpenURL { url in
+        if url == Constants.widgetURL {
+          print("Opened from widget")
+          maybeRequestReview(because: .openedFromWidget, delay: .seconds(2))
         }
       }
   }

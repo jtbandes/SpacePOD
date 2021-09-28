@@ -102,4 +102,6 @@ public enum Constants {
   public static let spaceAppGroupID = "group.SpacePOD"
 
   public static let userActivityType = "net.bandes-storch.SpacePOD.browsing"
+
+  public static let widgetURL = URL(string: "space-widget-link://")!
 }
