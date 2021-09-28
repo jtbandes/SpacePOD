@@ -22,7 +22,7 @@ extension UIFont {
 
 /// Build a NSAttributedString by joining components with line breaks.
 /// Inspired by: https://medium.com/@carson.katri/create-your-first-function-builder-in-5-minutes-b4a717390671
-@_functionBuilder struct AttributedStringBuilder {
+@resultBuilder struct AttributedStringBuilder {
   static func buildBlock(_ pieces: NSAttributedString?...) -> NSAttributedString {
     let content = NSMutableAttributedString()
     for case let piece? in pieces {
