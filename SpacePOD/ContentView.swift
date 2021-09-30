@@ -30,7 +30,8 @@ class ViewModel: ObservableObject {
 /// We present the UIActivityViewController imperatively rather than wrapping it with UIViewControllerRepresentable
 /// because SwiftUI doesn't display it properly (full sheet instead of half sheet on iPhone) and the interactive swipe-to-dismiss
 /// causes the `isPresented` binding to immediately become false, which suddenly removes the view controller.
-func presentShareSheet(_ entry: APODEntry) {
+/// The `sourceView` is required for iPad where the share sheet may be presented as a popover.
+func presentShareSheet(_ entry: APODEntry, from sourceView: UIView?) {
   guard let visibleViewController = UIApplication.shared.visibleViewController else {
     print("No view controller from which to present share sheet")
     return
@@ -47,6 +48,7 @@ func presentShareSheet(_ entry: APODEntry) {
     print("No image or web URL for share sheet")
     return
   }
+  activityVC.popoverPresentationController?.sourceView = sourceView
   visibleViewController.present(activityVC, animated: true)
 }
 
@@ -98,6 +100,7 @@ struct ContentView: View {
   @State var titleShown = true
   @State var detailsShown = false
   @State var urlForWebView: URL?
+  @State var shareButton: UIView?
 
   func titleView(for entry: APODEntry) -> some View {
     titleView(date: entry.date.asDate(), title: entry.title, copyright: entry.copyright)
@@ -173,8 +176,10 @@ struct ContentView: View {
         }
       }
       ToolbarItem(placement: .navigationBarTrailing) {
-        Button(action: { presentShareSheet(entry) }) {
-          Image(systemName: "square.and.arrow.up").imageScale(.large).padding()
+        Button(action: { presentShareSheet(entry, from: shareButton) }) {
+          Image(systemName: "square.and.arrow.up")
+            .imageScale(.large)
+            .background(SourceView(as: $shareButton))
         }
       }
     }
