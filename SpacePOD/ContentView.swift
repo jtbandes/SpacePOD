@@ -115,6 +115,7 @@ struct ContentView: View {
       if let title = title {
         Text(title)
           .font(.system(.headline))
+          .multilineTextAlignment(.leading)
       }
       if let copyright = copyright {
         Text(copyright)
