@@ -1,6 +1,14 @@
 import SwiftUI
 import struct WidgetKit.WidgetPreviewContext
 
+extension Text {
+  /// Unexpected truncation of Text labels with a .font() set was observed on macOS.
+  ///  https://www.hackingwithswift.com/forums/swiftui/stop-text-being-truncated/1535
+  func workAroundTextTruncationBug() -> some View {
+    return self.minimumScaleFactor(0.9)
+  }
+}
+
 struct PhotoView: View {
   let configuration: ConfigurationIntent
   let date: Date?
@@ -22,6 +30,7 @@ struct PhotoView: View {
               Spacer()
               Text(date, formatter: DateFormatter.monthDay)
                 .font(.caption2)
+                .workAroundTextTruncationBug()
             }
           }
           Spacer()
@@ -29,10 +38,12 @@ struct PhotoView: View {
             if let caption = caption {
               Text(caption).font(.system(.footnote))
                 .bold()
+                .workAroundTextTruncationBug()
                 .lineSpacing(-4)
             }
             if let copyright = copyright {
               Text(copyright).font(.system(.caption2))
+                .workAroundTextTruncationBug()
             }
           }
         }
