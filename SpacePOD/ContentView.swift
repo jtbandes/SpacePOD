@@ -70,7 +70,12 @@ func shareSheetForImage(_ entry: APODEntry, _ image: UIImage) -> UIActivityViewC
   var tmpFile = tmpDir.appendingPathComponent(filename)
   do {
     try FileManager.default.createDirectory(at: tmpDir, withIntermediateDirectories: true)
-    try FileManager.default.linkItem(at: entry.localImageURL, to: tmpFile)
+    do {
+      try FileManager.default.linkItem(at: entry.localImageURL, to: tmpFile)
+    } catch {
+      print("Link failed, falling back to copy:", error)
+      try FileManager.default.copyItem(at: entry.localImageURL, to: tmpFile)
+    }
     // Update creation/modification dates so the photo shows up in the newest spot in the photos library.
     try tmpFile.setResourceValues(configure(URLResourceValues()) {
       let now = Date()
@@ -177,9 +182,12 @@ struct ContentView: View {
       }
       ToolbarItem(placement: .navigationBarTrailing) {
         Button(action: { presentShareSheet(entry, from: shareButton) }) {
+          ZStack {
+            Text("")
           Image(systemName: "square.and.arrow.up")
             .imageScale(.large)
             .background(SourceView(as: $shareButton))
+          }
         }
       }
     }
