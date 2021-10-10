@@ -14,13 +14,14 @@ class ViewModel: ObservableObject {
     cancellable ??= APODClient.shared.loadLatestImage()
       .receive(on: DispatchQueue.main)  // Avoid overlapping access to cancellable
       .sinkResult { [unowned self] in
+        cancellable = nil
+
         switch (currentEntry, $0) {
         case let (.loaded(.success(value)), .success(newValue)) where value.date == newValue.date:
           // If the date has not changed, don't reload the view.
           break
         default:
           currentEntry = .loaded($0)
-          cancellable = nil
           WidgetCenter.shared.reloadAllTimelines()
         }
       }
