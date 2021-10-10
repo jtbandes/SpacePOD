@@ -231,7 +231,7 @@ public class APODClient {
     if let lastCached = _cache?.data.last?.value {
       // Would we expect to find a new entry if we queried the server now?
       let newEntryExpected = APODEntry.nextExpectedEntryDate(after: lastCached)
-        .map { $0.timeIntervalSinceNow > 0 } ?? true
+        .map { $0.timeIntervalSinceNow <= 0 } ?? true
 
       // Has it been an hour since we last queried the server?
       let lastCacheDate = UserDefaults.spaceAppGroup.lastAPODCacheDate
