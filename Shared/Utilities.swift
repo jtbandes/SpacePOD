@@ -74,6 +74,7 @@ public enum APODErrors: Error {
   case invalidYouTubeVideo(String)
   case invalidImage
   case unsupportedAsset
+  case fileCoordinationFailed
 }
 
 extension APODErrors: LocalizedError {
@@ -93,6 +94,8 @@ extension APODErrors: LocalizedError {
       return "The image couldn’t be loaded."
     case .unsupportedAsset:
       return "This media couldn’t be displayed."
+    case .fileCoordinationFailed:
+      return "An unknown error occurred while coordinating file access."
     }
   }
 }

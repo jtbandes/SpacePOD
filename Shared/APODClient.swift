@@ -65,13 +65,18 @@ public class APODEntry: Codable {
   public var explanation: String? { rawEntry.explanation }
 
   public let asset: Asset
-  public let localDataURL: URL
-  public let localImageURL: URL
+
+  /// JSON data path relative to `CACHE_URL`.
+  public let dataFilename: String
+  /// Image path relative to `CACHE_URL`.
+  public let imageFilename: String
 
   var PREVIEW_overrideImage: UIImage?
   private var _loadedImage: UIImage?
   public func loadImage() -> UIImage? {
-    _loadedImage = _loadedImage ?? PREVIEW_overrideImage ?? UIImage(contentsOfFile: localImageURL.path)
+    _loadedImage = _loadedImage ?? PREVIEW_overrideImage ?? (try? NSFileCoordinator().coordinate(readingItemAt: CACHE_URL) { cacheURL in
+      UIImage(contentsOfFile: cacheURL.appendingPathComponent(imageFilename).path)
+    })
     return _loadedImage
   }
 
@@ -81,12 +86,9 @@ public class APODEntry: Codable {
   }
 
   public required init(from decoder: Decoder) throws {
-    #if DEBUG && targetEnvironment(simulator)
-    print("Cache URL: \(CACHE_URL.path)")
-    #endif
     rawEntry = try RawAPODEntry(from: decoder)
-    localDataURL = CACHE_URL.appendingPathComponent(rawEntry.date.description).appendingPathExtension(DATA_PATH_EXTENSION)
-    localImageURL = CACHE_URL.appendingPathComponent(rawEntry.date.description)
+    dataFilename = "\(rawEntry.date.description).\(DATA_PATH_EXTENSION)"
+    imageFilename = rawEntry.date.description
 
     let mediaURL: URL
     if let hdurl = rawEntry.hdurl {
@@ -104,19 +106,25 @@ public class APODEntry: Codable {
     try rawEntry.encode(to: encoder)
   }
 
-  private init(rawEntry: RawAPODEntry, asset: Asset, localDataURL: URL, localImageURL: URL) {
+  private init(rawEntry: RawAPODEntry, asset: Asset, dataFilename: String, imageFilename: String) {
     self.rawEntry = rawEntry
     self.asset = asset
-    self.localDataURL = localDataURL
-    self.localImageURL = localImageURL
+    self.dataFilename = dataFilename
+    self.imageFilename = imageFilename
   }
 
 
-  public static let placeholder: APODEntry = APODEntry(rawEntry: RawAPODEntry(date: YearMonthDay.today, hdurl: nil, url: nil, title: "Example", copyright: "Example copyright", explanation: nil, mediaType: "blah"), asset: .unknown(URL(fileURLWithPath: "/dev/null")), localDataURL: URL(fileURLWithPath: "/dev/null"), localImageURL: URL(fileURLWithPath: "/dev/null"))
+  public static let placeholder: APODEntry = APODEntry(rawEntry: RawAPODEntry(date: YearMonthDay.today, hdurl: nil, url: nil, title: "Example", copyright: "Example copyright", explanation: nil, mediaType: "blah"), asset: .unknown(URL(fileURLWithPath: "/dev/null")), dataFilename: "placeholder", imageFilename: "placeholder")
 
   /// The earliest expected date that the next entry will be available from the server.
   static func nextExpectedEntryDate(after entry: APODEntry) -> Date? {
     return entry.date.nextDate(in: .losAngeles)
+  }
+
+  public func coordinateReadingImage(byAccessor block: (URL) throws -> Void) throws {
+    try NSFileCoordinator().coordinate(readingItemAt: CACHE_URL) { cacheURL in
+      try block(cacheURL.appendingPathComponent(self.imageFilename))
+    }
   }
 }
 
@@ -140,85 +148,87 @@ struct RawAPODEntry: Codable {
   }
 }
 
-func _downloadImageIfNeeded(_ entry: APODEntry) -> AnyPublisher<APODEntry, Error> {
-  if (try? entry.localImageURL.checkResourceIsReachable()) ?? false {
-    return Result.success(entry).publisher.eraseToAnyPublisher()
-  }
-
-  DBG("Downloading image for \(entry.date)")
-  return entry.asset.imageOrThumbnailURL.publisher
-    .flatMap(URLSession.shared.downloadTaskPublisher(for:))
-    .tryMap { url in
-      // Ensure the image is parseable before saving it in the cache
-      guard UIImage(contentsOfFile: url.path) != nil else {
-        throw APODErrors.invalidImage
-      }
-      DBG("Trying to move \(url) to \(entry.localImageURL)")
-      do {
-        try FileManager.default.moveItem(at: url, to: entry.localImageURL)
-      } catch {
-        if (try? entry.localImageURL.checkResourceIsReachable()) ?? false {
-          // This race should be rare in practice, but happens frequently during development, when a new build
-          // is installed in the simulator, and the app and extension both try to fill the cache at the same time.
-          DBG("Image already cached for \(entry.date), continuing")
-          return entry
-        }
-        throw error
-      }
-      DBG("Moved downloaded file!")
-      return entry
-    }
-    .eraseToAnyPublisher()
-}
-
 public class APODClient {
 
   public static let shared = APODClient()
 
-  private var _cache = SortedDictionary<YearMonthDay, APODEntry>()
+  private var _cache: (data: SortedDictionary<YearMonthDay, APODEntry>, loadedAt: Date)? = nil
 
   #if DEBUG
   public func debug_clearCache() {
-    try? FileManager.default.removeItem(at: CACHE_URL)
+    try? NSFileCoordinator().coordinate(writingItemAt: CACHE_URL, options: .forDeleting) { cacheURL in
+      try FileManager.default.removeItem(at: CACHE_URL)
+    }
   }
   #endif
 
   private init() {
-    do {
-      try FileManager.default.createDirectory(at: CACHE_URL, withIntermediateDirectories: true)
-      for url in try FileManager.default.contentsOfDirectory(at: CACHE_URL, includingPropertiesForKeys: nil) where url.pathExtension == DATA_PATH_EXTENSION {
-        do {
-          let data = try Data(contentsOf: url)
-          let entry = try JSONDecoder().decode(APODEntry.self, from: data)
+    #if DEBUG && targetEnvironment(simulator)
+    print("Cache URL: \(CACHE_URL.path)")
+    #endif
+    reloadCache()
+  }
 
-          // Delete entries older than 2 days
-          if let date = entry.date.asDate(), date.timeIntervalSinceNow < -2*24*60*60 {
-            do {
-              try FileManager.default.removeItem(at: url)
-              try FileManager.default.removeItem(at: entry.localImageURL)
-              print("Removed old data for \(entry.date)")
-            } catch {
-              print("Error removing old data for \(entry.date): \(error)")
-            }
-          }
-
-          if (try? entry.localImageURL.checkResourceIsReachable()) ?? false {
-            _cache[entry.date] = entry
-          }
-        } catch {
-          print("Invalid cache entry: \(error) \(url)")
-        }
-      }
-      DBG("There are \(_cache.count) cached images: \(_cache)")
+  // Rather than updating the cache with any new entries from disk, we just reload it completely.
+  // This logic is simpler to follow and to wrap in a coordinated access, which avoids potential races
+  // between processes (extension & main app) where one deletes entries from the cache while the other is loading it.
+  // This shouldn't be too expensive because we expect the number of items in the cache to be small
+  // (2–3, since we delete older entries).
+  func reloadCache() {
+    if let loadedAt = _cache?.loadedAt,
+       let lastUpdatedAt = UserDefaults.spaceAppGroup.lastAPODCacheDate,
+       loadedAt >= lastUpdatedAt {
+      // The cache is up to date.
+      return
     }
-    catch let error {
+
+    do {
+      try NSFileCoordinator().coordinate(writingItemAt: CACHE_URL) { cacheURL in
+        _cache = (try Self.loadAndCleanCache(coordinatedAt: cacheURL), loadedAt: Date())
+      }
+      if let cache = _cache {
+        DBG("There are \(cache.data.count) cached images: \(cache.data)")
+      }
+    }
+    catch {
       print("Error loading cache: \(error)")
     }
   }
 
+  static func loadAndCleanCache(coordinatedAt cacheURL: URL) throws -> SortedDictionary<YearMonthDay, APODEntry> {
+    var result = SortedDictionary<YearMonthDay, APODEntry>()
+    try FileManager.default.createDirectory(at: cacheURL, withIntermediateDirectories: true)
+    let urls = Set(try FileManager.default.contentsOfDirectory(at: cacheURL, includingPropertiesForKeys: nil))
+    for url in urls where url.pathExtension == DATA_PATH_EXTENSION {
+      do {
+        let entry = try JSONDecoder().decode(APODEntry.self, from: Data(contentsOf: url))
+
+        // Delete entries older than 2 days
+        if let date = entry.date.asDate(), date.timeIntervalSinceNow < -2*24*60*60 {
+          do {
+            try FileManager.default.removeItem(at: url)
+            try FileManager.default.removeItem(at: cacheURL.appendingPathComponent(entry.imageFilename))
+            print("Removed old data for \(entry.date)")
+          } catch {
+            print("Error removing old data for \(entry.date): \(error)")
+          }
+        } else if urls.contains(cacheURL.appendingPathComponent(entry.imageFilename)) {
+          result[entry.date] = entry
+        } else {
+          throw APODErrors.invalidImage
+        }
+      } catch {
+        print("Invalid cache entry: \(error) \(url)")
+      }
+    }
+    return result
+  }
+
   public func loadLatestImage() -> AnyPublisher<APODEntry, Error> {
+    reloadCache()
+
     // Return the latest cached entry if it's not stale.
-    if let lastCached = _cache.last?.value {
+    if let lastCached = _cache?.data.last?.value {
       // Would we expect to find a new entry if we queried the server now?
       let newEntryExpected = APODEntry.nextExpectedEntryDate(after: lastCached)
         .map { $0.timeIntervalSinceNow > 0 } ?? true
@@ -244,8 +254,13 @@ public class APODClient {
         // Including end_date returns 400 when end_date is after today
       ])
 
-    return URLSession.shared.dataTaskPublisher(for: components.url.orFatalError("Failed to build API URL"))
-      .tryMap() { (data, response) in
+    guard let requestURL = components.url else {
+      return Result.failure(APODErrors.missingURL).publisher.eraseToAnyPublisher()
+    }
+
+    return URLSession.shared.dataTaskPublisher(for: requestURL)
+    // Download and parse entry
+      .tryMap { (responseData, response) -> APODEntry in
         DBG("Got response! \(response)")
         guard let response = response as? HTTPURLResponse else {
           throw URLError(.badServerResponse)
@@ -254,18 +269,45 @@ public class APODClient {
           throw APODErrors.failureResponse(statusCode: response.statusCode)
         }
 
-        let entries = try JSONDecoder().decode([APODEntry].self, from: data)
+        let entries = try JSONDecoder().decode([APODEntry].self, from: responseData)
         guard let entry = entries.last else {
           throw APODErrors.emptyResponse
         }
-        try JSONEncoder().encode(entry).write(to: entry.localDataURL)
         return entry
       }
-      .flatMap(_downloadImageIfNeeded)
+    // Download image or video thumbnail
+      .flatMap { entry in
+        entry.asset.imageOrThumbnailURL.publisher
+          .flatMap(URLSession.shared.downloadTaskPublisher(for:))
+          .map { imageURL in (imageURL, entry) }
+      }
+    // Save to cache
+      .tryMap { (imageURL, entry) -> APODEntry in
+        let entryData = try JSONEncoder().encode(entry)
+        guard UIImage(contentsOfFile: imageURL.path) != nil else {
+          throw APODErrors.invalidImage
+        }
+        DBG("Trying to save \(entry) to cache")
+        try NSFileCoordinator().coordinate(writingItemAt: CACHE_URL) { cacheURL in
+          let imageDestURL = cacheURL.appendingPathComponent(entry.imageFilename)
+          if (try? imageDestURL.checkResourceIsReachable()) ?? false {
+            // This race should be rare in practice, but happens frequently during development, when a new build
+            // is installed in the simulator, and the app and extension both try to fill the cache at the same time.
+            DBG("Image already cached for \(entry.date), continuing")
+          } else {
+            try FileManager.default.moveItem(at: imageURL, to: imageDestURL)
+          }
+
+          try entryData.write(to: cacheURL.appendingPathComponent(entry.dataFilename))
+
+          UserDefaults.spaceAppGroup.lastAPODCacheDate = Date()
+        }
+        DBG("Saved!")
+        return entry
+      }
       .receive(on: DispatchQueue.main)
       .map { [weak self] entry in
-        self?._cache[entry.date] = entry
-        UserDefaults.spaceAppGroup.lastAPODCacheDate = Date()
+        self?.reloadCache()
         return entry
       }
       .eraseToAnyPublisher()

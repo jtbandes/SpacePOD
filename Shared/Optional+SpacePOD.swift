@@ -14,14 +14,6 @@ public extension Optional {
     throw error()
   }
 
-  /// Unwrap the optional, stopping program execution with a fatal error message if it contained `nil`.
-  func orFatalError(_ message: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line) -> Wrapped {
-    if let self = self {
-      return self
-    }
-    fatalError(message(), file: file, line: line)
-  }
-
   /// Convert the optional to a `Result`, replacing `nil` values with the given error.
   ///
   /// ```

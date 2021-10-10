@@ -70,11 +70,13 @@ func shareSheetForImage(_ entry: APODEntry, _ image: UIImage) -> UIActivityViewC
   var tmpFile = tmpDir.appendingPathComponent(filename)
   do {
     try FileManager.default.createDirectory(at: tmpDir, withIntermediateDirectories: true)
-    do {
-      try FileManager.default.linkItem(at: entry.localImageURL, to: tmpFile)
-    } catch {
-      print("Link failed, falling back to copy:", error)
-      try FileManager.default.copyItem(at: entry.localImageURL, to: tmpFile)
+    try entry.coordinateReadingImage { imageURL in
+      do {
+        try FileManager.default.linkItem(at: imageURL, to: tmpFile)
+      } catch {
+        print("Link failed, falling back to copy:", error)
+        try FileManager.default.copyItem(at: imageURL, to: tmpFile)
+      }
     }
     // Update creation/modification dates so the photo shows up in the newest spot in the photos library.
     try tmpFile.setResourceValues(configure(URLResourceValues()) {
