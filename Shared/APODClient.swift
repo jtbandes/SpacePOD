@@ -10,14 +10,25 @@ func getAPIKey() -> String {
 }
 
 private let API_URL = URLComponents(string: "https://api.nasa.gov/planetary/apod?api_key=\(getAPIKey())")!
+private let VIMEO_OEMBED_API_URL = URLComponents(string: "https://vimeo.com/api/oembed.json")!
 private let DATA_PATH_EXTENSION = "json"
 
 private let CACHE_URL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Constants.spaceAppGroupID)!.appendingPathComponent("cache")
 
 let youtubeRegex = try! NSRegularExpression(pattern: #"://.*youtube\.com/embed/([^/?#]+)"#)
+let vimeoRegex = try! NSRegularExpression(pattern: #"://.*vimeo\.com/video/([^/?#]+)"#)
+
+// https://developer.vimeo.com/api/oembed/videos
+struct VimeoOEmbedResponse: Decodable {
+  var thumbnailURL: URL
+  enum CodingKeys: String, CodingKey {
+    case thumbnailURL = "thumbnail_url"
+  }
+}
 
 public enum Asset {
   case image(URL)
+  case vimeoVideo(id: String, url: URL)
   case youtubeVideo(id: String, url: URL)
   case unknown(URL)
 
@@ -31,6 +42,10 @@ public enum Asset {
       if let match = youtubeRegex.firstMatch(in: str, range: NSRange(str.startIndex..<str.endIndex, in: str)),
          let range = Range(match.range(at: 1), in: str) {
         self = .youtubeVideo(id: String(str[range]), url: url)
+      } else if
+        let match = vimeoRegex.firstMatch(in: str, range: NSRange(str.startIndex..<str.endIndex, in: str)),
+        let range = Range(match.range(at: 1), in: str) {
+        self = .vimeoVideo(id: String(str[range]), url: url)
       } else {
         self = .unknown(url)
       }
@@ -40,18 +55,50 @@ public enum Asset {
     }
   }
 
-  var imageOrThumbnailURL: Result<URL, Error> {
+  func downloadImageOrThumbnail() -> AnyPublisher<URL, Error> {
     switch self {
     case .image(let url):
-      return .success(url)
+      return URLSession.shared.downloadTaskPublisher(for: url)
 
     case .youtubeVideo(let id, _):
       // https://stackoverflow.com/q/2068344/23649
       return URL(string: "https://img.youtube.com/vi/\(id)/0.jpg")
         .asResult(ifNil: APODErrors.invalidYouTubeVideo(id))
+        .publisher
+        .flatMap(URLSession.shared.downloadTaskPublisher(for:))
+        .eraseToAnyPublisher()
+
+    case .vimeoVideo(let id, let url):
+      var components = VIMEO_OEMBED_API_URL
+      components.queryItems[withDefault: []]
+        .append(contentsOf: [
+          URLQueryItem(name: "url", value: url.absoluteString),
+          URLQueryItem(name: "width", value: "2000"),
+          URLQueryItem(name: "height", value: "2000"),
+        ])
+      return components.url
+        .asResult(ifNil: APODErrors.invalidVimeoVideo(id) as Error)
+        .publisher
+        .flatMap { url in
+          URLSession.shared.dataTaskPublisher(for: url).mapError { $0 }
+        }
+        .tryMap { (responseData, response) -> VimeoOEmbedResponse in
+          DBG("Got response! \(response)")
+          guard let response = response as? HTTPURLResponse else {
+            throw URLError(.badServerResponse)
+          }
+          guard response.statusCode == 200 else {
+            throw APODErrors.failureResponse(statusCode: response.statusCode)
+          }
+          return try JSONDecoder().decode(VimeoOEmbedResponse.self, from: responseData)
+        }
+        .flatMap { response in
+          URLSession.shared.downloadTaskPublisher(for: response.thumbnailURL)
+        }
+        .eraseToAnyPublisher()
 
     case .unknown:
-      return .failure(APODErrors.unsupportedAsset)
+      return Result.failure(APODErrors.unsupportedAsset).publisher.eraseToAnyPublisher()
     }
   }
 }
@@ -277,8 +324,7 @@ public class APODClient {
       }
     // Download image or video thumbnail
       .flatMap { entry in
-        entry.asset.imageOrThumbnailURL.publisher
-          .flatMap(URLSession.shared.downloadTaskPublisher(for:))
+        entry.asset.downloadImageOrThumbnail()
           .map { imageURL in (imageURL, entry) }
       }
     // Save to cache

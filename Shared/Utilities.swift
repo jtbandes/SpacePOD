@@ -72,6 +72,7 @@ public enum APODErrors: Error {
   case emptyResponse
   case failureResponse(statusCode: Int)
   case invalidYouTubeVideo(String)
+  case invalidVimeoVideo(String)
   case invalidImage
   case unsupportedAsset
   case fileCoordinationFailed
@@ -89,7 +90,9 @@ extension APODErrors: LocalizedError {
     case .failureResponse(let status):
       return "The server returned an unexpected status: \(status)."
     case .invalidYouTubeVideo(let str):
-      return "Invalid video ID “\(str)”."
+      return "Invalid YouTube video ID “\(str)”."
+    case .invalidVimeoVideo(let str):
+      return "Invalid Vimeo video ID “\(str)”."
     case .invalidImage:
       return "The image couldn’t be loaded."
     case .unsupportedAsset:

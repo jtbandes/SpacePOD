@@ -214,7 +214,13 @@ struct ContentView: View {
         bottomBar
       }
 
-    default:
+    case let .vimeoVideo(id: _, url: url):
+      VStack {
+        WebView(url: url)
+        bottomBar
+      }
+
+    case .image, .unknown:
       ZStack(alignment: .leading) {
         let image = entry.loadImage()
         Group {

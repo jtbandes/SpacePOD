@@ -49,6 +49,7 @@
 		16AEA7922543CDD700CA0B30 /* SwiftUI+SpacePOD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEA7912543CDD700CA0B30 /* SwiftUI+SpacePOD.swift */; };
 		16AEE9FF25229D4600A2D094 /* ZoomableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEE9FE25229D4600A2D094 /* ZoomableScrollView.swift */; };
 		16AEEA1C252425BC00A2D094 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEEA1B252425BA00A2D094 /* Utilities.swift */; };
+		16BC08382713B1D300B8F7CD /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BC08372713B1D300B8F7CD /* WebView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -167,6 +168,7 @@
 		16AEA7912543CDD700CA0B30 /* SwiftUI+SpacePOD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SwiftUI+SpacePOD.swift"; sourceTree = "<group>"; };
 		16AEE9FE25229D4600A2D094 /* ZoomableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomableScrollView.swift; sourceTree = "<group>"; };
 		16AEEA1B252425BA00A2D094 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		16BC08372713B1D300B8F7CD /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -256,6 +258,7 @@
 				16AEA76B25438EE500CA0B30 /* YouTubePlayer.swift */,
 				16AEE9FE25229D4600A2D094 /* ZoomableScrollView.swift */,
 				164A899E27056E6B009BD329 /* SourceView.swift */,
+				16BC08372713B1D300B8F7CD /* WebView.swift */,
 			);
 			path = SpacePOD;
 			sourceTree = "<group>";
@@ -562,6 +565,7 @@
 				164AD066254CB84A00CEF1BB /* TextView.swift in Sources */,
 				165231B8254A301700C5978E /* OpenInBrowserActivity.swift in Sources */,
 				1602DF46251BC0F7004D96B2 /* ContentView.swift in Sources */,
+				16BC08382713B1D300B8F7CD /* WebView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
