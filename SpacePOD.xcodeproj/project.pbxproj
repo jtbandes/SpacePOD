@@ -50,6 +50,7 @@
 		16AEE9FF25229D4600A2D094 /* ZoomableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEE9FE25229D4600A2D094 /* ZoomableScrollView.swift */; };
 		16AEEA1C252425BC00A2D094 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEEA1B252425BA00A2D094 /* Utilities.swift */; };
 		16BC08382713B1D300B8F7CD /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BC08372713B1D300B8F7CD /* WebView.swift */; };
+		16FC1729277F8FBD00A1E77A /* AnimatedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FC1728277F8FBD00A1E77A /* AnimatedImage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -169,6 +170,7 @@
 		16AEE9FE25229D4600A2D094 /* ZoomableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomableScrollView.swift; sourceTree = "<group>"; };
 		16AEEA1B252425BA00A2D094 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		16BC08372713B1D300B8F7CD /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
+		16FC1728277F8FBD00A1E77A /* AnimatedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedImage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -251,6 +253,7 @@
 				1602DF47251BC0F8004D96B2 /* Assets.xcassets */,
 				1602DF41251BC0F7004D96B2 /* App.swift */,
 				1602DF45251BC0F7004D96B2 /* ContentView.swift */,
+				16FC1728277F8FBD00A1E77A /* AnimatedImage.swift */,
 				165231B7254A301700C5978E /* OpenInBrowserActivity.swift */,
 				16923316254756C0002CDDF2 /* SafariViewController.swift */,
 				164AD065254CB84A00CEF1BB /* TextView.swift */,
@@ -563,6 +566,7 @@
 				164A899F27056E6B009BD329 /* SourceView.swift in Sources */,
 				16AEA76C25438EE600CA0B30 /* YouTubePlayer.swift in Sources */,
 				164AD066254CB84A00CEF1BB /* TextView.swift in Sources */,
+				16FC1729277F8FBD00A1E77A /* AnimatedImage.swift in Sources */,
 				165231B8254A301700C5978E /* OpenInBrowserActivity.swift in Sources */,
 				1602DF46251BC0F7004D96B2 /* ContentView.swift in Sources */,
 				16BC08382713B1D300B8F7CD /* WebView.swift in Sources */,

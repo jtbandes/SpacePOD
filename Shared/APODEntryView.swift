@@ -76,7 +76,7 @@ public struct APODEntryView: View {
       .foregroundColor(Color(.sRGB, white: 0.5)))
 
   public var body: some View {
-    let image = entry.loadImage().map {
+    let image = entry.loadImage(enableAnimatedGIF: false).map {
       let image = Image(uiImage: $0).resizable().aspectRatio(contentMode: .fill)
       if case .youtubeVideo = entry.asset {
         // FIXME: it might be nicer to switch at the top level, removing loadImage(), so we can't forget to handle videos separately elsewhere

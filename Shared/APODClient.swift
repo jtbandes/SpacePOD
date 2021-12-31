@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import UIKit
+import UniformTypeIdentifiers
 
 func getAPIKey() -> String {
   if let key = Bundle(for: APODEntry.self).object(forInfoDictionaryKey: "NASA_API_KEY") as? String, !key.isEmpty {
@@ -120,9 +121,33 @@ public class APODEntry: Codable {
 
   var PREVIEW_overrideImage: UIImage?
   private var _loadedImage: UIImage?
-  public func loadImage() -> UIImage? {
+
+  /// When `enableAnimatedGIF` is true, animated GIFs are loaded as "
+  public func loadImage(enableAnimatedGIF: Bool) -> UIImage? {
     _loadedImage = _loadedImage ?? PREVIEW_overrideImage ?? (try? NSFileCoordinator().coordinate(readingItemAt: CACHE_URL) { cacheURL in
-      UIImage(contentsOfFile: cacheURL.appendingPathComponent(imageFilename).path)
+      let imageURL = cacheURL.appendingPathComponent(imageFilename)
+
+      if enableAnimatedGIF,
+         let isrc = CGImageSourceCreateWithURL(imageURL as CFURL, nil),
+         CGImageSourceGetType(isrc) as String? == UTType.gif.identifier,
+         CGImageSourceGetCount(isrc) > 1
+      {
+        var duration: TimeInterval = 0
+        var frames: [UIImage] = []
+        for index in 0..<CGImageSourceGetCount(isrc) {
+          if let props = CGImageSourceCopyPropertiesAtIndex(isrc, index, nil) as NSDictionary?,
+             let gifDict = props[kCGImagePropertyGIFDictionary] as? NSDictionary,
+             let delay = gifDict[kCGImagePropertyGIFDelayTime] as? TimeInterval,
+             let frame = CGImageSourceCreateImageAtIndex(isrc, index, nil)
+          {
+            duration += delay
+            frames.append(UIImage(cgImage: frame))
+          }
+        }
+        return UIImage.animatedImage(with: frames, duration: duration)
+      }
+
+      return UIImage(contentsOfFile: imageURL.path)
     })
     return _loadedImage
   }

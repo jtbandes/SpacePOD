@@ -40,7 +40,7 @@ func presentShareSheet(_ entry: APODEntry, from sourceView: UIView?) {
 
   let activityVC: UIActivityViewController
   if case .image = entry.asset,
-     let loadedImage = entry.loadImage(),
+     let loadedImage = entry.loadImage(enableAnimatedGIF: false),
      let vc = shareSheetForImage(entry, loadedImage) {
     activityVC = vc
   } else if let webURL = entry.webURL {
@@ -222,11 +222,11 @@ struct ContentView: View {
 
     case .image, .unknown:
       ZStack(alignment: .leading) {
-        let image = entry.loadImage()
+        let image = entry.loadImage(enableAnimatedGIF: true)
         Group {
           if let image = image {
             ZoomableScrollView {
-              Image(uiImage: image)
+              AnimatedImage(image: image)
             }
           } else {
             APODEntryView.failureImage.flexibleFrame()
