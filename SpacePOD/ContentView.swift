@@ -167,7 +167,7 @@ struct ContentView: View {
         ])
       }
     }
-    .padding()
+    .ignoresSafeArea(edges: .bottom) // UIScrollView automatically adds safeAreaInsets
     .navigationTitle(
       entry.date.asDate().map { Text($0, dateStyle: .long) } ?? Text("")
     )

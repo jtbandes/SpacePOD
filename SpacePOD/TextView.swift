@@ -62,6 +62,8 @@ struct TextView: UIViewRepresentable {
 
   func makeUIView(context: Context) -> UITextView {
     return configure(UITextView()) {
+      $0.contentInset.left = 12
+      $0.contentInset.right = 12
       $0.isSelectable = true
       $0.isEditable = false
       $0.attributedText = content
