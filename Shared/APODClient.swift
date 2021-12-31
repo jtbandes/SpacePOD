@@ -122,7 +122,7 @@ public class APODEntry: Codable {
   var PREVIEW_overrideImage: UIImage?
   private var _loadedImage: UIImage?
 
-  /// When `enableAnimatedGIF` is true, animated GIFs are loaded as "
+  /// When `enableAnimatedGIF` is true, animated GIFs are loaded as "animated" UIImages (a series of frames and a total duration).
   public func loadImage(enableAnimatedGIF: Bool) -> UIImage? {
     _loadedImage = _loadedImage ?? PREVIEW_overrideImage ?? (try? NSFileCoordinator().coordinate(readingItemAt: CACHE_URL) { cacheURL in
       let imageURL = cacheURL.appendingPathComponent(imageFilename)
