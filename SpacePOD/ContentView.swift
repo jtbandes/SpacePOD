@@ -126,7 +126,6 @@ struct ContentView: View {
       if let title = title {
         Text(title)
           .font(.system(.headline))
-          .multilineTextAlignment(.leading)
       }
       if let copyright = copyright {
         Text(copyright)
@@ -138,6 +137,7 @@ struct ContentView: View {
     .padding()
     .contentShape(Rectangle())
     .shadow(color: .black, radius: 2, x: 0.0, y: 0.0)
+    .multilineTextAlignment(.leading)
   }
 
   func detailsSheet(_ entry: APODEntry) -> some View {

@@ -108,9 +108,9 @@ public class APODEntry: Codable {
   private let rawEntry: RawAPODEntry
 
   public var date: YearMonthDay { rawEntry.date }
-  public var title: String? { rawEntry.title }
-  public var copyright: String? { rawEntry.copyright }
-  public var explanation: String? { rawEntry.explanation }
+  public var title: String? { rawEntry.title?.trimmingCharacters(in: .whitespacesAndNewlines) }
+  public var copyright: String? { rawEntry.copyright?.trimmingCharacters(in: .whitespacesAndNewlines) }
+  public var explanation: String? { rawEntry.explanation?.trimmingCharacters(in: .whitespacesAndNewlines) }
 
   public let asset: Asset
 
