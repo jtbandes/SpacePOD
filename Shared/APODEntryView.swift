@@ -75,6 +75,11 @@ public struct APODEntryView: View {
       .font(.system(size: 64, weight: .ultraLight))
       .foregroundColor(Color(.sRGB, white: 0.5)))
 
+  public static let missingImage = AnyView(
+    Image(systemName: "moon.stars")
+      .font(.system(size: 64, weight: .ultraLight))
+      .foregroundColor(Color(.sRGB, white: 0.5)))
+
   public var body: some View {
     let image = entry.loadImage(enableAnimatedGIF: false).map {
       let image = Image(uiImage: $0).resizable().aspectRatio(contentMode: .fill)

@@ -257,9 +257,13 @@ struct ContentView: View {
 
     case .loaded(.failure(let error)):
       VStack(alignment: .leading) {
-        APODEntryView.failureImage.flexibleFrame()
-
-        titleView(date: nil, title: "Couldn’t load image", copyright: error.localizedDescription)
+        if case APODErrors.emptyResponse = error {
+          APODEntryView.missingImage.flexibleFrame()
+          titleView(date: nil, title: "No photo available", copyright: error.localizedDescription)
+        } else {
+          APODEntryView.failureImage.flexibleFrame()
+          titleView(date: nil, title: "Couldn’t load image", copyright: error.localizedDescription)
+        }
       }
 
     case .loaded(.success(let entry)):

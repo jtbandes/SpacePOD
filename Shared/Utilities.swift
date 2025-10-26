@@ -86,7 +86,7 @@ extension APODErrors: LocalizedError {
     case .missingURL:
       return "No photo was found."
     case .emptyResponse:
-      return "The server returned no data."
+      return "No photo was found for this date."
     case .failureResponse(let status):
       return "The server returned an unexpected status: \(status)."
     case .invalidYouTubeVideo(let str):
