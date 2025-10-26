@@ -174,7 +174,11 @@ struct ContentView: View {
     .navigationBarTitleDisplayMode(.inline)
     .toolbar {
       ToolbarItem(placement: .navigationBarLeading) {
-        Button("Done") { detailsShown = false }
+        if #available(iOS 26.0, *) {
+          Button(role: .close) { detailsShown = false }
+        } else {
+          Button("Done") { detailsShown = false }
+        }
       }
       ToolbarItem(placement: .navigationBarTrailing) {
         Button(action: { urlForWebView = entry.webURL }) {
