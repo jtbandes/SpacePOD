@@ -56,6 +56,15 @@ public enum Asset {
     }
   }
 
+  var isVideo: Bool {
+    switch self {
+    case .image, .unknown:
+      false
+    case .youtubeVideo, .vimeoVideo:
+      true
+    }
+  }
+
   func downloadImageOrThumbnail() -> AnyPublisher<URL, Error> {
     switch self {
     case .image(let url):
@@ -119,7 +128,7 @@ public class APODEntry: Codable {
   /// Image path relative to `CACHE_URL`.
   public let imageFilename: String
 
-  var PREVIEW_overrideImage: UIImage?
+  public var PREVIEW_overrideImage: UIImage?
   private var _loadedImage: UIImage?
 
   /// When `enableAnimatedGIF` is true, animated GIFs are loaded as "animated" UIImages (a series of frames and a total duration).

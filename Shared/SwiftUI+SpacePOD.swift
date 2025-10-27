@@ -4,6 +4,16 @@ extension URL: Identifiable {
   public var id: Self { self }
 }
 
+// https://stackoverflow.com/a/77037562/23649
+@available(iOS 17, *)
+struct WidgetContentPaddingModifier: ViewModifier {
+  @Environment(\.widgetContentMargins) var margins
+
+  func body(content: Content) -> some View {
+    content.padding(margins)
+  }
+}
+
 extension View {
 
   // See also: prior art
@@ -47,6 +57,15 @@ extension View {
       alignment: alignment)
   }
 
+  /// Adds padding equal to the `widgetContentMargins`. On operating systems where widgetContentMargins are not used, applies padding equal to `fallback`.
+  public func addWidgetContentPadding(fallback: EdgeInsets) -> some View {
+    if #available(iOS 17, *) {
+      return self.modifier(WidgetContentPaddingModifier())
+    } else {
+      return self.padding(fallback)
+    }
+  }
+
 }
 
 extension Text {
@@ -68,5 +87,16 @@ extension Text {
   @available(*, deprecated, message: "Date formatting is buggy in 14.1: https://developer.apple.com/forums/thread/665081")
   public init(_ date: Date, style: DateStyle) {
     fatalError()
+  }
+}
+
+extension Image {
+  /// Applies `WidgetAccentedRenderingMode.desaturated`, or a no-op on earlier operating systems.
+  public func widgetDesaturated() -> some View {
+    if #available(iOS 18.0, *) {
+      return self.widgetAccentedRenderingMode(.desaturated)
+    } else {
+      return self
+    }
   }
 }

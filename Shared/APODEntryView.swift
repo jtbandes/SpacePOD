@@ -9,6 +9,45 @@ extension Text {
   }
 }
 
+@available(iOS 16.0, *)
+struct IfFullColorRenderingModeImpl<Then: View, Else: View>: View {
+  @Environment(\.widgetRenderingMode) var widgetRenderingMode
+  var thenBody: Then
+  var elseBody: Else
+
+  var body: some View {
+    if case .fullColor = widgetRenderingMode {
+      thenBody
+    } else {
+      elseBody
+    }
+  }
+}
+
+struct IfFullColorRenderingMode<Then: View, Else: View>: View {
+  @ViewBuilder var thenBody: Then
+  @ViewBuilder var elseBody: Else
+
+  var body: some View {
+    if #available(iOS 16.0, *) {
+      IfFullColorRenderingModeImpl<Then, Else>(thenBody: thenBody, elseBody: elseBody)
+    } else {
+      elseBody
+    }
+  }
+}
+
+extension View {
+  func addRenderingModeSpecificShadow() -> some View {
+    IfFullColorRenderingMode {
+      self
+        .shadow(color: .black, radius: 2, x: 0.0, y: 0.0)
+    } elseBody: {
+      self
+    }
+  }
+}
+
 struct PhotoView: View {
   let configuration: ConfigurationIntent
   let date: Date?
@@ -17,41 +56,40 @@ struct PhotoView: View {
   let copyright: String?
 
   var body: some View {
-    ZStack {
-      Color.black.edgesIgnoringSafeArea(.all)
-        .ifLet(image) {
-          $0.overlay($1)
-        }
-
-      HStack {
-        VStack(alignment: .leading, spacing: 4) {
-          if configuration.showDate?.boolValue ?? true, let date = date {
-            HStack {
-              Spacer()
-              Text(date, formatter: DateFormatter.monthDay)
-                .font(.caption2)
-                .workAroundTextTruncationBug()
-            }
-          }
-          Spacer()
-          if configuration.showTitle?.boolValue ?? true {
-            if let caption = caption {
-              Text(caption).font(.system(.footnote))
-                .bold()
-                .workAroundTextTruncationBug()
-                .lineSpacing(-4)
-            }
-            if let copyright = copyright {
-              Text(copyright).font(.system(.caption2))
-                .workAroundTextTruncationBug()
-            }
+    let content =
+      VStack(alignment: .leading, spacing: 4) {
+        if configuration.showDate?.boolValue ?? true, let date = date {
+          HStack {
+            Spacer()
+            Text(date, formatter: DateFormatter.monthDay)
+              .font(.caption2)
+              .workAroundTextTruncationBug()
           }
         }
         Spacer()
+        if configuration.showTitle?.boolValue ?? true {
+          if let caption = caption {
+            Text(caption).font(.system(.footnote))
+              .bold()
+              .workAroundTextTruncationBug()
+              .lineSpacing(-4)
+          }
+          if let copyright = copyright {
+            Text(copyright).font(.system(.caption2))
+              .workAroundTextTruncationBug()
+          }
+        }
       }
-      .padding(EdgeInsets(top: 14, leading: 16, bottom: 12, trailing: 10))
+      .addWidgetContentPadding(fallback: EdgeInsets(top: 14, leading: 16, bottom: 12, trailing: 10))
       .foregroundColor(Color(.sRGB, white: 0.9))
-      .shadow(color: .black, radius: 2, x: 0.0, y: 0.0)
+      .addRenderingModeSpecificShadow()
+      .flexibleFrame()
+      .background(image)
+
+    if #available(iOS 17.0, *) {
+      content.containerBackground(.clear, for: .widget)
+    } else {
+      content
     }
   }
 }
@@ -82,18 +120,24 @@ public struct APODEntryView: View {
 
   public var body: some View {
     let image = entry.loadImage(enableAnimatedGIF: false).map {
-      let image = Image(uiImage: $0).resizable().aspectRatio(contentMode: .fill)
-      if case .youtubeVideo = entry.asset {
-        // FIXME: it might be nicer to switch at the top level, removing loadImage(), so we can't forget to handle videos separately elsewhere
+      let image = Image(uiImage: $0)
+        .resizable()
+        .widgetDesaturated()
+        .aspectRatio(contentMode: .fill)
+      if entry.asset.isVideo {
         return image
           .overlay(
-            ZStack {
-              Color.gray
-              image.opacity(0.8)
+            IfFullColorRenderingMode {
+              ZStack {
+                Color.gray
+                image.opacity(0.8)
+              }
+              .blur(radius: 4)
+              .brightness(0.2)
+              .mask(Image(systemName: "play.circle.fill").font(.system(size: 40)).compositingGroup())
+            } elseBody: {
+              Image(systemName: "play.fill").font(.system(size: 40)).opacity(0.3)
             }
-            .blur(radius: 4)
-            .brightness(0.2)
-            .mask(Image(systemName: "play.circle.fill").font(.system(size: 40)).compositingGroup())
           )
           .eraseToAnyView()
       }
@@ -106,55 +150,5 @@ public struct APODEntryView: View {
       image: image,
       caption: entry.title,
       copyright: entry.copyright)
-  }
-}
-
-struct APODEntryView_Previews: PreviewProvider {
-  static var previews: some View {
-    let previewJSON = """
-{
-  "copyright": "Adam Block",
-  "date": "2020-09-25",
-  "explanation": "The Great Spiral Galaxy in Andromeda (also known as M31), a mere 2.5 million light-years distant, is the closest large spiral to our own Milky Way. Andromeda is visible to the unaided eye as a small, faint, fuzzy patch, but because its surface brightness is so low, casual skygazers can't appreciate the galaxy's impressive extent in planet Earth's sky. This entertaining composite image compares the angular size of the nearby galaxy to a brighter, more familiar celestial sight. In it, a deep exposure of Andromeda, tracing beautiful blue star clusters in spiral arms far beyond the bright yellow core, is combined with a typical view of a nearly full Moon. Shown at the same angular scale, the Moon covers about 1/2 degree on the sky, while the galaxy is clearly several times that size. The deep Andromeda exposure also includes two bright satellite galaxies, M32 and M110 (below and right).",
-  "hdurl": "https://apod.nasa.gov/apod/image/2009/m31abtpmoon.jpg",
-  "media_type": "image",
-  "service_version": "v1",
-  "title": "Moon over Andromeda",
-  "url": "https://apod.nasa.gov/apod/image/2009/m31abtpmoon1024.jpg"
-}
-""".data(using: .utf8)!
-    let videoPreviewJSON = """
-{
-  "copyright": "Adam Block",
-  "date": "2020-09-25",
-  "explanation": "...",
-  "media_type": "video",
-  "service_version": "v1",
-  "title": "Moon over Andromeda",
-  "url": "https://www.youtube.com/embed/fbEcHDfi-vM?rel=0"
-}
-""".data(using: .utf8)!
-
-    APODEntryView(
-      entry: configure(try! JSONDecoder().decode(APODEntry.self, from: videoPreviewJSON)) {
-        $0.PREVIEW_overrideImage = #imageLiteral(resourceName: "sampleImage")
-      })
-      .previewContext(WidgetPreviewContext(family: .systemSmall))
-
-    APODEntryView(
-      entry: configure(try! JSONDecoder().decode(APODEntry.self, from: previewJSON)) {
-        $0.PREVIEW_overrideImage = #imageLiteral(resourceName: "sampleImage")
-      })
-      .previewContext(WidgetPreviewContext(family: .systemMedium))
-
-    PhotoView(configuration: ConfigurationIntent(), date: Date(), image: AnyView(Image(uiImage: #imageLiteral(resourceName: "sampleImage")).resizable().aspectRatio(3, contentMode: .fill)), caption: "Hello", copyright: "There")
-      .previewContext(WidgetPreviewContext(family: .systemMedium))
-
-    PhotoView(configuration: ConfigurationIntent(), date: Date(), image: AnyView(Image(uiImage: #imageLiteral(resourceName: "sampleImage")).resizable().aspectRatio(0.3, contentMode: .fill)), caption: "Hello", copyright: "There")
-      .previewContext(WidgetPreviewContext(family: .systemMedium))
-
-    APODEntryView(
-      entry: try! JSONDecoder().decode(APODEntry.self, from: previewJSON))
-      .previewContext(WidgetPreviewContext(family: .systemMedium))
   }
 }
