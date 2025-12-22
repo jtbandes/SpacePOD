@@ -110,4 +110,14 @@ public enum Constants {
   public static let userActivityType = "net.bandes-storch.SpacePOD.browsing"
 
   public static let widgetURL = URL(string: "space-widget-link://")!
+
+  public static let failureImage = AnyView(
+    Image(systemName: "exclamationmark.triangle")
+      .font(.system(size: 64, weight: .ultraLight))
+      .foregroundColor(Color(.sRGB, white: 0.5)))
+
+  public static let missingImage = AnyView(
+    Image(systemName: "moon.stars")
+      .font(.system(size: 64, weight: .ultraLight))
+      .foregroundColor(Color(.sRGB, white: 0.5)))
 }

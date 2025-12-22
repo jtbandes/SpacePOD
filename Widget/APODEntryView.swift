@@ -1,4 +1,5 @@
 import SwiftUI
+import SpacePODShared
 import struct WidgetKit.WidgetPreviewContext
 
 extension Text {
@@ -94,6 +95,23 @@ struct PhotoView: View {
   }
 }
 
+extension UIImage {
+  /// Reduce large image sizes to avoid errors like "Widget archival failed due to image being too large".
+  func withLimitedSize() -> UIImage {
+    guard #available(iOS 15.0, *) else {
+      return self
+    }
+    let targetSize: CGFloat = 750
+    let maxDimension = max(size.width, size.height)
+    if maxDimension <= targetSize {
+      return self
+    }
+    let scale = targetSize / maxDimension
+    let newSize = CGSize(width: size.width * scale, height: size.height * scale)
+    return self.preparingThumbnail(of: newSize) ?? self
+  }
+}
+
 public struct APODEntryView: View {
   let entry: APODEntry
   let configuration: ConfigurationIntent
@@ -108,19 +126,9 @@ public struct APODEntryView: View {
     self.configuration = ConfigurationIntent()
   }
 
-  public/*FIXME*/ static let failureImage = AnyView(
-    Image(systemName: "exclamationmark.triangle")
-      .font(.system(size: 64, weight: .ultraLight))
-      .foregroundColor(Color(.sRGB, white: 0.5)))
-
-  public static let missingImage = AnyView(
-    Image(systemName: "moon.stars")
-      .font(.system(size: 64, weight: .ultraLight))
-      .foregroundColor(Color(.sRGB, white: 0.5)))
-
   public var body: some View {
     let image = entry.loadImage(enableAnimatedGIF: false).map {
-      let image = Image(uiImage: $0)
+      let image = Image(uiImage: $0.withLimitedSize())
         .resizable()
         .widgetDesaturated()
         .aspectRatio(contentMode: .fill)
@@ -142,7 +150,7 @@ public struct APODEntryView: View {
           .eraseToAnyView()
       }
       return image.eraseToAnyView()
-    } ?? APODEntryView.failureImage
+    } ?? Constants.failureImage
 
     PhotoView(
       configuration: configuration,

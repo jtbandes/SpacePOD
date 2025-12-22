@@ -1,7 +1,16 @@
 import SwiftUI
+import WidgetKit
 
-extension URL: Identifiable {
-  public var id: Self { self }
+public struct IdentifiableURL: Identifiable {
+  public var url: URL
+
+  public init(url: URL) {
+    self.url = url
+  }
+
+  public var id: URL {
+    url
+  }
 }
 
 // https://stackoverflow.com/a/77037562/23649

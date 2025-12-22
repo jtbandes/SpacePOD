@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -22,7 +22,6 @@
 		1602DFBC251C12BD004D96B2 /* SpacePODShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1602DF9B251C12A8004D96B2 /* SpacePODShared.framework */; };
 		1602DFC6251C12E2004D96B2 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF83251BEA99004D96B2 /* Utilities.swift */; };
 		1602DFCA251C12EB004D96B2 /* SortedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF8A251C062C004D96B2 /* SortedDictionary.swift */; };
-		1602DFEA251C1526004D96B2 /* APODEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DFE9251C1526004D96B2 /* APODEntryView.swift */; };
 		1602DFEE251C153C004D96B2 /* APODClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF76251BC4A4004D96B2 /* APODClient.swift */; };
 		1602DFF2251C1579004D96B2 /* YearMonthDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF91251C1160004D96B2 /* YearMonthDay.swift */; };
 		1602E00A251C448A004D96B2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF4A251BC0F8004D96B2 /* Preview Assets.xcassets */; };
@@ -36,11 +35,12 @@
 		164A899F27056E6B009BD329 /* SourceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164A899E27056E6B009BD329 /* SourceView.swift */; };
 		164AD066254CB84A00CEF1BB /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164AD065254CB84A00CEF1BB /* TextView.swift */; };
 		165231B8254A301700C5978E /* OpenInBrowserActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 165231B7254A301700C5978E /* OpenInBrowserActivity.swift */; };
-		16622EB62535637900C86A6F /* APODTimelineEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16622EB52535637700C86A6F /* APODTimelineEntry.swift */; };
 		16622EBA253563D800C86A6F /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; };
 		16622EC4253653EF00C86A6F /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		16622EC5253653EF00C86A6F /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		16923317254756C3002CDDF2 /* SafariViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16923316254756C0002CDDF2 /* SafariViewController.swift */; };
+		16A4CDE72EF8F7100019A097 /* APODEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DFE9251C1526004D96B2 /* APODEntryView.swift */; };
+		16A4CDE82EF8F7170019A097 /* APODTimelineEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16622EB52535637700C86A6F /* APODTimelineEntry.swift */; };
 		16AEA76C25438EE600CA0B30 /* YouTubePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEA76B25438EE500CA0B30 /* YouTubePlayer.swift */; };
 		16AEA7762543920700CA0B30 /* Combine+SpacePOD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEA7752543920700CA0B30 /* Combine+SpacePOD.swift */; };
 		16AEA77C2543932400CA0B30 /* Foundation+SpacePOD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEA77B2543932400CA0B30 /* Foundation+SpacePOD.swift */; };
@@ -286,9 +286,11 @@
 		1602DF60251BC263004D96B2 /* Widget */ = {
 			isa = PBXGroup;
 			children = (
-				1602DF73251BC46C004D96B2 /* WidgetExtension.entitlements */,
+				1602DFE9251C1526004D96B2 /* APODEntryView.swift */,
+				16622EB52535637700C86A6F /* APODTimelineEntry.swift */,
 				1602DF61251BC263004D96B2 /* Widget.swift */,
 				1602DF63251BC263004D96B2 /* Widget.intentdefinition */,
+				1602DF73251BC46C004D96B2 /* WidgetExtension.entitlements */,
 				1602DF64251BC266004D96B2 /* Assets.xcassets */,
 				1602DF66251BC266004D96B2 /* Info.plist */,
 			);
@@ -302,8 +304,6 @@
 				1602DF9E251C12A8004D96B2 /* Info.plist */,
 				1602DF49251BC0F8004D96B2 /* Preview Content */,
 				1602DF76251BC4A4004D96B2 /* APODClient.swift */,
-				1602DFE9251C1526004D96B2 /* APODEntryView.swift */,
-				16622EB52535637700C86A6F /* APODTimelineEntry.swift */,
 				1602DF83251BEA99004D96B2 /* Utilities.swift */,
 				1602DF91251C1160004D96B2 /* YearMonthDay.swift */,
 				1602DF8A251C062C004D96B2 /* SortedDictionary.swift */,
@@ -466,8 +466,9 @@
 		1602DF36251BC0F7004D96B2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1200;
-				LastUpgradeCheck = 1400;
+				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					1602DF3D251BC0F7004D96B2 = {
 						CreatedOnToolsVersion = 12.0;
@@ -577,8 +578,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16A4CDE72EF8F7100019A097 /* APODEntryView.swift in Sources */,
 				16622EC4253653EF00C86A6F /* Widget.intentdefinition in Sources */,
 				1602DF62251BC263004D96B2 /* Widget.swift in Sources */,
+				16A4CDE82EF8F7170019A097 /* APODTimelineEntry.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -590,10 +593,8 @@
 				16AEA77C2543932400CA0B30 /* Foundation+SpacePOD.swift in Sources */,
 				16AEA782254399F700CA0B30 /* Collection+SpacePOD.swift in Sources */,
 				1602DFF2251C1579004D96B2 /* YearMonthDay.swift in Sources */,
-				1602DFEA251C1526004D96B2 /* APODEntryView.swift in Sources */,
 				16622EBA253563D800C86A6F /* Widget.intentdefinition in Sources */,
 				1602DFCA251C12EB004D96B2 /* SortedDictionary.swift in Sources */,
-				16622EB62535637900C86A6F /* APODTimelineEntry.swift in Sources */,
 				16AEA78825439AFE00CA0B30 /* Optional+SpacePOD.swift in Sources */,
 				1602DFEE251C153C004D96B2 /* APODClient.swift in Sources */,
 				16AEA7922543CDD700CA0B30 /* SwiftUI+SpacePOD.swift in Sources */,
@@ -688,8 +689,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -709,6 +712,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -749,8 +753,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -763,6 +769,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
@@ -772,14 +779,12 @@
 		1602DF53251BC0F8004D96B2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SpacePOD/SpacePOD.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
-				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SpacePOD/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -797,14 +802,12 @@
 		1602DF54251BC0F8004D96B2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SpacePOD/SpacePOD.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
-				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SpacePOD/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -828,7 +831,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
-				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				INFOPLIST_FILE = Widget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -853,7 +855,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
-				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				INFOPLIST_FILE = Widget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -874,14 +875,15 @@
 			baseConfigurationReference = 16622E852525786900C86A6F /* Config.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 9;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
-				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
 				INFOPLIST_FILE = Shared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -890,6 +892,7 @@
 					"@loader_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.3;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.SpacePOD.SpacePODShared";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -905,14 +908,15 @@
 			baseConfigurationReference = 16622E852525786900C86A6F /* Config.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 9;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
-				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
 				INFOPLIST_FILE = Shared/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -921,6 +925,7 @@
 					"@loader_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.3;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.SpacePOD.SpacePODShared";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -934,9 +939,7 @@
 		1602DFB7251C12A8004D96B2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				INFOPLIST_FILE = SharedTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -954,9 +957,7 @@
 		1602DFB8251C12A8004D96B2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				INFOPLIST_FILE = SharedTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -974,13 +975,14 @@
 		160F5269253FB729005A12EE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 9;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
 				INFOPLIST_FILE = vendor/YTPlayerView/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -988,6 +990,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.YTPlayerView";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1000,13 +1003,14 @@
 		160F526A253FB729005A12EE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 9;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 6BXC9YWCQ7;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
 				INFOPLIST_FILE = vendor/YTPlayerView/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1014,6 +1018,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.YTPlayerView";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;

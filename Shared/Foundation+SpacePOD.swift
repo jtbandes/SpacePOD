@@ -26,7 +26,7 @@ public extension DateComponents {
   }
 }
 
-extension DateFormatter {
+public extension DateFormatter {
   static let monthDay = configure(DateFormatter()) {
     $0.setLocalizedDateFormatFromTemplate("MMM d")
   }

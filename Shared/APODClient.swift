@@ -56,7 +56,7 @@ public enum Asset {
     }
   }
 
-  var isVideo: Bool {
+  public var isVideo: Bool {
     switch self {
     case .image, .unknown:
       false

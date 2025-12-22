@@ -107,7 +107,7 @@ struct ContentView: View {
   @StateObject var viewModel = ViewModel()
   @State var titleShown = true
   @State var detailsShown = false
-  @State var urlForWebView: URL?
+  @State var urlForWebView: IdentifiableURL?
   @State var shareButton: UIView?
 
   func titleView(for entry: APODEntry) -> some View {
@@ -181,10 +181,12 @@ struct ContentView: View {
         }
       }
       ToolbarItem(placement: .navigationBarTrailing) {
-        Button(action: { urlForWebView = entry.webURL }) {
+        Button {
+          urlForWebView = entry.webURL.map(IdentifiableURL.init)
+        } label: {
           Image(systemName: "safari").imageScale(.large)
         }.sheet(item: $urlForWebView) {
-          SafariViewController(url: $0)
+          SafariViewController(url: $0.url)
         }
       }
       ToolbarItem(placement: .navigationBarTrailing) {
@@ -233,7 +235,7 @@ struct ContentView: View {
               AnimatedImage(image: image)
             }
           } else {
-            APODEntryView.failureImage.flexibleFrame()
+            Constants.failureImage.flexibleFrame()
           }
         }.onTapGesture { withAnimation { titleShown.toggle() } }
 
@@ -262,10 +264,10 @@ struct ContentView: View {
     case .loaded(.failure(let error)):
       VStack(alignment: .leading) {
         if case APODErrors.emptyResponse = error {
-          APODEntryView.missingImage.flexibleFrame()
+          Constants.missingImage.flexibleFrame()
           titleView(date: nil, title: "No photo available", copyright: error.localizedDescription)
         } else {
-          APODEntryView.failureImage.flexibleFrame()
+          Constants.failureImage.flexibleFrame()
           titleView(date: nil, title: "Couldn’t load image", copyright: error.localizedDescription)
         }
       }
