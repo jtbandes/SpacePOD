@@ -234,6 +234,7 @@ struct ContentView: View {
             ZoomableScrollView {
               AnimatedImage(image: image)
             }
+            .id(entry.date) // reset zoom/scroll state when the entry date changes
           } else {
             Constants.failureImage.flexibleFrame()
           }
