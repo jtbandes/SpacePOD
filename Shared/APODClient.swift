@@ -361,7 +361,9 @@ public class APODClient {
           throw APODErrors.failureResponse(statusCode: response.statusCode)
         }
 
-        let entries = try JSONDecoder().decode([APODEntry].self, from: responseData)
+        // Filter out entries that fail to decode (e.g. due to a missing image URL)
+        let entries = try JSONDecoder().decode([DecodableResult<APODEntry>].self, from: responseData)
+          .compactMap { $0.successOrNil }
         guard let entry = entries.last else {
           throw APODErrors.emptyResponse
         }

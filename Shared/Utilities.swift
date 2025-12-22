@@ -121,3 +121,23 @@ public enum Constants {
       .font(.system(size: 64, weight: .ultraLight))
       .foregroundColor(Color(.sRGB, white: 0.5)))
 }
+
+/// https://stackoverflow.com/a/52070521/23649
+public struct DecodableResult<T: Decodable>: Decodable {
+  let result: Result<T, Error>
+
+  var successOrNil: T? {
+    switch result {
+    case .success(let value):
+      return value
+    case .failure:
+      return nil
+    }
+  }
+
+  public init(from decoder: any Decoder) throws {
+    result = Result {
+      try T(from: decoder)
+    }
+  }
+}
