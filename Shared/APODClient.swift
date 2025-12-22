@@ -280,27 +280,38 @@ public class APODClient {
     var result = SortedDictionary<YearMonthDay, APODEntry>()
     try FileManager.default.createDirectory(at: cacheURL, withIntermediateDirectories: true)
     let urls = Set(try FileManager.default.contentsOfDirectory(at: cacheURL, includingPropertiesForKeys: nil))
-    for url in urls where url.pathExtension == DATA_PATH_EXTENSION {
-      do {
-        let entry = try JSONDecoder().decode(APODEntry.self, from: Data(contentsOf: url))
 
-        // Delete entries older than 2 days
-        if let date = entry.date.asDate(), date.timeIntervalSinceNow < -2*24*60*60 {
-          do {
-            try FileManager.default.removeItem(at: url)
-            try FileManager.default.removeItem(at: cacheURL.appendingPathComponent(entry.imageFilename))
-            print("Removed old data for \(entry.date)")
-          } catch {
-            print("Error removing old data for \(entry.date): \(error)")
+    var allEntries = urls
+      .filter { $0.pathExtension == DATA_PATH_EXTENSION }
+      .compactMap { url in
+        do {
+          let entry = try JSONDecoder().decode(APODEntry.self, from: Data(contentsOf: url))
+          if urls.contains(cacheURL.appendingPathComponent(entry.imageFilename)) {
+            return entry
+          } else {
+            throw APODErrors.invalidImage
           }
-        } else if urls.contains(cacheURL.appendingPathComponent(entry.imageFilename)) {
-          result[entry.date] = entry
-        } else {
-          throw APODErrors.invalidImage
+        } catch {
+          print("Invalid cache entry: \(error) \(url)")
+          return nil
         }
-      } catch {
-        print("Invalid cache entry: \(error) \(url)")
       }
+      .sorted { $0.date < $1.date }
+
+    // Delete all but the 2 newest entries
+    while allEntries.count > 2 {
+      let oldEntry = allEntries.removeFirst()
+      do {
+        try FileManager.default.removeItem(at: cacheURL.appendingPathComponent(oldEntry.dataFilename))
+        try FileManager.default.removeItem(at: cacheURL.appendingPathComponent(oldEntry.imageFilename))
+        print("Removed old data for \(oldEntry.date)")
+      } catch {
+        print("Error removing old data for \(oldEntry.date): \(error)")
+      }
+    }
+
+    for entry in allEntries {
+      result[entry.date] = entry
     }
     return result
   }
