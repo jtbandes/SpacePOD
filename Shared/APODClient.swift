@@ -1,3 +1,4 @@
+import AVFoundation
 import Foundation
 import Combine
 import UIKit
@@ -31,6 +32,7 @@ public enum Asset {
   case image(URL)
   case vimeoVideo(id: String, url: URL)
   case youtubeVideo(id: String, url: URL)
+  case otherVideo(URL)
   case unknown(URL)
 
   init(mediaType: String, url: URL) {
@@ -48,7 +50,7 @@ public enum Asset {
         let range = Range(match.range(at: 1), in: str) {
         self = .vimeoVideo(id: String(str[range]), url: url)
       } else {
-        self = .unknown(url)
+        self = .otherVideo(url)
       }
 
     default:
@@ -60,7 +62,7 @@ public enum Asset {
     switch self {
     case .image, .unknown:
       false
-    case .youtubeVideo, .vimeoVideo:
+    case .youtubeVideo, .vimeoVideo, .otherVideo:
       true
     }
   }
@@ -105,6 +107,52 @@ public enum Asset {
         .flatMap { response in
           URLSession.shared.downloadTaskPublisher(for: response.thumbnailURL)
         }
+        .eraseToAnyPublisher()
+
+    case .otherVideo(let url):
+      let asset = AVURLAsset(url: url)
+      let generator = AVAssetImageGenerator(asset: asset)
+      generator.appliesPreferredTrackTransform = true
+
+      let subject = PassthroughSubject<URL, Error>()
+      return subject.handleEvents(
+        receiveCancel: { generator.cancelAllCGImageGeneration() },
+        receiveRequest: {
+          if $0 <= .none {
+            return
+          }
+          generator.generateCGImagesAsynchronously(forTimes: [NSValue(time: .zero)]) { requestedTime, image, actualTime, result, error in
+            switch result {
+            case .cancelled:
+              return
+
+            case .succeeded:
+              guard let image else {
+                subject.send(completion: .failure(error ?? APODErrors.thumbnailGenerationFailed))
+                return
+              }
+              let tmpDir = FileManager.default.temporaryDirectory
+                .appendingPathComponent(ProcessInfo.processInfo.globallyUniqueString, isDirectory: true)
+              let tmpFile = tmpDir.appendingPathComponent("video-thumbnail.jpeg")
+              do {
+                try FileManager.default.createDirectory(at: tmpDir, withIntermediateDirectories: true)
+                try UIImage(cgImage: image)
+                  .jpegData(compressionQuality: 0.9)
+                  .orThrow(APODErrors.thumbnailGenerationFailed)
+                  .write(to: tmpFile)
+                subject.send(tmpFile)
+                subject.send(completion: .finished)
+              } catch {
+                subject.send(completion: .failure(error))
+              }
+
+            case .failed:
+              fallthrough
+            @unknown default:
+              subject.send(completion: .failure(error ?? APODErrors.thumbnailGenerationFailed))
+            }
+          }
+        })
         .eraseToAnyPublisher()
 
     case .unknown:
@@ -399,6 +447,10 @@ public class APODClient {
         return entry
       }
       .receive(on: DispatchQueue.main)
+      .mapError { error in
+        DBG("Error in loadLatestImage: \(error)")
+        return error
+      }
       .map { [weak self] entry in
         self?.reloadCache()
         return entry

@@ -1,3 +1,4 @@
+import AVKit
 import SwiftUI
 import Combine
 import SpacePODShared
@@ -223,6 +224,12 @@ struct ContentView: View {
     case let .vimeoVideo(id: _, url: url):
       VStack {
         WebView(url: url)
+        bottomBar
+      }
+
+    case let .otherVideo(url):
+      VStack {
+        VideoPlayer(player: AVPlayer(url: url))
         bottomBar
       }
 

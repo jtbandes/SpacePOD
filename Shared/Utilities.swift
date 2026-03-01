@@ -76,6 +76,7 @@ public enum APODErrors: Error {
   case invalidImage
   case unsupportedAsset
   case fileCoordinationFailed
+  case thumbnailGenerationFailed
 }
 
 extension APODErrors: LocalizedError {
@@ -99,6 +100,8 @@ extension APODErrors: LocalizedError {
       return "This media couldn’t be displayed."
     case .fileCoordinationFailed:
       return "An unknown error occurred while coordinating file access."
+    case .thumbnailGenerationFailed:
+      return "An unknown error occurred while generating a video thumbnail."
     }
   }
 }
