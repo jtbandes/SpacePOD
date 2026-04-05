@@ -1,4 +1,3 @@
-import AVKit
 import SwiftUI
 import Combine
 import SpacePODShared
@@ -229,7 +228,7 @@ struct ContentView: View {
 
     case let .otherVideo(url):
       VStack {
-        VideoPlayer(player: AVPlayer(url: url))
+        AutoplayingVideoPlayer(url: url)
         bottomBar
       }
 

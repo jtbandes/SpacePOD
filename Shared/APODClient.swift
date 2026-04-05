@@ -48,7 +48,12 @@ public enum Asset {
       } else if
         let match = vimeoRegex.firstMatch(in: str, range: NSRange(str.startIndex..<str.endIndex, in: str)),
         let range = Range(match.range(at: 1), in: str) {
-        self = .vimeoVideo(id: String(str[range]), url: url)
+        var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        components?.queryItems?.append(contentsOf: [
+          URLQueryItem(name: "autoplay", value: "1"),
+          URLQueryItem(name: "loop", value: "1"),
+        ])
+        self = .vimeoVideo(id: String(str[range]), url: components?.url ?? url)
       } else {
         self = .otherVideo(url)
       }
@@ -392,6 +397,18 @@ public class APODClient {
         // https://github.com/nasa/apod-api/issues/48
         URLQueryItem(name: "start_date", value: (YearMonthDay.yesterday ?? YearMonthDay.today).description),
         // Including end_date returns 400 when end_date is after today
+
+        // HTML5 video:
+//        URLQueryItem(name: "start_date", value: "2026-03-24"),
+//        URLQueryItem(name: "end_date", value: "2026-03-24"),
+
+        // YouTube video:
+//        URLQueryItem(name: "start_date", value: "2025-12-08"),
+//        URLQueryItem(name: "end_date", value: "2025-12-08"),
+
+        // Vimeo video:
+//        URLQueryItem(name: "start_date", value: "2021-10-10"),
+//        URLQueryItem(name: "end_date", value: "2021-10-10"),
       ])
 
     guard let requestURL = components.url else {

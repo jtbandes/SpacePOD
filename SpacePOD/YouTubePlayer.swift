@@ -18,8 +18,13 @@ struct YouTubePlayer: UIViewRepresentable {
       $0.load(
         withVideoId: videoId,
         playerVars: [
+          "autoplay": 1,
           // Prevent the video from automatically entering full screen mode.
           "playsinline": 1,
+
+          // Setting the playlist to the same video ID is required to loop a single video.
+          "loop": 1,
+          "playlist": videoId,
         ])
     }
   }

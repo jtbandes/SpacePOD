@@ -39,6 +39,7 @@
 		16622EC4253653EF00C86A6F /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		16622EC5253653EF00C86A6F /* Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1602DF63251BC263004D96B2 /* Widget.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
 		16923317254756C3002CDDF2 /* SafariViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16923316254756C0002CDDF2 /* SafariViewController.swift */; };
+		1693A7C62F73955300EC69AF /* AutoplayingVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1693A7C52F73955300EC69AF /* AutoplayingVideoPlayer.swift */; };
 		16A4CDE72EF8F7100019A097 /* APODEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1602DFE9251C1526004D96B2 /* APODEntryView.swift */; };
 		16A4CDE82EF8F7170019A097 /* APODTimelineEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16622EB52535637700C86A6F /* APODTimelineEntry.swift */; };
 		16AEA76C25438EE600CA0B30 /* YouTubePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AEA76B25438EE500CA0B30 /* YouTubePlayer.swift */; };
@@ -161,6 +162,7 @@
 		16622E852525786900C86A6F /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		16622EB52535637700C86A6F /* APODTimelineEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APODTimelineEntry.swift; sourceTree = "<group>"; };
 		16923316254756C0002CDDF2 /* SafariViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariViewController.swift; sourceTree = "<group>"; };
+		1693A7C52F73955300EC69AF /* AutoplayingVideoPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoplayingVideoPlayer.swift; sourceTree = "<group>"; };
 		16AEA76B25438EE500CA0B30 /* YouTubePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubePlayer.swift; sourceTree = "<group>"; };
 		16AEA7752543920700CA0B30 /* Combine+SpacePOD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Combine+SpacePOD.swift"; sourceTree = "<group>"; };
 		16AEA77B2543932400CA0B30 /* Foundation+SpacePOD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Foundation+SpacePOD.swift"; sourceTree = "<group>"; };
@@ -253,6 +255,7 @@
 				1602DF47251BC0F8004D96B2 /* Assets.xcassets */,
 				1602DF41251BC0F7004D96B2 /* App.swift */,
 				1602DF45251BC0F7004D96B2 /* ContentView.swift */,
+				1693A7C52F73955300EC69AF /* AutoplayingVideoPlayer.swift */,
 				16FC1728277F8FBD00A1E77A /* AnimatedImage.swift */,
 				165231B7254A301700C5978E /* OpenInBrowserActivity.swift */,
 				16923316254756C0002CDDF2 /* SafariViewController.swift */,
@@ -468,7 +471,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1200;
-				LastUpgradeCheck = 2620;
+				LastUpgradeCheck = 2640;
 				TargetAttributes = {
 					1602DF3D251BC0F7004D96B2 = {
 						CreatedOnToolsVersion = 12.0;
@@ -569,6 +572,7 @@
 				164AD066254CB84A00CEF1BB /* TextView.swift in Sources */,
 				16FC1729277F8FBD00A1E77A /* AnimatedImage.swift in Sources */,
 				165231B8254A301700C5978E /* OpenInBrowserActivity.swift in Sources */,
+				1693A7C62F73955300EC69AF /* AutoplayingVideoPlayer.swift in Sources */,
 				1602DF46251BC0F7004D96B2 /* ContentView.swift in Sources */,
 				16BC08382713B1D300B8F7CD /* WebView.swift in Sources */,
 			);
@@ -658,6 +662,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -722,6 +727,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -783,7 +789,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SpacePOD/SpacePOD.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SpacePOD/Info.plist;
@@ -791,7 +797,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.SpacePOD";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -806,7 +812,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SpacePOD/SpacePOD.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SpacePOD/Info.plist;
@@ -814,7 +820,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.SpacePOD";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -829,7 +835,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = Widget/WidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
 				INFOPLIST_FILE = Widget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -837,7 +843,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.SpacePOD.Widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -853,7 +859,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = Widget/WidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
 				INFOPLIST_FILE = Widget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -861,7 +867,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.SpacePOD.Widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -877,7 +883,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -891,7 +897,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.SpacePOD.SpacePODShared";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -910,7 +916,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_ASSET_PATHS = "Shared/Preview\\ Content/Preview\\ Assets.xcassets";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -924,7 +930,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.bandes-storch.SpacePOD.SpacePODShared";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -977,7 +983,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1005,7 +1011,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;

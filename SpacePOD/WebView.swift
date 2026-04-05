@@ -10,7 +10,13 @@ struct WebView: UIViewRepresentable {
   }
 
   func makeUIView(context: Context) -> WKWebView {
-    let view = WKWebView()
+    let configuration = WKWebViewConfiguration()
+    configuration.allowsInlineMediaPlayback = true
+    configuration.mediaTypesRequiringUserActionForPlayback = []
+    if #available(iOS 15.4, *) {
+      configuration.preferences.isElementFullscreenEnabled = true
+    }
+    let view = WKWebView(frame: .zero, configuration: configuration)
     view.isOpaque = false
     view.backgroundColor = .black
     view.scrollView.backgroundColor = .black
