@@ -56,6 +56,7 @@ struct APODWidget: Widget {
 } timeline: {
   let previewJSON = """
 {
+"__spacepod_api_source": "legacy",
 "copyright": "Adam Block",
 "date": "2020-09-25",
 "explanation": "The Great Spiral Galaxy in Andromeda (also known as M31), a mere 2.5 million light-years distant, is the closest large spiral to our own Milky Way. Andromeda is visible to the unaided eye as a small, faint, fuzzy patch, but because its surface brightness is so low, casual skygazers can't appreciate the galaxy's impressive extent in planet Earth's sky. This entertaining composite image compares the angular size of the nearby galaxy to a brighter, more familiar celestial sight. In it, a deep exposure of Andromeda, tracing beautiful blue star clusters in spiral arms far beyond the bright yellow core, is combined with a typical view of a nearly full Moon. Shown at the same angular scale, the Moon covers about 1/2 degree on the sky, while the galaxy is clearly several times that size. The deep Andromeda exposure also includes two bright satellite galaxies, M32 and M110 (below and right).",
@@ -68,6 +69,7 @@ struct APODWidget: Widget {
 """.data(using: .utf8)!
   let videoPreviewJSON = """
 {
+"__spacepod_api_source": "legacy",
 "copyright": "Adam Block\\net al",
 "date": "2020-09-25",
 "explanation": "...",

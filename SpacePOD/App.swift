@@ -8,6 +8,14 @@ struct SpacePOD: App {
       ShakeHandler {
         ContentView()
       }
+    }.commands {
+#if DEBUG
+      CommandGroup(after: .appSettings) {
+        Button("Clear Cache", systemImage: "ladybug") {
+          APODClient.shared.debug_clearCache()
+        }.keyboardShortcut("z", modifiers: [.command, .control])
+      }
+#endif
     }
   }
 }

@@ -48,9 +48,9 @@ public func mutate<T>(_ arg: inout T, _ body: (inout T) -> Void) {
 }
 
 /// Print a message in debug builds only. No-op in release builds.
-public func DBG(_ item: Any) {
+public func DBG(_ item: @autoclosure () -> Any) {
   #if DEBUG
-  print(item)
+  print(item())
   #endif
 }
 
@@ -66,7 +66,7 @@ public enum Loading<T> {
   case loaded(T)
 }
 
-public enum APODErrors: Error {
+public enum APODErrors: Error, Equatable {
   case invalidDate(String)
   case missingURL
   case emptyResponse
@@ -77,6 +77,7 @@ public enum APODErrors: Error {
   case unsupportedAsset
   case fileCoordinationFailed
   case thumbnailGenerationFailed
+  case missingApiSource
 }
 
 extension APODErrors: LocalizedError {
@@ -102,6 +103,8 @@ extension APODErrors: LocalizedError {
       return "An unknown error occurred while coordinating file access."
     case .thumbnailGenerationFailed:
       return "An unknown error occurred while generating a video thumbnail."
+    case .missingApiSource:
+      return "This media couldn’t be loaded."
     }
   }
 }

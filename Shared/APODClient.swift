@@ -11,7 +11,7 @@ func getAPIKey() -> String {
   return "DEMO_KEY"
 }
 
-private let API_URL = URLComponents(string: "https://api.nasa.gov/planetary/apod?api_key=\(getAPIKey())")!
+private let API_URL = URLComponents(string: "https://science.nasa.gov/wp-json/wp/v2/apod-basic/?api_key=\(getAPIKey())")!
 private let VIMEO_OEMBED_API_URL = URLComponents(string: "https://vimeo.com/api/oembed.json")!
 private let DATA_PATH_EXTENSION = "json"
 
@@ -35,31 +35,61 @@ public enum Asset {
   case otherVideo(URL)
   case unknown(URL)
 
-  init(mediaType: String, url: URL) {
-    switch mediaType {
+  init(from rawEntry: RawAPODEntry) throws {
+    let url = rawEntry.url.flatMap(URL.init(string:))
+    let hdurl = rawEntry.hdurl.flatMap(URL.init(string:))
+
+    switch rawEntry.mediaType {
     case "image":
-      self = .image(url)
+      let imageURL = switch rawEntry.apiSource {
+      case .legacy:
+        try (hdurl ?? url).orThrow(APODErrors.missingURL)
+
+      case .wordpress:
+        try hdurl.orThrow(APODErrors.missingURL)
+      }
+      self = .image(imageURL)
 
     case "video":
-      let str = url.absoluteString
+      let videoURL = switch rawEntry.apiSource {
+      case .legacy:
+        try (hdurl ?? url).orThrow(APODErrors.missingURL)
+
+      case .wordpress:
+        // For the Wordpress API, video URLs can only be found by parsing the HTML
+        if let html = rawEntry.basicHTML,
+           let videoURL = extractVideoURL(html, relativeTo: url) {
+          videoURL
+        } else {
+          throw APODErrors.missingURL
+        }
+      }
+
+      let str = videoURL.absoluteString
       if let match = youtubeRegex.firstMatch(in: str, range: NSRange(str.startIndex..<str.endIndex, in: str)),
          let range = Range(match.range(at: 1), in: str) {
-        self = .youtubeVideo(id: String(str[range]), url: url)
+        self = .youtubeVideo(id: String(str[range]), url: videoURL)
       } else if
         let match = vimeoRegex.firstMatch(in: str, range: NSRange(str.startIndex..<str.endIndex, in: str)),
         let range = Range(match.range(at: 1), in: str) {
-        var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        var components = URLComponents(url: videoURL, resolvingAgainstBaseURL: false)
         components?.queryItems?.append(contentsOf: [
           URLQueryItem(name: "autoplay", value: "1"),
           URLQueryItem(name: "loop", value: "1"),
         ])
-        self = .vimeoVideo(id: String(str[range]), url: components?.url ?? url)
+        self = .vimeoVideo(id: String(str[range]), url: components?.url ?? videoURL)
       } else {
-        self = .otherVideo(url)
+        self = .otherVideo(videoURL)
       }
 
     default:
-      self = .unknown(url)
+      switch rawEntry.apiSource {
+      case .legacy:
+        self = .unknown(try url.orThrow(APODErrors.missingURL))
+
+      case .wordpress:
+        throw APODErrors.missingURL
+      }
     }
   }
 
@@ -170,9 +200,9 @@ public class APODEntry: Codable {
   private let rawEntry: RawAPODEntry
 
   public var date: YearMonthDay { rawEntry.date }
-  public var title: String? { rawEntry.title?.trimmingCharacters(in: .whitespacesAndNewlines) }
-  public var copyright: String? { rawEntry.copyright?.trimmingCharacters(in: .whitespacesAndNewlines) }
-  public var explanation: String? { rawEntry.explanation?.trimmingCharacters(in: .whitespacesAndNewlines) }
+  public let title: String?
+  public let copyright: String?
+  public let explanation: String?
 
   public let asset: Asset
 
@@ -215,25 +245,24 @@ public class APODEntry: Codable {
   }
 
   public var webURL: URL? {
-    let dateStr = String(format: "%02d%02d%02d", date.year % 100, date.month, date.day)
-    return URL(string: "https://apod.nasa.gov/apod/ap\(dateStr).html")
+    switch rawEntry.apiSource {
+    case .legacy:
+      let dateStr = String(format: "%02d%02d%02d", date.year % 100, date.month, date.day)
+      return URL(string: "https://apod.nasa.gov/apod/ap\(dateStr).html")
+    case .wordpress:
+      return rawEntry.url.flatMap(URL.init(string:))
+    }
   }
 
-  public required init(from decoder: Decoder) throws {
-    rawEntry = try RawAPODEntry(from: decoder)
-    dataFilename = "\(rawEntry.date.description).\(DATA_PATH_EXTENSION)"
-    imageFilename = rawEntry.date.description
+  public required convenience init(from decoder: Decoder) throws {
+    let rawEntry = try RawAPODEntry(from: decoder)
+    let dataFilename = "\(rawEntry.date.description).\(DATA_PATH_EXTENSION)"
+    let imageFilename = rawEntry.date.description
 
-    let mediaURL: URL
-    if let hdurl = rawEntry.hdurl {
-      mediaURL = hdurl
-    } else if let url = rawEntry.url {
-      mediaURL = url
-    } else {
-      throw APODErrors.missingURL
-    }
 
-    asset = Asset(mediaType: rawEntry.mediaType, url: mediaURL)
+    let asset = try Asset(from: rawEntry)
+
+    self.init(rawEntry: rawEntry, asset: asset, dataFilename: dataFilename, imageFilename: imageFilename)
   }
 
   public func encode(to encoder: Encoder) throws {
@@ -245,10 +274,22 @@ public class APODEntry: Codable {
     self.asset = asset
     self.dataFilename = dataFilename
     self.imageFilename = imageFilename
+
+    switch rawEntry.apiSource {
+    case .legacy:
+      title = rawEntry.title?.trimmingCharacters(in: .whitespacesAndNewlines)
+      copyright = rawEntry.copyright?.trimmingCharacters(in: .whitespacesAndNewlines)
+      explanation = rawEntry.explanation?.trimmingCharacters(in: .whitespacesAndNewlines)
+
+    case .wordpress:
+      title = rawEntry.title.map(lenientStripHTML)
+      copyright = rawEntry.copyright.map(lenientStripHTML)
+      explanation = rawEntry.explanation.map(lenientStripHTML)
+    }
   }
 
 
-  public static let placeholder: APODEntry = APODEntry(rawEntry: RawAPODEntry(date: YearMonthDay.today, hdurl: nil, url: nil, title: "Example", copyright: "Example copyright", explanation: nil, mediaType: "blah"), asset: .unknown(URL(fileURLWithPath: "/dev/null")), dataFilename: "placeholder", imageFilename: "placeholder")
+  public static let placeholder: APODEntry = APODEntry(rawEntry: RawAPODEntry(apiSource: .legacy, date: YearMonthDay.today, hdurl: nil, url: nil, title: "Example", copyright: "Example copyright", explanation: nil, mediaType: "blah"), asset: .unknown(URL(fileURLWithPath: "/dev/null")), dataFilename: "placeholder", imageFilename: "placeholder")
 
   /// The earliest expected date that the next entry will be available from the server.
   static func nextExpectedEntryDate(after entry: APODEntry) -> Date? {
@@ -262,16 +303,29 @@ public class APODEntry: Codable {
   }
 }
 
-struct RawAPODEntry: Codable {
+extension CodingUserInfoKey {
+  static let defaultAPISource = CodingUserInfoKey(rawValue: "__spacepod_api_source")!
+}
+
+/// Tracks which API an entry was fetched from, so it can be interpreted according to that API's semantics.
+enum APODAPISource: String, Codable {
+  case legacy
+  case wordpress
+}
+
+struct RawAPODEntry: Codable, Equatable {
+  var apiSource: APODAPISource
   var date: YearMonthDay
-  var hdurl: URL?
-  var url: URL?
+  var hdurl: String?
+  var url: String?
   var title: String?
   var copyright: String?
   var explanation: String?
   var mediaType: String
+  var basicHTML: String?
 
   enum CodingKeys: String, CodingKey {
+    case apiSource = "__spacepod_api_source"
     case copyright
     case date
     case explanation
@@ -279,6 +333,42 @@ struct RawAPODEntry: Codable {
     case url
     case mediaType = "media_type"
     case title
+    case basicHTML = "basic_html"
+  }
+
+  internal init(
+    apiSource: APODAPISource,
+    date: YearMonthDay,
+    hdurl: URL? = nil,
+    url: URL? = nil,
+    title: String? = nil,
+    copyright: String? = nil,
+    explanation: String? = nil,
+    mediaType: String
+  ) {
+    self.apiSource = apiSource
+    self.date = date
+    self.hdurl = hdurl?.absoluteString
+    self.url = url?.absoluteString
+    self.title = title
+    self.copyright = copyright
+    self.explanation = explanation
+    self.mediaType = mediaType
+  }
+
+  /// An API source must be provided either by the decoder itself, or from `decoder.userInfo[.defaultAPISource]`.
+  init(from decoder: any Decoder) throws {
+    let values = try decoder.container(keyedBy: CodingKeys.self)
+    let apiSource = try values.decodeIfPresent(APODAPISource.self, forKey: .apiSource) ?? decoder.userInfo[.defaultAPISource] as? APODAPISource
+    self.apiSource = try apiSource.orThrow(APODErrors.missingApiSource)
+    self.date = try values.decode(YearMonthDay.self, forKey: .date)
+    self.hdurl = try values.decodeIfPresent(String.self, forKey: .hdurl)
+    self.url = try values.decodeIfPresent(String.self, forKey: .url)
+    self.title = try values.decodeIfPresent(String.self, forKey: .title)
+    self.copyright = try values.decodeIfPresent(String.self, forKey: .copyright)
+    self.explanation = try values.decodeIfPresent(String.self, forKey: .explanation)
+    self.mediaType = try values.decode(String.self, forKey: .mediaType)
+    self.basicHTML = try values.decodeIfPresent(String.self, forKey: .basicHTML)
   }
 }
 
@@ -338,7 +428,10 @@ public class APODClient {
       .filter { $0.pathExtension == DATA_PATH_EXTENSION }
       .compactMap { url in
         do {
-          let entry = try JSONDecoder().decode(APODEntry.self, from: Data(contentsOf: url))
+          let decoder = JSONDecoder()
+          // Assume cache entries written without an explicit API source are from the legacy API.
+          decoder.userInfo[.defaultAPISource] = APODAPISource.legacy
+          let entry = try decoder.decode(APODEntry.self, from: Data(contentsOf: url))
           if urls.contains(cacheURL.appendingPathComponent(entry.imageFilename)) {
             return entry
           } else {
@@ -395,20 +488,20 @@ public class APODClient {
       .append(contentsOf: [
         // Rather than requesting the current date, request a range starting from yesterday to avoid "no data available"
         // https://github.com/nasa/apod-api/issues/48
-        URLQueryItem(name: "start_date", value: (YearMonthDay.yesterday ?? YearMonthDay.today).description),
+        URLQueryItem(name: "date_from", value: (YearMonthDay.yesterday ?? YearMonthDay.today).legacyDescription),
         // Including end_date returns 400 when end_date is after today
 
         // HTML5 video:
-//        URLQueryItem(name: "start_date", value: "2026-03-24"),
-//        URLQueryItem(name: "end_date", value: "2026-03-24"),
+//        URLQueryItem(name: "date_from", value: "260324"),
+//        URLQueryItem(name: "date_to", value: "260324"),
 
         // YouTube video:
-//        URLQueryItem(name: "start_date", value: "2025-12-08"),
-//        URLQueryItem(name: "end_date", value: "2025-12-08"),
+//        URLQueryItem(name: "date_from", value: "251208"),
+//        URLQueryItem(name: "date_to", value: "251208"),
 
         // Vimeo video:
-//        URLQueryItem(name: "start_date", value: "2021-10-10"),
-//        URLQueryItem(name: "end_date", value: "2021-10-10"),
+//        URLQueryItem(name: "date_from", value: "211010"),
+//        URLQueryItem(name: "date_to", value: "211010"),
       ])
 
     guard let requestURL = components.url else {
@@ -427,11 +520,17 @@ public class APODClient {
         }
 
         // Filter out entries that fail to decode (e.g. due to a missing image URL)
-        let entries = try JSONDecoder().decode([DecodableResult<APODEntry>].self, from: responseData)
+        let decoder = JSONDecoder()
+        decoder.userInfo[.defaultAPISource] = APODAPISource.wordpress
+        let entries = try decoder.decode([DecodableResult<APODEntry>].self, from: responseData)
           .compactMap { $0.successOrNil }
-        guard let entry = entries.last else {
+        guard let entry = entries.max(by: { $0.date < $1.date }) else {
           throw APODErrors.emptyResponse
         }
+        #if DEBUG
+        print("Loading entry:")
+        dump(entry)
+        #endif
         return entry
       }
     // Download image or video thumbnail

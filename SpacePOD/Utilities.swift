@@ -19,7 +19,8 @@ extension UIApplication {
   /// The currently visible (topmost) view controller. Used for presenting modal dialogs such as a share sheet.
   /// From @mxcl: https://gist.github.com/mxcl/36de8f6f13e53872f11248d7ff2b1abc
   var visibleViewController: UIViewController? {
-    var vc = UIApplication.shared.windows.first(where: \.isKeyWindow)?.rootViewController
+    let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+    var vc = scene?.windows.first(where: \.isKeyWindow)?.rootViewController
     while let presentedVc = vc?.presentedViewController {
       if let navVc = (presentedVc as? UINavigationController)?.viewControllers.last {
         vc = navVc

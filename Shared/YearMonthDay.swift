@@ -51,6 +51,10 @@ extension YearMonthDay: LosslessStringConvertible {
     String(format: "%04d-%02d-%02d", year, month, day)
   }
 
+  public var legacyDescription: String {
+    String(format: "%02d%02d%02d", year % 100, month, day)
+  }
+
   public init?(_ description: String) {
     let components = description.split(separator: "-")
     guard components.count == 3,

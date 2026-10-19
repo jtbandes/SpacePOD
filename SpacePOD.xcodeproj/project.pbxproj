@@ -30,6 +30,7 @@
 		160F5268253FB729005A12EE /* YTPlayerView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 160F5260253FB729005A12EE /* YTPlayerView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		160F5272253FB739005A12EE /* YTPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 160F5270253FB739005A12EE /* YTPlayerView.m */; };
 		160F527D253FB773005A12EE /* Assets.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 160F527C253FB773005A12EE /* Assets.bundle */; };
+		1624794E307F505200418C1F /* HTMLParsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1624794D307F504C00418C1F /* HTMLParsing.swift */; };
 		1625BF6E251C46A20004BB61 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF4A251BC0F8004D96B2 /* Preview Assets.xcassets */; };
 		1625BF72251C46A20004BB61 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1602DF4A251BC0F8004D96B2 /* Preview Assets.xcassets */; };
 		164A899F27056E6B009BD329 /* SourceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164A899E27056E6B009BD329 /* SourceView.swift */; };
@@ -156,6 +157,7 @@
 		160F5263253FB729005A12EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		160F5270253FB739005A12EE /* YTPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YTPlayerView.m; sourceTree = "<group>"; };
 		160F527C253FB773005A12EE /* Assets.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Assets.bundle; sourceTree = "<group>"; };
+		1624794D307F504C00418C1F /* HTMLParsing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParsing.swift; sourceTree = "<group>"; };
 		164A899E27056E6B009BD329 /* SourceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceView.swift; sourceTree = "<group>"; };
 		164AD065254CB84A00CEF1BB /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
 		165231B7254A301700C5978E /* OpenInBrowserActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenInBrowserActivity.swift; sourceTree = "<group>"; };
@@ -315,6 +317,7 @@
 				16AEA77B2543932400CA0B30 /* Foundation+SpacePOD.swift */,
 				16AEA78725439AFE00CA0B30 /* Optional+SpacePOD.swift */,
 				16AEA7912543CDD700CA0B30 /* SwiftUI+SpacePOD.swift */,
+				1624794D307F504C00418C1F /* HTMLParsing.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -471,7 +474,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1200;
-				LastUpgradeCheck = 2640;
+				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					1602DF3D251BC0F7004D96B2 = {
 						CreatedOnToolsVersion = 12.0;
@@ -484,7 +487,6 @@
 					};
 					1602DFA2251C12A8004D96B2 = {
 						CreatedOnToolsVersion = 12.0;
-						TestTargetID = 1602DF3D251BC0F7004D96B2;
 					};
 					160F525F253FB729005A12EE = {
 						CreatedOnToolsVersion = 12.0.1;
@@ -602,6 +604,7 @@
 				16AEA78825439AFE00CA0B30 /* Optional+SpacePOD.swift in Sources */,
 				1602DFEE251C153C004D96B2 /* APODClient.swift in Sources */,
 				16AEA7922543CDD700CA0B30 /* SwiftUI+SpacePOD.swift in Sources */,
+				1624794E307F505200418C1F /* HTMLParsing.swift in Sources */,
 				1602DFC6251C12E2004D96B2 /* Utilities.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -712,7 +715,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -771,7 +774,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -956,7 +959,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SpacePOD.app/SpacePOD";
 			};
 			name = Debug;
 		};
@@ -974,7 +976,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SpacePOD.app/SpacePOD";
 			};
 			name = Release;
 		};
