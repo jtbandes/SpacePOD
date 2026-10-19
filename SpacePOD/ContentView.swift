@@ -294,7 +294,10 @@ struct ContentView: View {
   }
 
   var body: some View {
-    mainBody
+    VStack {
+      DisruptionWarning()
+      mainBody
+    }
       .onContinueUserActivity(Constants.userActivityType) { _ in
         maybeRequestReview(because: .continuedUserActivity, delay: .seconds(2))
       }
@@ -311,6 +314,45 @@ struct ContentView: View {
           maybeRequestReview(because: .openedFromWidget, delay: .seconds(2))
         }
       }
+  }
+}
+
+struct DisruptionWarning: View {
+  @State var shown = Date() < Date(timeIntervalSince1970: 1796083200) // 2026-12-01
+  @State var progress: CGFloat = 1
+
+  var body: some View {
+    if shown {
+      HStack(alignment: .firstTextBaseline) {
+        Image(systemName: "info.circle")
+        Text("Recent changes made by NASA may cause some disruption to the Space! app and widget. If you experience any further issues, please report them [via GitHub](https://github.com/jtbandes/SpacePOD/issues).")
+      }
+      .padding(6)
+      .font(.footnote)
+      .foregroundStyle(.secondary)
+      .transition(.opacity)
+      .background(
+        VStack {
+          Rectangle()
+            .fill(.secondary)
+            .opacity(0.5)
+            .frame(height: 2)
+            .scaleEffect(x: progress, y: 1, anchor: .leading)
+          Spacer()
+        }
+      )
+      .onAppear {
+        let duration = 10
+        withAnimation(.linear(duration: CGFloat(duration))) {
+          progress = 0
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(duration)) {
+          withAnimation {
+            shown = false
+          }
+        }
+      }
+    }
   }
 }
 
